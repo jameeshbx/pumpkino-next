@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pumpkino — Get started</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  :root{
+    --primary:#0D3B2F; --primary-deep:#0A3026; --secondary:#D8A43B;
+    --bg:#F8F7F3; --card:#FFFFFF; --border:#E9E5DD;
+    --heading:#16221D; --body:#5E625F; --muted:#8E948E;
+    --success:#2F8F5B; --success-bg:#E7F3EA;
+    --warning:#E39A22; --warning-bg:#FCF0DC;
+    --ai:#7B5CFA; --ai-bg:#EFEAFE;
+    --info:#3B82F6; --info-bg:#E8F1FE;
+    --r-btn:12px; --r-card:18px; --r-input:12px; --r-badge:999px;
+    --shadow-sm:0 4px 12px rgba(0,0,0,.04);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); font-family:'Inter',sans-serif; color:var(--body); font-size:14.5px; line-height:1.5;}
+
+  .topbar{display:flex; align-items:center; justify-content:space-between; padding:16px 32px; background:var(--card); border-bottom:1px solid var(--border);}
+  .logo{display:flex; align-items:center; gap:10px;}
+  .logo .mark{width:32px;height:32px;border-radius:9px;background:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--secondary);font-size:14px;}
+  .logo .word{font-weight:700;font-size:16.5px;color:var(--heading);}
+  .topbar a{color:var(--primary); font-weight:600; text-decoration:none; font-size:12.5px;}
+  .topbar-right{display:flex; align-items:center; gap:18px;}
+  .skip-dash{background:var(--primary); color:#fff !important; padding:9px 16px; border-radius:var(--r-btn); font-size:12.5px;}
+  .skip-dash:hover{background:var(--primary-deep);}
+
+  .wrap{max-width:760px; margin:0 auto; padding:32px 24px 70px;}
+  .welcome h1{font-size:25px; font-weight:800; color:var(--heading); margin:0 0 6px;}
+  .welcome .sub{font-size:13.5px; color:var(--muted); margin-bottom:20px;}
+
+  .progress-wrap{background:var(--card); border:1px solid var(--border); border-radius:var(--r-card); padding:16px 20px; margin-bottom:26px;}
+  .progress-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; font-size:12.5px; font-weight:700; color:var(--heading);}
+  .progress-track{height:8px; border-radius:999px; background:var(--bg); overflow:hidden;}
+  .progress-fill{height:100%; background:var(--success); border-radius:999px; transition:width .3s ease-out;}
+
+  .section-title{font-size:15px; font-weight:800; color:var(--heading); margin:26px 0 14px;}
+  .section-title:first-of-type{margin-top:0;}
+
+  .checklist{display:flex; flex-direction:column; gap:12px;}
+  .check-card{background:var(--card); border:1px solid var(--border); border-radius:var(--r-card); padding:16px 18px; display:flex; align-items:flex-start; gap:14px;}
+  .check-card.done{border-color:rgba(47,143,91,.3); background:var(--success-bg);}
+  .chk-circle{width:26px; height:26px; border-radius:50%; border:2px solid var(--border); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:transparent; cursor:pointer; margin-top:1px;}
+  .chk-circle.done{background:var(--success); border-color:var(--success); color:#fff;}
+  .chk-body{flex:1;}
+  .chk-title{font-weight:700; font-size:13.5px; color:var(--heading);}
+  .chk-desc{font-size:12.5px; color:var(--muted); margin-top:2px;}
+  .chk-action{font-size:12px; font-weight:700; color:var(--primary); text-decoration:none; display:inline-block; margin-top:8px;}
+  .chk-action:hover{text-decoration:underline;}
+
+  .empty-state{background:var(--card); border:1.5px dashed var(--border); border-radius:var(--r-card); padding:30px 24px; text-align:center;}
+  .empty-state .es-icon{font-size:30px; margin-bottom:10px;}
+  .empty-state .es-title{font-weight:700; font-size:14px; color:var(--heading); margin-bottom:4px;}
+  .empty-state .es-desc{font-size:12.5px; color:var(--muted); margin-bottom:16px; max-width:360px; margin-left:auto; margin-right:auto;}
+  .empty-state .btn{background:var(--primary); color:#fff; border:none; border-radius:var(--r-btn); padding:10px 18px; font-size:12.5px; font-weight:700; cursor:pointer; text-decoration:none; display:inline-block;}
+  .empty-state .btn:hover{background:var(--primary-deep);}
+
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media (max-width:640px){ .grid2{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo"><div class="mark">P</div><div class="word">pumpkino</div></div>
+  <div class="topbar-right">
+    <a href="pumpkino-login.html">Log out</a>
+    <a class="skip-dash" id="skipDashLink" href="#">Skip to Dashboard →</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="welcome">
+    <h1 id="welcomeHeading">Welcome!</h1>
+    <div class="sub" id="welcomeSub">Let's get your account set up.</div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-top"><span id="progressLabel">0 of 4 steps done</span><span id="progressPct">0%</span></div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%;"></div></div>
+    <div id="progressDoneCta" style="display:none; margin-top:12px;">
+      <a class="skip-dash" id="progressDoneLink" href="#" style="display:inline-block;">All set — go to your Dashboard →</a>
+    </div>
+  </div>
+
+  <div class="section-title">Get set up</div>
+  <div class="checklist" id="checklistWrap"></div>
+
+  <div class="section-title" id="emptyStateTitle">Your activity</div>
+  <div class="grid2" id="emptyStatesWrap"></div>
+</div>
+
+<script>
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var role = params.get('role') === 'dmc' ? 'dmc' : 'agent';
+
+  var IDENTITY = {
+    agent: {name:'Ebina Thomas', company:'Trekking Miles Holidays'},
+    dmc: {name:'Suresh Kumar', company:'Kerala Tour Mart DMC'}
+  };
+  var id = IDENTITY[role];
+
+  // The checklist below is optional guidance, not a gate — "Skip to Dashboard"
+  // is always available so a user is never stuck here.
+  var DASH_MAP = {
+    agent: 'pumpkino-Agent-dashboard-final-v2.html',
+    dmc: 'dmc-portal-final-v2.html'
+  };
+  document.getElementById('skipDashLink').href = DASH_MAP[role];
+
+  var steps = role === 'agent' ? [
+    {key:'verify', title:'Verify your email', desc:'Confirms it is really you — already done if you followed the link we sent.', done:true, action:null},
+    {key:'billing', title:'Check your subscription & trial', desc:'See how many days are left on your trial and pick a plan — do this first so you keep full access without interruption.', done:false, action:{label:'View subscription →', href:'pumpkino-subscription.html'}},
+    {key:'marketplace', title:'Explore the DMC marketplace', desc:'Browse verified DMCs by destination and services to find your first partner.', done:false, action:{label:'Browse marketplace →', href:'pumpkino-marketplace.html'}},
+    {key:'profile', title:'Complete your business profile', desc:'Add GSTIN, IATA/TAAI membership and other details whenever it suits you — this never blocks your trial.', done:false, action:{label:'Go to profile →', href:'pumpkino-profile.html'}}
+  ] : [
+    {key:'verify', title:'Verify your email', desc:'Confirms it is really you — already done if you followed the link we sent.', done:true, action:null},
+    {key:'profile', title:'Complete your business verification', desc:'Add your business registration details whenever it suits you — this never blocks your account.', done:false, action:{label:'Go to profile →', href:'pumpkino-profile.html'}},
+    {key:'marketplace', title:'See how agencies discover you', desc:'Preview the marketplace directory agencies use to find DMCs like yours.', done:false, action:{label:'Preview marketplace →', href:'pumpkino-marketplace.html'}}
+  ];
+
+  function renderWelcome(){
+    document.getElementById('welcomeHeading').textContent = 'Welcome, ' + id.name.split(' ')[0] + '!';
+    document.getElementById('welcomeSub').textContent = (role==='agent' ? 'Travel Agency' : 'DMC') + ' account for ' + id.company + ' — here is what to do first.';
+  }
+
+  function renderProgress(){
+    var done = steps.filter(function(s){return s.done;}).length;
+    var pct = Math.round((done/steps.length)*100);
+    document.getElementById('progressLabel').textContent = done + ' of ' + steps.length + ' steps done';
+    document.getElementById('progressPct').textContent = pct + '%';
+    document.getElementById('progressFill').style.width = pct + '%';
+
+    var doneCta = document.getElementById('progressDoneCta');
+    if(done === steps.length){
+      document.getElementById('progressDoneLink').href = DASH_MAP[role];
+      doneCta.style.display = 'block';
+    } else {
+      doneCta.style.display = 'none';
+    }
+  }
+
+  function renderChecklist(){
+    var html = steps.map(function(s, i){
+      return '<div class="check-card '+(s.done?'done':'')+'">' +
+        '<div class="chk-circle '+(s.done?'done':'')+'" onclick="toggleStep('+i+')">'+(s.done?'✓':'')+'</div>' +
+        '<div class="chk-body">' +
+          '<div class="chk-title">'+s.title+'</div>' +
+          '<div class="chk-desc">'+s.desc+'</div>' +
+          (s.action ? '<a class="chk-action" href="'+s.action.href+'">'+s.action.label+'</a>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('');
+    document.getElementById('checklistWrap').innerHTML = html;
+  }
+
+  window.toggleStep = function(i){
+    steps[i].done = !steps[i].done;
+    renderChecklist();
+    renderProgress();
+  };
+
+  function renderEmptyStates(){
+    var cards = role === 'agent' ? [
+      {icon:'📨', title:'No quote requests yet', desc:'Send your first request to a DMC from the marketplace to see it here.', cta:'Browse marketplace', href:'pumpkino-marketplace.html'},
+      {icon:'🧳', title:'No bookings yet', desc:'Confirmed bookings with your connected DMCs will show up here.', cta:'Explore marketplace', href:'pumpkino-marketplace.html'},
+      {icon:'🤝', title:'No connected DMCs yet', desc:'You have not connected with any DMC partners. Find one in the marketplace.', cta:'Find a DMC', href:'pumpkino-marketplace.html'},
+      {icon:'🧾', title:'No invoices yet', desc:'Invoices appear here once you subscribe to a paid plan.', cta:'View subscription', href:'pumpkino-subscription.html'}
+    ] : [
+      {icon:'📨', title:'No quote requests received yet', desc:'Requests from agencies who find you in the marketplace will show up here.', cta:'Preview your listing', href:'pumpkino-marketplace.html'},
+      {icon:'🧳', title:'No bookings yet', desc:'Confirmed bookings with agencies will appear here.', cta:'Learn more', href:'pumpkino-marketplace.html'}
+    ];
+    document.getElementById('emptyStatesWrap').innerHTML = cards.map(function(c){
+      return '<div class="empty-state"><div class="es-icon">'+c.icon+'</div><div class="es-title">'+c.title+'</div><div class="es-desc">'+c.desc+'</div><a class="btn" href="'+c.href+'">'+c.cta+'</a></div>';
+    }).join('');
+  }
+
+  renderWelcome();
+  renderChecklist();
+  renderProgress();
+  renderEmptyStates();
+})();
+</script>
+</body>
+</html>

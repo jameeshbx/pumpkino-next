@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pumpkino — Create your account</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --primary:#0D3B2F;
+    --primary-deep:#0A3026;
+    --secondary:#D8A43B;
+    --bg:#F8F7F3;
+    --card:#FFFFFF;
+    --border:#E9E5DD;
+    --heading:#16221D;
+    --body:#5E625F;
+    --muted:#8E948E;
+    --success:#2F8F5B;
+    --success-bg:#E7F3EA;
+    --warning:#E39A22;
+    --warning-bg:#FCF0DC;
+    --danger:#D9534F;
+    --danger-bg:#FBEAE9;
+    --ai:#7B5CFA;
+    --ai-bg:#EFEAFE;
+    --info:#3B82F6;
+    --info-bg:#E8F1FE;
+
+    --r-btn:12px;
+    --r-card:18px;
+    --r-dialog:20px;
+    --r-input:12px;
+    --r-badge:999px;
+
+    --shadow-sm:0 4px 12px rgba(0,0,0,.04);
+    --shadow-md:0 8px 24px rgba(0,0,0,.06);
+    --shadow-lg:0 20px 60px rgba(0,0,0,.08);
+  }
+
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); font-family:'Inter',sans-serif; color:var(--body); font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased;}
+
+  .shell{display:flex; align-items:stretch; min-height:100vh;}
+
+  /* ---- Left brand panel ---- */
+  .brand{
+    flex:1 1 46%; max-width:560px; position:relative; overflow:hidden;
+    background:linear-gradient(160deg, var(--primary) 0%, var(--primary-deep) 100%);
+    color:#F5F6F4; padding:56px 48px; display:flex; flex-direction:column; justify-content:space-between;
+  }
+  .brand::before{
+    content:''; position:absolute; inset:0; opacity:.14; pointer-events:none;
+    background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 700'><circle cx='500' cy='120' r='90' fill='white'/><path d='M0 480 Q140 400 280 460 T560 430 T600 460 V700 H0 Z' fill='white'/><circle cx='120' cy='100' r='12' fill='white'/><circle cx='175' cy='70' r='7' fill='white'/></svg>");
+    background-repeat:no-repeat; background-position:right -60px top -40px; background-size:80% auto;
+  }
+  .brand-top{position:relative; z-index:1;}
+  .brand .logo{display:flex; align-items:center; gap:12px;}
+  .brand .logo .mark{width:40px;height:40px;border-radius:var(--r-btn);background:var(--secondary);display:flex;align-items:center;justify-content:center;font-weight:700;color:#3A2A05;font-size:18px;}
+  .brand .logo .word{font-weight:700;font-size:20px;letter-spacing:.2px; color:#fff;}
+  .brand-headline{font-weight:700; font-size:32px; letter-spacing:-.02em; color:#fff; margin-top:56px; max-width:420px;}
+  .brand-sub{font-size:14.5px; color:rgba(245,246,244,.68); margin-top:14px; max-width:400px; font-weight:400;}
+
+  .brand-points{position:relative; z-index:1; margin-top:40px;}
+  .brand-point{display:flex; align-items:flex-start; gap:12px; padding:11px 0; border-bottom:1px solid rgba(255,255,255,.1);}
+  .brand-point:last-child{border-bottom:none;}
+  .brand-point .dot{width:9px;height:9px;border-radius:50%; margin-top:5px; flex-shrink:0; background:var(--secondary);}
+  .brand-point .txt{font-size:13.5px; color:rgba(245,246,244,.82); font-weight:500;}
+
+  .brand-foot{position:relative; z-index:1; font-size:12px; color:rgba(245,246,244,.45);}
+  .brand-foot a{color:rgba(245,246,244,.7);}
+
+  /* ---- Right form panel ---- */
+  .formside{flex:1; display:flex; align-items:center; justify-content:center; padding:40px 24px;}
+  .signup-card{width:440px; max-width:100%;}
+  .signup-card h1{font-weight:700; font-size:26px; margin:0 0 6px; color:var(--heading); letter-spacing:-.01em;}
+  .signup-card .sub{font-size:13.5px; color:var(--muted); margin-bottom:24px;}
+
+  .role-toggle{display:flex; background:var(--card); border:1px solid var(--border); border-radius:var(--r-btn); padding:4px; margin-bottom:22px;}
+  .role-btn{flex:1; text-align:center; padding:10px 12px; border-radius:9px; font-size:13px; font-weight:600; color:var(--body); cursor:pointer; user-select:none; transition:background .18s ease-out, color .18s ease-out;}
+  .role-btn.active{background:var(--primary); color:#fff;}
+
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:0 14px;}
+
+  .field-lbl{font-size:13px; color:var(--body); font-weight:600; display:block; margin-bottom:6px;}
+  .field-in{width:100%; padding:11px 14px; border:1px solid var(--border); border-radius:var(--r-input); font-size:14px; margin-bottom:6px; font-family:inherit; background:var(--card); color:var(--heading); transition:border-color .18s ease-out, box-shadow .18s ease-out;}
+  .field-in:focus{outline:none; border-color:var(--secondary); box-shadow:0 0 0 3px rgba(216,164,59,.18);}
+  .field-in.err{border-color:var(--danger);}
+  .field-wrap{margin-bottom:12px;}
+  .field-msg{font-size:11.5px; color:var(--danger); min-height:14px; margin:-3px 0 0;}
+  .field-msg.ok{color:var(--success);}
+
+  .check-row{display:flex; align-items:flex-start; gap:9px; font-size:12.5px; color:var(--body); margin:8px 0 16px;}
+  .check-row input{margin-top:2px;}
+  .check-row a{color:var(--primary); font-weight:600; text-decoration:none;}
+  .check-row a:hover{text-decoration:underline;}
+
+  .btn{background:var(--primary); color:#F5F6F4; border:none; border-radius:var(--r-btn); padding:13px 18px; font-size:14px; font-weight:600; cursor:pointer; width:100%; transition:background .18s ease-out, transform .15s ease-out, box-shadow .18s ease-out;}
+  .btn:hover{background:var(--primary-deep); box-shadow:var(--shadow-sm);}
+  .btn:active{transform:scale(.98);}
+
+  .success-banner{display:none; background:var(--success-bg); border:1px solid rgba(47,143,91,.3); color:var(--success); border-radius:var(--r-input); padding:13px 16px; font-size:13.5px; font-weight:600; margin-bottom:16px; align-items:flex-start; gap:8px;}
+  .success-banner.show{display:flex;}
+  .success-banner .sb-sub{display:block; font-weight:400; font-size:12px; color:var(--success); opacity:.85; margin-top:2px;}
+
+  .trial-badge{display:inline-flex; align-items:center; gap:6px; background:var(--warning-bg); color:#8A5A0F; border:1px solid rgba(227,154,34,.35); border-radius:var(--r-badge); padding:5px 12px; font-size:12px; font-weight:700; margin-bottom:18px;}
+  .trial-badge.hide{display:none;}
+
+  .verify-note{font-size:12px; color:var(--muted); background:var(--bg); border:1px solid var(--border); border-radius:var(--r-input); padding:11px 13px; margin-top:6px; margin-bottom:16px; display:flex; gap:8px; align-items:flex-start;}
+  .verify-note b{color:var(--heading);}
+
+  .footer-note{text-align:center; font-size:12.5px; color:var(--muted); margin-top:20px;}
+  .footer-note a{color:var(--primary); font-weight:600; text-decoration:none;}
+  .footer-note a:hover{text-decoration:underline;}
+
+  @media (max-width:860px){
+    .brand{display:none;}
+    .formside{padding:32px 20px;}
+    .grid2{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <div class="brand">
+    <div class="brand-top">
+      <a href="pumpkino-home.html" style="text-decoration:none;"><div class="logo"><div class="mark">P</div><div class="word">pumpkino</div></div></a>
+      <div class="brand-headline">Set up your workspace in a minute.</div>
+      <div class="brand-sub">Just the basics for now — we'll verify your business details after you subscribe.</div>
+    </div>
+    <div class="brand-points">
+      <div class="brand-point"><span class="dot"></span><span class="txt">Travel agencies get a free 7-day trial, no credit card needed</span></div>
+      <div class="brand-point"><span class="dot"></span><span class="txt">Add business/verification details later</span></div>
+      <div class="brand-point"><span class="dot"></span><span class="txt">Connect with agencies/DMCs already on Pumpkino</span></div>
+    </div>
+    <div class="brand-foot">© 2026 Pumpkino · Demo prototype · <a href="pumpkino-login.html">Back to login</a></div>
+  </div>
+
+  <div class="formside">
+    <div class="signup-card">
+      <h1 id="signupHeading">Create your Travel Agency account</h1>
+      <div class="sub" id="signupSub">Join Pumpkino to send quote requests and manage bookings</div>
+
+      <div class="role-toggle">
+        <div class="role-btn active" id="roleBtnAgent" onclick="setRole('agent')">Travel Agency</div>
+        <div class="role-btn" id="roleBtnDmc" onclick="setRole('dmc')">DMC / Supplier</div>
+      </div>
+
+      <div class="trial-badge" id="trialBadge">🎉 Includes a free 7-day trial — no credit card required</div>
+
+      <div class="success-banner" id="successBanner">✓ <span id="successText">Account created — redirecting you to login…</span></div>
+
+      <form id="signupForm" onsubmit="return false;">
+
+        <div class="field-wrap">
+          <label class="field-lbl">Full name</label>
+          <input class="field-in" id="fContact" placeholder="e.g. Ebina Thomas" oninput="clearErr('fContact')">
+          <div class="field-msg" id="mContact"></div>
+        </div>
+
+        <div class="field-wrap">
+          <label class="field-lbl">Work email</label>
+          <input class="field-in" id="fEmail" type="email" placeholder="you@company.com" oninput="validateEmailLive()" onblur="validateEmailLive()">
+          <div class="field-msg" id="mEmail"></div>
+        </div>
+
+        <div class="field-wrap">
+          <label class="field-lbl">Phone number</label>
+          <input class="field-in" id="fPhone" placeholder="10-digit mobile number" oninput="clearErr('fPhone')">
+          <div class="field-msg" id="mPhone"></div>
+        </div>
+
+        <div class="grid2">
+          <div class="field-wrap">
+            <label class="field-lbl">Password</label>
+            <input class="field-in" id="fPassword" type="password" placeholder="Minimum 8 characters" oninput="clearErr('fPassword')">
+            <div class="field-msg" id="mPassword"></div>
+          </div>
+          <div class="field-wrap">
+            <label class="field-lbl">Confirm password</label>
+            <input class="field-in" id="fPasswordConfirm" type="password" placeholder="Re-enter password" oninput="clearErr('fPasswordConfirm')">
+            <div class="field-msg" id="mPasswordConfirm"></div>
+          </div>
+        </div>
+
+        <div class="field-wrap">
+          <label class="field-lbl" id="lblCompanyName">Agency name</label>
+          <input class="field-in" id="fCompany" placeholder="e.g. Trekking Miles Holidays" oninput="clearErr('fCompany')">
+          <div class="field-msg" id="mCompany"></div>
+        </div>
+
+        <div class="grid2">
+          <div class="field-wrap">
+            <label class="field-lbl">City</label>
+            <input class="field-in" id="fCity" placeholder="e.g. Kochi" oninput="clearErr('fCity')">
+            <div class="field-msg" id="mCity"></div>
+          </div>
+          <div class="field-wrap">
+            <label class="field-lbl">State</label>
+            <input class="field-in" id="fState" placeholder="e.g. Kerala" oninput="clearErr('fState')">
+            <div class="field-msg" id="mState"></div>
+          </div>
+        </div>
+
+        <div class="field-wrap">
+          <label class="field-lbl">Country</label>
+          <select class="field-in" id="fCountry" onchange="clearErr('fCountry')">
+            <option value="">Select your country</option>
+            <option value="India">India</option>
+            <option value="UAE">United Arab Emirates</option>
+            <option value="Thailand">Thailand</option>
+            <option value="United States">United States</option>
+            <option value="United Kingdom">United Kingdom</option>
+            <option value="Singapore">Singapore</option>
+            <option value="Other">Other</option>
+          </select>
+          <div class="field-msg" id="mCountry"></div>
+          <div style="font-size:11px; color:var(--muted); margin-top:4px;">Helps us pre-fill the right tax rules (GST, VAT, etc.) for your business — you can change this later.</div>
+        </div>
+
+        <div class="verify-note">ℹ️ <span><b>That's it for now.</b> Your account and free trial start right away. GSTIN, IATA/TAAI membership and other verification details are optional — add them anytime from your profile, whenever it suits you.</span></div>
+
+        <div class="check-row">
+          <input type="checkbox" id="fTerms" onchange="clearErr('fTerms')">
+          <span>I agree to Pumpkino's <a href="#" onclick="return false;">Terms of Service</a> and <a href="#" onclick="return false;">Privacy Policy</a></span>
+        </div>
+        <div class="field-msg" id="mTerms" style="margin:-12px 0 12px;"></div>
+
+        <button type="button" class="btn" id="signupBtn" onclick="submitSignup()">Start my 7-day free trial</button>
+
+        <div class="footer-note">Already have an account? <a href="pumpkino-login.html">Log in</a> · <a href="pumpkino-pricing.html">View plans & pricing</a></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var currentRole = 'agent';
+
+  window.setRole = function(role){
+    currentRole = role;
+    document.getElementById('roleBtnAgent').classList.toggle('active', role==='agent');
+    document.getElementById('roleBtnDmc').classList.toggle('active', role==='dmc');
+
+    var heading = document.getElementById('signupHeading');
+    var sub = document.getElementById('signupSub');
+    var btn = document.getElementById('signupBtn');
+    var lblCompany = document.getElementById('lblCompanyName');
+    var fCompany = document.getElementById('fCompany');
+
+    var trialBadge = document.getElementById('trialBadge');
+
+    if(role==='agent'){
+      heading.textContent = 'Create your Travel Agency account';
+      sub.textContent = 'Join Pumpkino to send quote requests and manage bookings';
+      btn.textContent = 'Start my 7-day free trial';
+      lblCompany.textContent = 'Agency name';
+      fCompany.placeholder = 'e.g. Trekking Miles Holidays';
+      trialBadge.classList.remove('hide');
+    } else {
+      heading.textContent = 'Create your DMC account';
+      sub.textContent = 'Join Pumpkino to receive quote requests and manage inventory';
+      btn.textContent = 'Create DMC account';
+      lblCompany.textContent = 'Company name';
+      fCompany.placeholder = 'e.g. Kerala Tour Mart DMC';
+      trialBadge.classList.add('hide');
+    }
+  };
+
+  function formatDate(d){
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+  }
+
+  window.clearErr = function(id){
+    var el = document.getElementById(id);
+    if(el) el.classList.remove('err');
+    var msgId = 'm' + id.replace(/^f/, '');
+    var msg = document.getElementById(msgId);
+    if(msg) msg.textContent = '';
+  };
+
+  window.validateEmailLive = function(){
+    var el = document.getElementById('fEmail');
+    var msg = document.getElementById('mEmail');
+    var val = el.value.trim();
+    if(!val){ el.classList.remove('err'); msg.textContent = ''; msg.classList.remove('ok'); return false; }
+    var ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+    el.classList.toggle('err', !ok);
+    msg.textContent = ok ? '✓ Looks good' : 'Enter a valid email address';
+    msg.classList.toggle('ok', ok);
+    return ok;
+  };
+
+  function setFieldError(fieldId, msgId, text){
+    document.getElementById(fieldId).classList.add('err');
+    document.getElementById(msgId).textContent = text;
+  }
+
+  window.submitSignup = function(){
+    var valid = true;
+
+    var contact = document.getElementById('fContact').value.trim();
+    if(!contact){ setFieldError('fContact','mContact','Enter your full name'); valid = false; }
+
+    var emailOk = validateEmailLive();
+    if(!document.getElementById('fEmail').value.trim()){ setFieldError('fEmail','mEmail','Work email is required'); valid = false; }
+    else if(!emailOk) valid = false;
+
+    var phone = document.getElementById('fPhone').value.trim();
+    if(!phone){ setFieldError('fPhone','mPhone','Phone number is required'); valid = false; }
+    else if(!/^[0-9+\-\s]{7,15}$/.test(phone)){ setFieldError('fPhone','mPhone','Enter a valid phone number'); valid = false; }
+
+    var pass = document.getElementById('fPassword').value;
+    if(!pass || pass.length < 8){ setFieldError('fPassword','mPassword','Minimum 8 characters'); valid = false; }
+
+    var pass2 = document.getElementById('fPasswordConfirm').value;
+    if(pass2 !== pass || !pass2){ setFieldError('fPasswordConfirm','mPasswordConfirm','Passwords do not match'); valid = false; }
+
+    var company = document.getElementById('fCompany').value.trim();
+    if(!company){ setFieldError('fCompany','mCompany', currentRole==='agent' ? 'Agency name is required' : 'Company name is required'); valid = false; }
+
+    var city = document.getElementById('fCity').value.trim();
+    if(!city){ setFieldError('fCity','mCity','City is required'); valid = false; }
+
+    var state = document.getElementById('fState').value.trim();
+    if(!state){ setFieldError('fState','mState','State is required'); valid = false; }
+
+    var country = document.getElementById('fCountry').value;
+    if(!country){ setFieldError('fCountry','mCountry','Please select your country'); valid = false; }
+
+    var terms = document.getElementById('fTerms').checked;
+    var mTerms = document.getElementById('mTerms');
+    if(!terms){ mTerms.textContent = 'Please accept the Terms of Service to continue'; valid = false; }
+    else mTerms.textContent = '';
+
+    if(!valid) return;
+
+    var btn = document.getElementById('signupBtn');
+    btn.disabled = true;
+    btn.textContent = currentRole==='agent' ? 'Starting your trial…' : 'Creating account…';
+
+    setTimeout(function(){
+      var successText = document.getElementById('successText');
+      var emailVal = document.getElementById('fEmail').value.trim();
+      if(currentRole==='agent'){
+        var start = new Date();
+        var end = new Date();
+        end.setDate(end.getDate() + 7);
+        successText.innerHTML = 'Account created — your 7-day free trial is active until ' + formatDate(end) + '.<span class="sb-sub">Redirecting you to verify your email…</span>';
+        btn.textContent = 'Trial started ✓';
+      } else {
+        successText.innerHTML = 'Account created.<span class="sb-sub">Redirecting you to verify your email…</span>';
+        btn.textContent = 'Account created ✓';
+      }
+      document.getElementById('successBanner').classList.add('show');
+      setTimeout(function(){
+        window.location.href = 'pumpkino-verify-email.html?email=' + encodeURIComponent(emailVal) + '&role=' + currentRole;
+      }, 1600);
+    }, 500);
+  };
+
+  // Deep-link support: pumpkino-signup.html?role=dmc pre-selects the DMC tab
+  // (used by the homepage's "Join as a DMC" link).
+  var initialRole = new URLSearchParams(window.location.search).get('role');
+  if(initialRole === 'dmc' || initialRole === 'agent'){
+    setRole(initialRole);
+  }
+})();
+</script>
+</body>
+</html>

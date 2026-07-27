@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pumpkino Ops — Internal Admin</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root{
+    --primary:#0D3B2F; --primary-deep:#0A3026; --secondary:#D8A43B;
+    --bg:#F8F7F3; --card:#FFFFFF; --border:#E9E5DD;
+    --heading:#16221D; --body:#5E625F; --muted:#8E948E;
+    --success:#2F8F5B; --success-bg:#E7F3EA;
+    --warning:#E39A22; --warning-bg:#FCF0DC;
+    --danger:#D9534F; --danger-bg:#FBEAE9;
+    --ai:#7B5CFA; --ai-bg:#EFEAFE;
+    --info:#3B82F6; --info-bg:#E8F1FE;
+    --r-btn:12px; --r-card:16px; --r-dialog:20px; --r-input:10px; --r-badge:999px;
+    --shadow-sm:0 4px 12px rgba(0,0,0,.04);
+    --shadow-md:0 8px 24px rgba(0,0,0,.06);
+    --shadow-lg:0 24px 60px rgba(0,0,0,.16);
+
+    --sidebar-bg:#0D3B2F; --sidebar-active:#174D3A; --sidebar-hover:#124535;
+    --sidebar-text:#F5F6F4; --sidebar-inactive:rgba(255,255,255,.72);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); font-family:'Inter',sans-serif; color:var(--body); font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased;}
+
+  .shell{display:flex; min-height:100vh;}
+  .sidebar{width:230px; flex-shrink:0; background:var(--sidebar-bg); color:var(--sidebar-text); padding:20px 14px; display:flex; flex-direction:column;}
+  .logo{display:flex; align-items:center; gap:10px; padding:4px 8px 24px;}
+  .logo .mark{width:32px;height:32px;border-radius:9px;background:var(--secondary);display:flex;align-items:center;justify-content:center;font-weight:800;color:#3A2A05;font-size:14px;}
+  .logo .word{font-weight:700;font-size:16px;}
+  .logo .tag{font-size:9.5px; font-weight:700; letter-spacing:.06em; color:var(--sidebar-inactive); text-transform:uppercase; margin-top:1px;}
+
+  .nav-item{display:flex; align-items:center; gap:10px; padding:10px 11px; border-radius:9px; font-size:13px; font-weight:500; color:var(--sidebar-inactive); cursor:pointer; margin-bottom:2px;}
+  .nav-item:hover{background:var(--sidebar-hover); color:var(--sidebar-text);}
+  .nav-item.active{background:var(--sidebar-active); color:var(--sidebar-text); font-weight:700;}
+  .nav-item .ico{width:16px; text-align:center;}
+  .nav-item .cnt{margin-left:auto; background:rgba(255,255,255,.14); font-size:10.5px; font-weight:700; padding:1px 7px; border-radius:999px;}
+  .nav-item.active .cnt{background:var(--secondary); color:#3A2A05;}
+
+  .sidebar-foot{margin-top:auto; padding:12px 10px 4px; border-top:1px solid rgba(255,255,255,.12); font-size:11.5px; color:var(--sidebar-inactive);}
+
+  .main{flex:1; min-width:0;}
+  .topbar{display:flex; align-items:center; justify-content:space-between; padding:16px 30px; background:var(--card); border-bottom:1px solid var(--border);}
+  .topbar h1{font-size:19px; font-weight:800; color:var(--heading); margin:0;}
+  .topbar .sub{font-size:12px; color:var(--muted); margin-top:2px;}
+  .identity{display:flex; align-items:center; gap:9px;}
+  .identity .av{width:30px;height:30px;border-radius:50%;background:var(--secondary);color:#3A2A05;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;}
+  .identity .nm{font-size:12.5px; font-weight:700; color:var(--heading);}
+  .identity .rl{font-size:11px; color:var(--muted);}
+
+  .wrap{padding:26px 30px 70px; max-width:1180px;}
+  .section-title{font-size:15px; font-weight:800; color:var(--heading); margin:28px 0 14px;}
+  .section-title:first-child{margin-top:0;}
+
+  .kpi-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+  .kpi-card{background:var(--card); border:1px solid var(--border); border-radius:var(--r-card); padding:16px 18px;}
+  .kpi-card .k-label{font-size:11.5px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.04em;}
+  .kpi-card .k-val{font-size:24px; font-weight:800; color:var(--heading); margin-top:6px;}
+  .kpi-card .k-sub{font-size:11.5px; color:var(--success); margin-top:3px; font-weight:600;}
+  .kpi-card .k-sub.warn{color:var(--warning);}
+  .kpi-card .k-sub.danger{color:var(--danger);}
+
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  .panel{background:var(--card); border:1px solid var(--border); border-radius:var(--r-card); padding:18px 20px;}
+  .panel h3{font-size:13.5px; font-weight:800; color:var(--heading); margin:0 0 14px;}
+
+  .bar-row{display:flex; align-items:center; gap:10px; margin-bottom:11px; font-size:12.5px;}
+  .bar-row .b-label{width:90px; flex-shrink:0; color:var(--body); font-weight:600;}
+  .bar-row .b-track{flex:1; height:9px; background:var(--bg); border-radius:999px; overflow:hidden;}
+  .bar-row .b-fill{height:100%; border-radius:999px;}
+  .bar-row .b-val{width:60px; text-align:right; flex-shrink:0; font-weight:700; color:var(--heading);}
+
+  .list-row{display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid var(--border); font-size:12.5px;}
+  .list-row:last-child{border-bottom:none;}
+  .list-row .lr-name{font-weight:600; color:var(--heading);}
+  .list-row .lr-sub{color:var(--muted); font-size:11.5px;}
+
+  .toolbar{display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;}
+  .toolbar input.search{flex:1; min-width:200px; padding:10px 14px; border:1px solid var(--border); border-radius:var(--r-input); font-size:13px; font-family:inherit;}
+  .toolbar select{padding:10px 12px; border:1px solid var(--border); border-radius:var(--r-input); font-size:13px; font-family:inherit; background:var(--card);}
+
+  table.data{width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--border); border-radius:var(--r-card); overflow:hidden;}
+  table.data th, table.data td{padding:11px 14px; font-size:12.5px; text-align:left; border-bottom:1px solid var(--border);}
+  table.data th{background:var(--bg); color:var(--muted); font-weight:700; text-transform:uppercase; font-size:10.5px; letter-spacing:.04em;}
+  table.data tr:last-child td{border-bottom:none;}
+  table.data tr.clickable{cursor:pointer;}
+  table.data tr.clickable:hover{background:var(--bg);}
+
+  .badge{display:inline-block; padding:3px 9px; border-radius:var(--r-badge); font-size:10.5px; font-weight:700; white-space:nowrap;}
+  .badge.agency{background:var(--info-bg); color:var(--info);}
+  .badge.dmc{background:var(--ai-bg); color:var(--ai);}
+  .badge.approved{background:var(--success-bg); color:var(--success);}
+  .badge.submitted{background:var(--warning-bg); color:var(--warning);}
+  .badge.rejected{background:var(--danger-bg); color:var(--danger);}
+  .badge.not_submitted{background:var(--bg); color:var(--muted);}
+  .badge.trial{background:var(--ai-bg); color:var(--ai);}
+  .badge.starter{background:var(--bg); color:var(--body);}
+  .badge.growth{background:var(--warning-bg); color:#8A5A0F;}
+  .badge.scale{background:var(--success-bg); color:var(--success);}
+  .badge.free{background:var(--bg); color:var(--muted);}
+  .badge.open{background:var(--danger-bg); color:var(--danger);}
+  .badge.resolved{background:var(--success-bg); color:var(--success);}
+  .badge.suspended{background:var(--danger-bg); color:var(--danger);}
+  .badge.active-acc{background:var(--success-bg); color:var(--success);}
+
+  .card-list{display:flex; flex-direction:column; gap:12px;}
+  .verify-card, .dispute-card{background:var(--card); border:1px solid var(--border); border-radius:var(--r-card); padding:16px 18px;}
+  .verify-card .vc-top, .dispute-card .dc-top{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:8px;}
+  .verify-card .vc-name, .dispute-card .dc-subject{font-weight:700; font-size:13.5px; color:var(--heading);}
+  .verify-card .vc-sub, .dispute-card .dc-sub{font-size:11.5px; color:var(--muted); margin-top:2px;}
+  .verify-card .vc-docs{background:var(--bg); border-radius:var(--r-input); padding:10px 13px; font-size:12px; color:var(--body); margin:10px 0;}
+  .verify-card .vc-docs div{padding:2px 0;}
+  .vc-actions, .dc-actions{display:flex; gap:8px; margin-top:10px;}
+  .vc-actions button, .dc-actions button{border:none; border-radius:var(--r-btn); padding:8px 14px; font-size:12px; font-weight:700; cursor:pointer;}
+  .btn-approve{background:var(--success); color:#fff;}
+  .btn-reject{background:var(--danger-bg); color:var(--danger);}
+  .btn-info{background:var(--bg); color:var(--body);}
+  .btn-resolve{background:var(--primary); color:#fff;}
+  .empty-state{background:var(--card); border:1px dashed var(--border); border-radius:var(--r-card); padding:30px; text-align:center; color:var(--muted); font-size:13px;}
+
+  .overlay{position:fixed; inset:0; background:rgba(13,59,47,.35); display:none; align-items:center; justify-content:center; z-index:50; padding:20px;}
+  .overlay.show{display:flex;}
+  .modal{background:var(--card); border-radius:var(--r-dialog); padding:26px; width:460px; max-width:100%; box-shadow:var(--shadow-lg); max-height:88vh; overflow-y:auto;}
+  .modal h2{font-size:17px; font-weight:800; color:var(--heading); margin:0 0 4px;}
+  .modal .m-sub{font-size:12px; color:var(--muted); margin-bottom:16px;}
+  .field-lbl{font-size:12px; font-weight:600; color:var(--body); display:block; margin-bottom:5px;}
+  .field-in, .field-select, textarea.field-in{width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:var(--r-input); font-size:13px; margin-bottom:12px; font-family:inherit;}
+  .modal-actions{display:flex; gap:10px; margin-top:6px;}
+  .modal-actions button{flex:1; border:none; border-radius:var(--r-btn); padding:11px; font-size:13px; font-weight:700; cursor:pointer;}
+  .modal-actions .cancel{background:var(--bg); color:var(--body);}
+  .modal-actions .confirm{background:var(--primary); color:#fff;}
+  .modal-actions .confirm.danger{background:var(--danger);}
+  .detail-row{display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid var(--border); font-size:12.5px;}
+  .detail-row:last-child{border-bottom:none;}
+  .detail-row .dr-k{color:var(--muted);}
+  .detail-row .dr-v{font-weight:600; color:var(--heading);}
+
+  .panel-section{display:none;}
+  .panel-section.show{display:block;}
+
+  @media (max-width:1000px){
+    .kpi-grid{grid-template-columns:repeat(2,1fr);}
+    .two-col{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <div class="sidebar">
+    <div class="logo">
+      <div class="mark">P</div>
+      <div><div class="word">pumpkino</div><div class="tag">Internal Ops</div></div>
+    </div>
+    <div class="nav-item active" id="navOverview" onclick="setSection('overview')"><span class="ico">◈</span> Overview</div>
+    <div class="nav-item" id="navVerify" onclick="setSection('verify')"><span class="ico">✓</span> Verification Queue <span class="cnt" id="navVerifyCnt">0</span></div>
+    <div class="nav-item" id="navAccounts" onclick="setSection('accounts')"><span class="ico">▤</span> Accounts</div>
+    <div class="nav-item" id="navDisputes" onclick="setSection('disputes')"><span class="ico">⚑</span> Disputes <span class="cnt" id="navDisputesCnt">0</span></div>
+    <div class="nav-item" id="navRevenue" onclick="setSection('revenue')"><span class="ico">₹</span> Subscriptions & Revenue</div>
+    <div class="nav-item" id="navMarketplace" onclick="setSection('marketplace')"><span class="ico">🏪</span> Marketplace Listings</div>
+    <div class="nav-item" id="navReports" onclick="setSection('reports')"><span class="ico">⬇</span> Reports</div>
+    <div class="sidebar-foot">Pumpkino Ops Console<br>Internal use only · Demo data</div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <h1 id="pageTitle">Overview</h1>
+        <div class="sub" id="pageSub">Platform health at a glance</div>
+      </div>
+      <div class="identity">
+        <div class="av">OA</div>
+        <div><div class="nm">Ops Admin</div><div class="rl">Pumpkino Internal</div></div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="panel-section show" id="secOverview"></div>
+      <div class="panel-section" id="secVerify"></div>
+      <div class="panel-section" id="secAccounts"></div>
+      <div class="panel-section" id="secDisputes"></div>
+      <div class="panel-section" id="secRevenue"></div>
+      <div class="panel-section" id="secMarketplace"></div>
+      <div class="panel-section" id="secReports"></div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay"><div class="modal" id="modalBody"></div></div>
+
+<script>
+(function(){
+
+  // ---------------- Data model ----------------
+  // Every account is 'active' the moment it signs up (trial or free) — verification
+  // is a separate, optional, non-blocking compliance layer that runs in parallel.
+  // verification: 'not_submitted' (default, nothing to review yet) -> 'submitted'
+  // (agency/DMC uploaded docs from their own Profile page, awaiting Ops review) ->
+  // 'approved' / 'rejected' (Ops decision). Only 'submitted' accounts need Ops action.
+  var accounts = [
+    {id:1, type:'agency', name:'Trekking Miles Holidays', contact:'Ebina Thomas', email:'ebina@trekkingmiles.com', city:'Kochi', state:'Kerala', country:'India', plan:'trial', trialDaysLeft:4, verification:'not_submitted', suspended:false, joined:'12 Jul 2026', mrr:0, gateway:null},
+    {id:2, type:'agency', name:'Blue Horizon Travels', contact:'Rahul Menon', email:'rahul@bluehorizon.com', city:'Bengaluru', state:'Karnataka', country:'India', plan:'growth', trialDaysLeft:0, verification:'approved', suspended:false, joined:'02 Jun 2026', mrr:4999, gateway:'razorpay'},
+    {id:3, type:'agency', name:'Desert Rose Journeys', contact:'Fatima Al Suwaidi', email:'fatima@desertrose.ae', city:'Dubai', state:'Dubai', country:'UAE', plan:'scale', trialDaysLeft:0, verification:'approved', suspended:false, joined:'18 May 2026', mrr:14999, gateway:'paypal'},
+    {id:4, type:'agency', name:'Wanderlust Corp Travel', contact:'Priya Nair', email:'priya@wanderlustcorp.com', city:'Mumbai', state:'Maharashtra', country:'India', plan:'starter', trialDaysLeft:0, verification:'submitted', suspended:false, joined:'09 Jul 2026', mrr:1499, gateway:'razorpay',
+      docs:{gstin:'27WXYZA5678B1Z2', extra:'Business registration: U63040MH2019PTC098765'}},
+    {id:5, type:'agency', name:'Golden Route Holidays', contact:'Arjun Iyer', email:'arjun@goldenroute.in', city:'Chennai', state:'Tamil Nadu', country:'India', plan:'trial', trialDaysLeft:1, verification:'not_submitted', suspended:false, joined:'16 Jul 2026', mrr:0, gateway:null},
+    {id:6, type:'dmc', name:'Kerala Tour Mart DMC', contact:'Suresh Kumar', email:'suresh@keralatourmart.com', city:'Kochi', state:'Kerala', country:'India', plan:'free', trialDaysLeft:null, verification:'approved', suspended:false, joined:'01 Apr 2026', mrr:0, gateway:null},
+    {id:7, type:'dmc', name:'Coastal Karnataka DMC', contact:'Meera Rao', email:'meera@coastalkarnataka.com', city:'Mangalore', state:'Karnataka', country:'India', plan:'free', trialDaysLeft:null, verification:'submitted', suspended:false, joined:'08 Jul 2026', mrr:0, gateway:null,
+      docs:{bizReg:'Karnataka Tourism License #KA-DMC-4521', extra:'Bank account verification submitted'}},
+    {id:8, type:'dmc', name:'Gulf Experience DMC', contact:'Omar Al Farsi', email:'omar@gulfexperience.ae', city:'Abu Dhabi', state:'Abu Dhabi', country:'UAE', plan:'free', trialDaysLeft:null, verification:'approved', suspended:false, joined:'22 May 2026', mrr:0, gateway:null},
+    {id:9, type:'agency', name:'Spice Coast Travels', contact:'Deepa Menon', email:'deepa@spicecoast.in', city:'Kozhikode', state:'Kerala', country:'India', plan:'growth', trialDaysLeft:0, verification:'rejected', suspended:false, joined:'30 Jun 2026', mrr:4999, gateway:'razorpay',
+      docs:{gstin:'32ZZZZZ0000Z1Z1', extra:'GSTIN did not match registered business name'}},
+    {id:10, type:'dmc', name:'Siam Discovery DMC', contact:'Anong Suwan', email:'anong@siamdiscovery.th', city:'Bangkok', state:'Bangkok', country:'Thailand', plan:'free', trialDaysLeft:null, verification:'submitted', suspended:false, joined:'14 Jul 2026', mrr:0, gateway:null,
+      docs:{bizReg:'Thailand TAT License #11/08234', extra:'Bank details pending upload'}}
+  ];
+
+  var disputes = [
+    {id:1, agency:'Blue Horizon Travels', dmc:'Kerala Tour Mart DMC', subject:'Payment not received for Kumarakom booking #4521', status:'open', raisedBy:'Agency', date:'15 Jul 2026', notes:[]},
+    {id:2, agency:'Spice Coast Travels', dmc:'Coastal Karnataka DMC', subject:'Inventory shown available but hotel was sold out', status:'open', raisedBy:'Agency', date:'11 Jul 2026', notes:[]},
+    {id:3, agency:'Desert Rose Journeys', dmc:'Gulf Experience DMC', subject:'Itinerary mismatch — wrong hotel category delivered', status:'resolved', raisedBy:'DMC', date:'20 Jun 2026', notes:['DMC issued a corrected itinerary; agency confirmed satisfaction.']},
+    {id:4, agency:'Wanderlust Corp Travel', dmc:'Kerala Tour Mart DMC', subject:'Refund requested after customer cancellation', status:'open', raisedBy:'Agency', date:'16 Jul 2026', notes:[]}
+  ];
+
+  var PLAN_PRICE = {starter:1499, growth:4999, scale:14999, free:0, trial:0};
+  var currentSection = 'overview';
+
+  function fmtINR(n){ return '₹' + n.toLocaleString('en-IN'); }
+
+  // ---------------- Nav ----------------
+  window.setSection = function(sec){
+    currentSection = sec;
+    ['Overview','Verify','Accounts','Disputes','Revenue','Marketplace','Reports'].forEach(function(s){
+      document.getElementById('nav'+s).classList.toggle('active', s.toLowerCase()===sec);
+      document.getElementById('sec'+s).classList.toggle('show', s.toLowerCase()===sec);
+    });
+    var titles = {
+      overview:['Overview','Platform health at a glance'],
+      verify:['Verification Queue','Review GSTIN, business registration & association memberships'],
+      accounts:['Accounts','All Travel Agency and DMC accounts on Pumpkino'],
+      disputes:['Disputes','Issues raised between agencies and DMCs'],
+      revenue:['Subscriptions & Revenue','MRR, plan mix and recent transactions'],
+      marketplace:['Marketplace Listings','Curate DMC listings shown on the public marketplace — phase-1 stopgap until DMCs get self-serve listing tools'],
+      reports:['Reports','Export signups, trials, subscriptions and revenue as CSV']
+    };
+    document.getElementById('pageTitle').textContent = titles[sec][0];
+    document.getElementById('pageSub').textContent = titles[sec][1];
+    renderCurrentSection();
+  };
+
+  function renderCurrentSection(){
+    if(currentSection==='overview') renderOverview();
+    else if(currentSection==='verify') renderVerify();
+    else if(currentSection==='accounts') renderAccounts();
+    else if(currentSection==='disputes') renderDisputes();
+    else if(currentSection==='revenue') renderRevenue();
+    else if(currentSection==='marketplace') renderMarketplaceListings();
+    else if(currentSection==='reports') renderReports();
+    renderNavCounts();
+  }
+
+  function renderNavCounts(){
+    var pendingCount = accounts.filter(function(a){return a.verification==='submitted';}).length;
+    var openDisputes = disputes.filter(function(d){return d.status==='open';}).length;
+    document.getElementById('navVerifyCnt').textContent = pendingCount;
+    document.getElementById('navDisputesCnt').textContent = openDisputes;
+  }
+
+  // ---------------- Overview ----------------
+  function renderOverview(){
+    var agencies = accounts.filter(function(a){return a.type==='agency';});
+    var dmcs = accounts.filter(function(a){return a.type==='dmc';});
+    var activeTrials = accounts.filter(function(a){return a.plan==='trial' && a.trialDaysLeft>0;}).length;
+    var paidSubs = agencies.filter(function(a){return ['starter','growth','scale'].indexOf(a.plan)>=0;}).length;
+    var mrr = accounts.reduce(function(s,a){return s+(a.mrr||0);}, 0);
+    var pendingVerification = accounts.filter(function(a){return a.verification==='submitted';}).length;
+    var openDisputes = disputes.filter(function(d){return d.status==='open';}).length;
+    var trialOrPaid = agencies.filter(function(a){return a.plan!=='free';}).length;
+    var conversionRate = trialOrPaid ? Math.round((paidSubs/trialOrPaid)*100) : 0;
+
+    var kpis = [
+      {l:'Total Agencies', v:agencies.length, sub:'', cls:''},
+      {l:'Total DMCs', v:dmcs.length, sub:'', cls:''},
+      {l:'Active Trials', v:activeTrials, sub:'', cls:''},
+      {l:'Paid Subscribers', v:paidSubs, sub:conversionRate+'% trial→paid', cls:''},
+      {l:'MRR', v:fmtINR(mrr), sub:'', cls:''},
+      {l:'Pending Verifications', v:pendingVerification, sub: pendingVerification>0 ? 'Needs review' : 'All clear', cls: pendingVerification>0 ? 'warn' : ''},
+      {l:'Open Disputes', v:openDisputes, sub: openDisputes>0 ? 'Needs attention' : 'All clear', cls: openDisputes>0 ? 'danger' : ''},
+      {l:'Suspended Accounts', v:accounts.filter(function(a){return a.suspended;}).length, sub:'', cls:''}
+    ];
+    var kpiHtml = kpis.map(function(k){
+      return '<div class="kpi-card"><div class="k-label">'+k.l+'</div><div class="k-val">'+k.v+'</div>'+(k.sub?'<div class="k-sub '+k.cls+'">'+k.sub+'</div>':'')+'</div>';
+    }).join('');
+
+    var planCounts = {starter:0, growth:0, scale:0};
+    agencies.forEach(function(a){ if(planCounts[a.plan]!==undefined) planCounts[a.plan]++; });
+    var maxPlan = Math.max(1, planCounts.starter, planCounts.growth, planCounts.scale);
+    var planColors = {starter:'var(--muted)', growth:'var(--warning)', scale:'var(--success)'};
+    var planBars = ['starter','growth','scale'].map(function(k){
+      var pct = (planCounts[k]/maxPlan)*100;
+      return '<div class="bar-row"><span class="b-label">'+k.charAt(0).toUpperCase()+k.slice(1)+'</span><div class="b-track"><div class="b-fill" style="width:'+pct+'%; background:'+planColors[k]+';"></div></div><span class="b-val">'+planCounts[k]+'</span></div>';
+    }).join('');
+
+    var gatewayTotals = {razorpay:0, paypal:0};
+    accounts.forEach(function(a){ if(a.gateway) gatewayTotals[a.gateway] += a.mrr; });
+    var maxGw = Math.max(1, gatewayTotals.razorpay, gatewayTotals.paypal);
+    var gwBars = ['razorpay','paypal'].map(function(k){
+      var pct = (gatewayTotals[k]/maxGw)*100;
+      var label = k==='razorpay' ? 'Razorpay' : 'PayPal';
+      var color = k==='razorpay' ? 'var(--primary)' : 'var(--info)';
+      return '<div class="bar-row"><span class="b-label">'+label+'</span><div class="b-track"><div class="b-fill" style="width:'+pct+'%; background:'+color+';"></div></div><span class="b-val">'+fmtINR(gatewayTotals[k])+'</span></div>';
+    }).join('');
+
+    var recent = accounts.slice().sort(function(a,b){ return b.id - a.id; }).slice(0,5).map(function(a){
+      return '<div class="list-row"><div><div class="lr-name">'+a.name+'</div><div class="lr-sub">'+(a.type==='agency'?'Travel Agency':'DMC')+' · '+a.city+', '+a.country+'</div></div><div><span class="badge '+a.plan+'">'+a.plan.charAt(0).toUpperCase()+a.plan.slice(1)+'</span></div></div>';
+    }).join('');
+
+    document.getElementById('secOverview').innerHTML =
+      '<div class="kpi-grid">'+kpiHtml+'</div>' +
+      '<div class="two-col" style="margin-top:20px;">' +
+        '<div class="panel"><h3>Plan mix (Travel Agencies)</h3>'+planBars+'</div>' +
+        '<div class="panel"><h3>MRR by gateway</h3>'+gwBars+'</div>' +
+      '</div>' +
+      '<div class="section-title">Recent signups</div>' +
+      '<div class="panel">'+recent+'</div>';
+  }
+
+  // ---------------- Verification Queue ----------------
+  // Only accounts with verification==='submitted' need Ops action — 'not_submitted'
+  // accounts are working fine on their trial/free plan and are not in anyone's way.
+  function renderVerify(){
+    var submitted = accounts.filter(function(a){return a.verification==='submitted';});
+    var notSubmitted = accounts.filter(function(a){return a.verification==='not_submitted';});
+    var el = document.getElementById('secVerify');
+
+    var queueHtml = submitted.length ? '<div class="card-list">' + submitted.map(function(a){
+      var docsHtml = a.docs ? Object.keys(a.docs).map(function(k){
+        var label = k==='gstin' ? 'GSTIN' : (k==='bizReg' ? 'Business registration' : 'Note');
+        return '<div><b>'+label+':</b> '+a.docs[k]+'</div>';
+      }).join('') : '<div>No documents attached yet.</div>';
+      return '<div class="verify-card">' +
+        '<div class="vc-top"><div><div class="vc-name">'+a.name+'</div><div class="vc-sub">'+(a.type==='agency'?'Travel Agency':'DMC')+' · '+a.contact+' · '+a.city+', '+a.country+' · Joined '+a.joined+'</div></div><span class="badge '+a.type+'">'+(a.type==='agency'?'AGENCY':'DMC')+'</span></div>' +
+        '<div class="vc-docs">'+docsHtml+'</div>' +
+        '<div class="vc-actions">' +
+          '<button class="btn-approve" onclick="approveVerification('+a.id+')">Approve</button>' +
+          '<button class="btn-reject" onclick="openRejectModal('+a.id+')">Reject</button>' +
+          '<button class="btn-info" onclick="requestMoreInfo('+a.id+')">Request more info</button>' +
+        '</div>' +
+      '</div>';
+    }).join('') + '</div>' : '<div class="empty-state">✓ No submissions waiting on review — all caught up.</div>';
+
+    var notSubmittedHtml = notSubmitted.length ?
+      '<div class="section-title">Not yet submitted ('+notSubmitted.length+')</div>' +
+      '<div class="panel"><div style="font-size:12px; color:var(--muted); margin-bottom:10px;">These accounts are active and using their trial/free plan normally — they simply haven’t added verification documents yet. Nothing to action.</div>' +
+      notSubmitted.map(function(a){
+        return '<div class="list-row"><div><div class="lr-name">'+a.name+'</div><div class="lr-sub">'+(a.type==='agency'?'Travel Agency':'DMC')+' · '+a.city+', '+a.country+'</div></div><span class="badge not_submitted">Not submitted</span></div>';
+      }).join('') + '</div>' : '';
+
+    el.innerHTML = '<div class="section-title" style="margin-top:0;">Awaiting review ('+submitted.length+')</div>' + queueHtml + notSubmittedHtml;
+  }
+
+  window.approveVerification = function(id){
+    var a = accounts.find(function(x){return x.id===id;});
+    a.verification = 'approved';
+    renderCurrentSection();
+  };
+
+  window.openRejectModal = function(id){
+    var a = accounts.find(function(x){return x.id===id;});
+    showModal(
+      '<h2>Reject verification — '+a.name+'</h2>' +
+      '<div class="m-sub">This account will be notified and asked to resubmit.</div>' +
+      '<label class="field-lbl">Reason</label>' +
+      '<textarea class="field-in" id="rejReason" rows="3" placeholder="e.g. GSTIN does not match registered business name">GSTIN does not match registered business name — please resubmit.</textarea>' +
+      '<div class="modal-actions">' +
+        '<button class="cancel" onclick="closeModal()">Cancel</button>' +
+        '<button class="confirm danger" onclick="confirmReject('+id+')">Reject verification</button>' +
+      '</div>'
+    );
+  };
+
+  window.confirmReject = function(id){
+    var a = accounts.find(function(x){return x.id===id;});
+    a.verification = 'rejected';
+    closeModal();
+    renderCurrentSection();
+  };
+
+  window.requestMoreInfo = function(id){
+    var a = accounts.find(function(x){return x.id===id;});
+    showModal(
+      '<h2>Request more info — '+a.name+'</h2>' +
+      '<div class="m-sub">This sends them back to their Profile page to fix or add a document — their trial/subscription is unaffected either way.</div>' +
+      '<label class="field-lbl">What do you need from them?</label>' +
+      '<textarea class="field-in" id="infoReq" rows="3" placeholder="e.g. Please upload a scanned copy of your GST certificate">Please upload a scanned copy of your GST certificate.</textarea>' +
+      '<div class="modal-actions">' +
+        '<button class="cancel" onclick="closeModal()">Cancel</button>' +
+        '<button class="confirm" onclick="confirmRequestInfo('+id+')">Send request</button>' +
+      '</div>'
+    );
+  };
+
+  window.confirmRequestInfo = function(id){
+    var a = accounts.find(function(x){return x.id===id;});
+    var note = document.getElementById('infoReq').value.trim();
+    a.verification = 'rejected';
+    a.docs = a.docs || {};
+    a.docs.extra = note || 'Please provide additional verification details.';
+    closeModal();
+    renderCurrentSection();
+  };
+
+  // ---------------- Accounts ----------------
+  var acctFilterType = 'all';
+  var acctFilterPlan = 'all';
+  var acctSearch = '';
+
+  function renderAccounts(){
+    document.getElementById('secAccounts').innerHTML =
+      '<div class="toolbar">' +
+        '<input class="search" id="acctSearchInput" placeholder="Search by name, contact or email…" oninput="onAcctSearch()" value="'+acctSearch+'">' +
+        '<select id="acctTypeFilter" onchange="onAcctFilterChange()">' +
+          '<option value="all">All types</option>' +
+          '<option value="agency">Travel Agency</option>' +
+          '<option value="dmc">DMC</option>' +
+        '</select>' +
+        '<select id="acctPlanFilter" onchange="onAcctFilterChange()">' +
+          '<option value="all">All plans</option>' +
+          '<option value="trial">Trial</option>' +
+          '<option value="starter">Starter</option>' +
+          '<option value="growth">Growth</option>' +
+          '<option value="scale">Scale</option>' +
+          '<option value="free">Free (DMC)</option>' +
+        '</select>' +
+      '</div>' +
+      '<div id="acctTableWrap"></div>';
+    document.getElementById('acctTypeFilter').value = acctFilterType;
+    document.getElementById('acctPlanFilter').value = acctFilterPlan;
+    renderAcctTable();
+  }
+
+  function renderAcctTable(){
+    var filtered = accounts.filter(function(a){
+      var matchesType = acctFilterType==='all' || a.type===acctFilterType;
+      var matchesPlan = acctFilterPlan==='all' || a.plan===acctFilterPlan;
+      var q = acctSearch.toLowerCase();
+      var matchesSearch = !q || a.name.toLowerCase().indexOf(q)>=0 || a.contact.toLowerCase().indexOf(q)>=0 || a.email.toLowerCase().indexOf(q)>=0;
+      return matchesType && matchesPlan && matchesSearch;
+    });
+    var wrap = document.getElementById('acctTableWrap');
+    if(!filtered.length){
+      wrap.innerHTML = '<div class="empty-state">No accounts match your search/filters.</div>';
+      return;
+    }
+    var rows = filtered.map(function(a){
+      return '<tr class="clickable" onclick="openAccountDetail('+a.id+')">' +
+        '<td>'+a.name+'<div style="color:var(--muted); font-size:11px;">'+a.contact+'</div></td>' +
+        '<td><span class="badge '+a.type+'">'+(a.type==='agency'?'Agency':'DMC')+'</span></td>' +
+        '<td><span class="badge '+a.plan+'">'+a.plan.charAt(0).toUpperCase()+a.plan.slice(1)+'</span>'+(a.plan==='trial'?' <span style="font-size:11px;color:var(--muted);">('+a.trialDaysLeft+'d left)</span>':'')+'</td>' +
+        '<td><span class="badge '+a.verification+'">'+a.verification.replace('_',' ')+'</span></td>' +
+        '<td>'+(a.mrr ? fmtINR(a.mrr) : '—')+'</td>' +
+        '<td>'+a.joined+'</td>' +
+        '<td>'+(a.suspended ? '<span class="badge suspended">Suspended</span>' : '<span class="badge active-acc">Active</span>')+'</td>' +
+      '</tr>';
+    }).join('');
+    wrap.innerHTML = '<table class="data"><tr><th>Account</th><th>Type</th><th>Plan</th><th>Verification</th><th>MRR</th><th>Joined</th><th>Status</th></tr>'+rows+'</table>';
+  }
+
+  window.onAcctSearch = function(){
+    acctSearch = document.getElementById('acctSearchInput').value;
+    renderAcctTable();
+  };
+  window.onAcctFilterChange = function(){
+    acctFilterType = document.getElementById('acctTypeFilter').value;
+    acctFilterPlan = document.getElementById('acctPlanFilter').value;
+    renderAcctTable();
+  };
+
+  window.openAccountDetail = function(id){
+    var a = accounts.find(function(x){return x.id===id;});
+    var planOptions = a.type==='agency' ?
+      ['trial','starter','growth','scale'].map(function(p){return '<option value="'+p+'"'+(p===a.plan?' selected':'')+'>'+p.charAt(0).toUpperCase()+p.slice(1)+'</option>';}).join('')
+      : '<option value="free" selected>Free (DMC)</option>';
+    showModal(
+      '<h2>'+a.name+'</h2>' +
+      '<div class="m-sub">'+(a.type==='agency'?'Travel Agency':'DMC')+' account</div>' +
+      '<div class="detail-row"><span class="dr-k">Contact</span><span class="dr-v">'+a.contact+'</span></div>' +
+      '<div class="detail-row"><span class="dr-k">Email</span><span class="dr-v">'+a.email+'</span></div>' +
+      '<div class="detail-row"><span class="dr-k">Location</span><span class="dr-v">'+a.city+', '+a.country+'</span></div>' +
+      '<div class="detail-row"><span class="dr-k">Joined</span><span class="dr-v">'+a.joined+'</span></div>' +
+      '<div class="detail-row"><span class="dr-k">Verification</span><span class="dr-v"><span class="badge '+a.verification+'">'+a.verification.replace('_',' ')+'</span></span></div>' +
+      '<div class="detail-row"><span class="dr-k">Account status</span><span class="dr-v">'+(a.suspended?'<span class="badge suspended">Suspended</span>':'<span class="badge active-acc">Active</span>')+'</span></div>' +
+      (a.gateway ? '<div class="detail-row"><span class="dr-k">Payment gateway</span><span class="dr-v">'+(a.gateway==='razorpay'?'Razorpay':'PayPal')+'</span></div>' : '') +
+      '<label class="field-lbl" style="margin-top:14px;">Override plan</label>' +
+      '<select class="field-select" id="ovPlan">'+planOptions+'</select>' +
+      '<div class="modal-actions">' +
+        '<button class="cancel" onclick="closeModal()">Close</button>' +
+        (a.type==='agency' ? '<button class="confirm" onclick="applyPlanOverride('+a.id+')">Apply plan change</button>' : '') +
+      '</div>' +
+      '<div class="modal-actions" style="margin-top:8px;">' +
+        '<button class="'+(a.suspended?'confirm':'cancel')+'" style="'+(a.suspended?'':'color:var(--danger);')+'" onclick="toggleSuspend('+a.id+')">'+(a.suspended?'Reactivate account':'Suspend account')+'</button>' +
+      '</div>'
+    );
+  };
+
+  window.applyPlanOverride = function(id){
+    var a = accounts.find(function(x){return x.id===id;});
+    var newPlan = document.getElementById('ovPlan').value;
+    a.plan = newPlan;
+    a.trialDaysLeft = newPlan==='trial' ? 7 : 0;
+    a.mrr = PLAN_PRICE[newPlan] || 0;
+    if(newPlan==='trial' || newPlan==='free') a.gateway = null;
+    else if(!a.gateway) a.gateway = 'razorpay';
+    closeModal();
+    renderCurrentSection();
+  };
+
+  window.toggleSuspend = function(id){
+    var a = accounts.find(function(x){return x.id===id;});
+    a.suspended = !a.suspended;
+    closeModal();
+    renderCurrentSection();
+  };
+
+  // ---------------- Disputes ----------------
+  function renderDisputes(){
+    var open = disputes.filter(function(d){return d.status==='open';});
+    var resolved = disputes.filter(function(d){return d.status==='resolved';});
+    function cardHtml(d){
+      return '<div class="dispute-card">' +
+        '<div class="dc-top"><div><div class="dc-subject">'+d.subject+'</div><div class="dc-sub">'+d.agency+' ↔ '+d.dmc+' · Raised by '+d.raisedBy+' · '+d.date+'</div></div><span class="badge '+d.status+'">'+d.status.toUpperCase()+'</span></div>' +
+        (d.notes.length ? '<div class="vc-docs">'+d.notes.map(function(n){return '<div>'+n+'</div>';}).join('')+'</div>' : '') +
+        (d.status==='open' ? '<div class="dc-actions"><button class="btn-resolve" onclick="openResolveModal('+d.id+')">Resolve dispute</button></div>' : '') +
+      '</div>';
+    }
+    var html = '';
+    if(open.length){
+      html += '<div class="section-title" style="margin-top:0;">Open ('+open.length+')</div><div class="card-list">'+open.map(cardHtml).join('')+'</div>';
+    } else {
+      html += '<div class="empty-state">✓ No open disputes.</div>';
+    }
+    if(resolved.length){
+      html += '<div class="section-title">Resolved ('+resolved.length+')</div><div class="card-list">'+resolved.map(cardHtml).join('')+'</div>';
+    }
+    document.getElementById('secDisputes').innerHTML = html;
+  }
+
+  window.openResolveModal = function(id){
+    var d = disputes.find(function(x){return x.id===id;});
+    showModal(
+      '<h2>Resolve dispute</h2>' +
+      '<div class="m-sub">'+d.subject+'</div>' +
+      '<label class="field-lbl">Resolution note</label>' +
+      '<textarea class="field-in" id="resNote" rows="3" placeholder="Describe how this was resolved…"></textarea>' +
+      '<div class="modal-actions">' +
+        '<button class="cancel" onclick="closeModal()">Cancel</button>' +
+        '<button class="confirm" onclick="confirmResolve('+id+')">Mark resolved</button>' +
+      '</div>'
+    );
+  };
+
+  window.confirmResolve = function(id){
+    var d = disputes.find(function(x){return x.id===id;});
+    var note = document.getElementById('resNote').value.trim();
+    d.status = 'resolved';
+    d.notes.push(note || 'Marked resolved by Ops Admin.');
+    closeModal();
+    renderCurrentSection();
+  };
+
+  // ---------------- Revenue ----------------
+  function renderRevenue(){
+    var mrr = accounts.reduce(function(s,a){return s+(a.mrr||0);}, 0);
+    var razorpayMrr = accounts.filter(function(a){return a.gateway==='razorpay';}).reduce(function(s,a){return s+a.mrr;},0);
+    var paypalMrr = accounts.filter(function(a){return a.gateway==='paypal';}).reduce(function(s,a){return s+a.mrr;},0);
+    var paidAccounts = accounts.filter(function(a){return a.mrr>0;});
+
+    var txRows = paidAccounts.slice().sort(function(a,b){return b.mrr-a.mrr;}).map(function(a){
+      return '<tr><td>'+a.joined+'</td><td>'+a.name+'</td><td>'+a.plan.charAt(0).toUpperCase()+a.plan.slice(1)+' plan — monthly</td><td>'+(a.gateway==='razorpay'?'Razorpay':'PayPal')+'</td><td>'+fmtINR(a.mrr)+'</td></tr>';
+    }).join('');
+
+    document.getElementById('secRevenue').innerHTML =
+      '<div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">' +
+        '<div class="kpi-card"><div class="k-label">Total MRR</div><div class="k-val">'+fmtINR(mrr)+'</div></div>' +
+        '<div class="kpi-card"><div class="k-label">Razorpay MRR</div><div class="k-val">'+fmtINR(razorpayMrr)+'</div></div>' +
+        '<div class="kpi-card"><div class="k-label">PayPal MRR</div><div class="k-val">'+fmtINR(paypalMrr)+'</div></div>' +
+      '</div>' +
+      '<div class="section-title">Recent transactions</div>' +
+      (txRows ? '<table class="data"><tr><th>Date</th><th>Account</th><th>Description</th><th>Gateway</th><th>Amount</th></tr>'+txRows+'</table>' : '<div class="empty-state">No paid transactions yet.</div>');
+  }
+
+  // ---------------- Marketplace Listings ----------------
+  // Phase-1 stopgap: DMCs don't have a self-serve listing editor yet, so Ops
+  // curates what agencies see on pumpkino-marketplace.html on their behalf.
+  // NOTE (demo limitation): this list lives only in this file's own in-memory
+  // state, same as every other seed array in this prototype — there is no
+  // shared backend, so saving here does not actually update the separate seed
+  // data inside pumpkino-marketplace.html / pumpkino-dmc-detail.html. In a real
+  // build this would be one shared `listings` table both surfaces read from.
+  var listings = [
+    {id:1, name:'Kerala Tour Mart DMC', city:'Kochi', country:'India', destinations:['Kerala','Backwaters'], services:['Hotels','Houseboats','Transport','Guides'], verified:true, status:'published',
+      packages:[{title:'Backwater Bliss — Alleppey Houseboat', dest:'Alleppey, Kerala', duration:'2N / 3D', price:'₹18,500 per couple'}]},
+    {id:2, name:'Coastal Karnataka DMC', city:'Mangalore', country:'India', destinations:['Karnataka','Coastal Karnataka'], services:['Hotels','Transport','Activities & Tours'], verified:false, status:'published',
+      packages:[{title:'Gokarna Beach Retreat', dest:'Gokarna, Karnataka', duration:'3N / 4D', price:'₹15,500 per person'}]},
+    {id:3, name:'Gulf Experience DMC', city:'Abu Dhabi', country:'UAE', destinations:['UAE','Abu Dhabi','Dubai'], services:['Hotels','Transport','Visa Assistance'], verified:true, status:'published',
+      packages:[{title:'Abu Dhabi City & Desert Safari', dest:'Abu Dhabi, UAE', duration:'3N / 4D', price:'$650 per person'}]},
+    {id:4, name:'Siam Discovery DMC', city:'Bangkok', country:'Thailand', destinations:['Thailand','Bangkok','Phuket'], services:['Hotels','Transport','Guides'], verified:false, status:'draft',
+      packages:[{title:'Bangkok City Explorer', dest:'Bangkok, Thailand', duration:'3N / 4D', price:'$420 per person'}]}
+  ];
+  var nextListingId = 5;
+
+  function renderMarketplaceListings(){
+    var published = listings.filter(function(l){return l.status==='published';}).length;
+    var draft = listings.filter(function(l){return l.status==='draft';}).length;
+
+    var cardsHtml = listings.length ? '<div class="card-list">' + listings.map(function(l){
+      var pkgCount = l.packages.length;
+      return '<div class="verify-card">' +
+        '<div class="vc-top"><div><div class="vc-name">'+l.name+' '+(l.verified?'<span style="font-size:11px; color:var(--success); font-weight:700;">✓ Verified</span>':'<span style="font-size:11px; color:var(--muted); font-weight:700;">Unverified</span>')+'</div>' +
+          '<div class="vc-sub">'+l.city+', '+l.country+' · '+l.destinations.join(', ')+' · '+pkgCount+' package'+(pkgCount===1?'':'s')+'</div></div>' +
+          '<span class="badge '+(l.status==='published'?'approved':'not_submitted')+'">'+(l.status==='published'?'PUBLISHED':'DRAFT')+'</span></div>' +
+        '<div class="vc-docs"><div>Services: '+l.services.join(', ')+'</div></div>' +
+        '<div class="vc-actions">' +
+          '<button class="btn-info" onclick="openListingForm('+l.id+')">Edit</button>' +
+          '<button class="'+(l.status==='published'?'btn-reject':'btn-approve')+'" onclick="toggleListingStatus('+l.id+')">'+(l.status==='published'?'Unpublish':'Publish')+'</button>' +
+          '<button class="btn-reject" onclick="confirmDeleteListing('+l.id+')">Delete</button>' +
+        '</div>' +
+      '</div>';
+    }).join('') + '</div>' : '<div class="empty-state">No marketplace listings yet. Add one below to get a DMC discoverable on the marketplace.</div>';
+
+    document.getElementById('secMarketplace').innerHTML =
+      '<div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">' +
+        '<div class="kpi-card"><div class="k-label">Total Listings</div><div class="k-val">'+listings.length+'</div></div>' +
+        '<div class="kpi-card"><div class="k-label">Published</div><div class="k-val">'+published+'</div></div>' +
+        '<div class="kpi-card"><div class="k-label">Draft</div><div class="k-val">'+draft+'</div></div>' +
+      '</div>' +
+      '<div style="background:var(--warning-bg); color:#8A5A0F; border-radius:var(--r-card); padding:12px 16px; font-size:12px; margin:16px 0;">' +
+        '⚠️ Demo limitation: this manages a listings list local to this admin file only — it is not wired to the live pumpkino-marketplace.html seed data (no shared backend in this prototype).' +
+      '</div>' +
+      '<div class="toolbar" style="justify-content:flex-end;"><button class="btn-info" onclick="openListingForm()">+ Add DMC listing</button></div>' +
+      '<div class="section-title" style="margin-top:14px;">All listings</div>' +
+      cardsHtml;
+  }
+
+  window.openListingForm = function(id){
+    var l = id ? listings.find(function(x){return x.id===id;}) : null;
+    var pkgLines = l ? l.packages.map(function(p){ return p.title+' | '+p.dest+' | '+p.duration+' | '+p.price; }).join('\n') : '';
+    showModal(
+      '<h2>'+(l?'Edit listing — '+l.name:'Add DMC listing')+'</h2>' +
+      '<div class="m-sub">Shown to agencies on the public marketplace once published.</div>' +
+      '<input type="hidden" id="lstId" value="'+(l?l.id:'')+'">' +
+      '<label class="field-lbl">DMC / company name</label>' +
+      '<input class="field-in" id="lstName" value="'+(l?l.name:'')+'" placeholder="e.g. Kerala Tour Mart DMC">' +
+      '<div class="grid2">' +
+        '<div><label class="field-lbl">City</label><input class="field-in" id="lstCity" value="'+(l?l.city:'')+'"></div>' +
+        '<div><label class="field-lbl">Country</label><input class="field-in" id="lstCountry" value="'+(l?l.country:'')+'"></div>' +
+      '</div>' +
+      '<label class="field-lbl">Destinations (comma-separated)</label>' +
+      '<input class="field-in" id="lstDest" value="'+(l?l.destinations.join(', '):'')+'" placeholder="e.g. Kerala, Backwaters">' +
+      '<label class="field-lbl">Services (comma-separated)</label>' +
+      '<input class="field-in" id="lstServices" value="'+(l?l.services.join(', '):'')+'" placeholder="e.g. Hotels, Transport, Guides">' +
+      '<label class="field-lbl"><input type="checkbox" id="lstVerified" '+(l&&l.verified?'checked':'')+' style="margin-right:6px;">Show as verified (mirrors an approved Profile verification)</label>' +
+      '<label class="field-lbl" style="margin-top:10px;">Packages — one per line: Title | Destination | Duration | Price</label>' +
+      '<textarea class="field-in" id="lstPackages" rows="3" placeholder="Backwater Bliss | Alleppey, Kerala | 2N / 3D | ₹18,500 per couple">'+pkgLines+'</textarea>' +
+      '<div class="modal-actions">' +
+        '<button class="cancel" onclick="closeModal()">Cancel</button>' +
+        '<button class="confirm" onclick="saveListing()">Save listing</button>' +
+      '</div>'
+    );
+  };
+
+  window.saveListing = function(){
+    var id = document.getElementById('lstId').value;
+    var name = document.getElementById('lstName').value.trim();
+    var city = document.getElementById('lstCity').value.trim();
+    var country = document.getElementById('lstCountry').value.trim();
+    var dest = document.getElementById('lstDest').value.split(',').map(function(s){return s.trim();}).filter(Boolean);
+    var services = document.getElementById('lstServices').value.split(',').map(function(s){return s.trim();}).filter(Boolean);
+    var verified = document.getElementById('lstVerified').checked;
+    var pkgLines = document.getElementById('lstPackages').value.split('\n').map(function(s){return s.trim();}).filter(Boolean);
+    var packages = pkgLines.map(function(line){
+      var parts = line.split('|').map(function(s){return s.trim();});
+      return {title:parts[0]||'Untitled package', dest:parts[1]||dest[0]||'', duration:parts[2]||'', price:parts[3]||''};
+    });
+
+    if(!name || !city || !country || !dest.length){
+      alert('Please fill in name, city, country and at least one destination.');
+      return;
+    }
+
+    if(id){
+      var existing = listings.find(function(x){return x.id===Number(id);});
+      existing.name=name; existing.city=city; existing.country=country; existing.destinations=dest;
+      existing.services=services; existing.verified=verified; existing.packages=packages;
+    } else {
+      listings.push({id:nextListingId++, name:name, city:city, country:country, destinations:dest, services:services, verified:verified, status:'draft', packages:packages});
+    }
+    closeModal();
+    renderMarketplaceListings();
+  };
+
+  window.toggleListingStatus = function(id){
+    var l = listings.find(function(x){return x.id===id;});
+    l.status = l.status==='published' ? 'draft' : 'published';
+    renderMarketplaceListings();
+  };
+
+  window.confirmDeleteListing = function(id){
+    var l = listings.find(function(x){return x.id===id;});
+    showModal(
+      '<h2>Delete listing — '+l.name+'</h2>' +
+      '<div class="m-sub">This removes it from the marketplace admin list. This cannot be undone here.</div>' +
+      '<div class="modal-actions">' +
+        '<button class="cancel" onclick="closeModal()">Cancel</button>' +
+        '<button class="confirm danger" onclick="deleteListing('+id+')">Delete listing</button>' +
+      '</div>'
+    );
+  };
+
+  window.deleteListing = function(id){
+    listings = listings.filter(function(x){return x.id!==id;});
+    closeModal();
+    renderMarketplaceListings();
+  };
+
+  // ---------------- Reports & Export ----------------
+  function csvEscape(v){
+    v = (v===null || v===undefined) ? '' : String(v);
+    if(/[",\n]/.test(v)) return '"' + v.replace(/"/g,'""') + '"';
+    return v;
+  }
+  function toCsv(headers, rows){
+    var lines = [headers.map(csvEscape).join(',')];
+    rows.forEach(function(r){ lines.push(r.map(csvEscape).join(',')); });
+    return lines.join('\r\n');
+  }
+
+  function buildSignupsCsv(){
+    var headers = ['ID','Name','Type','Contact','Email','City','Country','Plan','Verification','Status','Joined'];
+    var rows = accounts.map(function(a){
+      return [a.id, a.name, a.type==='agency'?'Travel Agency':'DMC', a.contact, a.email, a.city, a.country,
+        a.plan, a.verification, a.suspended?'Suspended':'Active', a.joined];
+    });
+    return toCsv(headers, rows);
+  }
+
+  function buildTrialsCsv(){
+    var trials = accounts.filter(function(a){return a.plan==='trial';});
+    var headers = ['ID','Name','Contact','Email','Trial Days Left','Status','Joined'];
+    var rows = trials.map(function(a){
+      return [a.id, a.name, a.contact, a.email, a.trialDaysLeft, a.trialDaysLeft>0?'Active trial':'Trial ended', a.joined];
+    });
+    return toCsv(headers, rows);
+  }
+
+  function buildSubscriptionsCsv(){
+    var subs = accounts.filter(function(a){return a.type==='agency' && ['starter','growth','scale'].indexOf(a.plan)>=0;});
+    var headers = ['ID','Name','Plan','MRR (INR)','Gateway','Joined'];
+    var rows = subs.map(function(a){
+      return [a.id, a.name, a.plan, a.mrr, a.gateway==='razorpay'?'Razorpay':(a.gateway==='paypal'?'PayPal':''), a.joined];
+    });
+    return toCsv(headers, rows);
+  }
+
+  function buildRevenueCsv(){
+    var paid = accounts.filter(function(a){return a.mrr>0;});
+    var headers = ['Date','Account','Description','Gateway','Amount (INR)'];
+    var rows = paid.map(function(a){
+      return [a.joined, a.name, a.plan.charAt(0).toUpperCase()+a.plan.slice(1)+' plan — monthly', a.gateway==='razorpay'?'Razorpay':'PayPal', a.mrr];
+    });
+    return toCsv(headers, rows);
+  }
+
+  function triggerDownload(filename, content, mime){
+    var blob = new Blob([content], {type: mime || 'text/csv;charset=utf-8;'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  }
+
+  window.downloadReport = function(kind){
+    var stamp = new Date().toISOString().slice(0,10);
+    var map = {
+      signups: ['pumpkino-signups-'+stamp+'.csv', buildSignupsCsv],
+      trials: ['pumpkino-trials-'+stamp+'.csv', buildTrialsCsv],
+      subscriptions: ['pumpkino-subscriptions-'+stamp+'.csv', buildSubscriptionsCsv],
+      revenue: ['pumpkino-revenue-'+stamp+'.csv', buildRevenueCsv]
+    };
+    var entry = map[kind];
+    triggerDownload(entry[0], entry[1]());
+  };
+
+  function renderReports(){
+    var agencies = accounts.filter(function(a){return a.type==='agency';});
+    var dmcs = accounts.filter(function(a){return a.type==='dmc';});
+    var trialsActive = accounts.filter(function(a){return a.plan==='trial' && a.trialDaysLeft>0;}).length;
+    var paidSubs = agencies.filter(function(a){return ['starter','growth','scale'].indexOf(a.plan)>=0;}).length;
+    var mrr = accounts.reduce(function(s,a){return s+(a.mrr||0);}, 0);
+
+    var summary = '<div class="kpi-grid">' +
+      '<div class="kpi-card"><div class="k-label">Total Signups</div><div class="k-val">'+accounts.length+'</div></div>' +
+      '<div class="kpi-card"><div class="k-label">Agencies / DMCs</div><div class="k-val">'+agencies.length+' / '+dmcs.length+'</div></div>' +
+      '<div class="kpi-card"><div class="k-label">Active Trials</div><div class="k-val">'+trialsActive+'</div></div>' +
+      '<div class="kpi-card"><div class="k-label">Paid Subscriptions</div><div class="k-val">'+paidSubs+'</div></div>' +
+    '</div>';
+
+    var cards = [
+      {key:'signups', title:'Signups report', desc:'Every account — type, plan, verification status and join date.', count:accounts.length},
+      {key:'trials', title:'Trials report', desc:'All accounts currently on (or that finished) a free trial.', count:accounts.filter(function(a){return a.plan==='trial';}).length},
+      {key:'subscriptions', title:'Subscriptions report', desc:'Paid Travel Agency accounts with plan and MRR.', count:paidSubs},
+      {key:'revenue', title:'Revenue / transactions report', desc:'Recurring revenue by account and gateway.', count:accounts.filter(function(a){return a.mrr>0;}).length}
+    ];
+    var cardsHtml = '<div class="two-col">' + cards.map(function(c){
+      return '<div class="panel"><h3>'+c.title+'</h3>' +
+        '<div style="font-size:12.5px; color:var(--body); margin-bottom:14px;">'+c.desc+'</div>' +
+        '<div style="font-size:11.5px; color:var(--muted); margin-bottom:12px;">'+c.count+' record'+(c.count===1?'':'s')+'</div>' +
+        '<button class="btn-approve" style="width:100%;" onclick="downloadReport(\''+c.key+'\')">⬇ Export CSV</button>' +
+      '</div>';
+    }).join('') + '</div>';
+
+    document.getElementById('secReports').innerHTML = summary + '<div class="section-title">Export data</div>' + cardsHtml;
+  }
+
+  // ---------------- Modal ----------------
+  function showModal(html){
+    document.getElementById('modalBody').innerHTML = html;
+    document.getElementById('overlay').classList.add('show');
+  }
+  window.closeModal = function(){
+    document.getElementById('overlay').classList.remove('show');
+  };
+  document.getElementById('overlay').addEventListener('click', function(e){
+    if(e.target.id==='overlay') window.closeModal();
+  });
+
+  renderOverview();
+  renderNavCounts();
+})();
+</script>
+</body>
+</html>

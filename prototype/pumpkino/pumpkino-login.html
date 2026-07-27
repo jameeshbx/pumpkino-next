@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pumpkino — Log in</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --primary:#0D3B2F;
+    --primary-deep:#0A3026;
+    --secondary:#D8A43B;
+    --bg:#F8F7F3;
+    --card:#FFFFFF;
+    --border:#E9E5DD;
+    --heading:#16221D;
+    --body:#5E625F;
+    --muted:#8E948E;
+    --success:#2F8F5B;
+    --success-bg:#E7F3EA;
+    --warning:#E39A22;
+    --warning-bg:#FCF0DC;
+    --danger:#D9534F;
+    --danger-bg:#FBEAE9;
+    --ai:#7B5CFA;
+    --ai-bg:#EFEAFE;
+    --info:#3B82F6;
+    --info-bg:#E8F1FE;
+
+    --r-btn:12px;
+    --r-card:18px;
+    --r-dialog:20px;
+    --r-input:12px;
+    --r-badge:999px;
+
+    --shadow-sm:0 4px 12px rgba(0,0,0,.04);
+    --shadow-md:0 8px 24px rgba(0,0,0,.06);
+    --shadow-lg:0 20px 60px rgba(0,0,0,.08);
+  }
+
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); font-family:'Inter',sans-serif; color:var(--body); font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased;}
+
+  .shell{display:flex; min-height:100vh;}
+
+  /* ---- Left brand panel ---- */
+  .brand{
+    flex:1 1 46%; max-width:560px; position:relative; overflow:hidden;
+    background:linear-gradient(160deg, var(--primary) 0%, var(--primary-deep) 100%);
+    color:#F5F6F4; padding:56px 48px; display:flex; flex-direction:column; justify-content:space-between;
+  }
+  .brand::before{
+    content:''; position:absolute; inset:0; opacity:.14; pointer-events:none;
+    background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 700'><circle cx='500' cy='120' r='90' fill='white'/><path d='M0 480 Q140 400 280 460 T560 430 T600 460 V700 H0 Z' fill='white'/><path d='M470 200 l36 10 -12 17 -27 -5 -17 24 -10 -2 10 -27 -22 -17 10 -7 24 12z' fill='white'/><circle cx='120' cy='100' r='12' fill='white'/><circle cx='175' cy='70' r='7' fill='white'/><circle cx='220' cy='115' r='5' fill='white'/></svg>");
+    background-repeat:no-repeat; background-position:right -60px top -40px; background-size:80% auto;
+  }
+  .brand-top{position:relative; z-index:1;}
+  .brand .logo{display:flex; align-items:center; gap:12px;}
+  .brand .logo .mark{width:40px;height:40px;border-radius:var(--r-btn);background:var(--secondary);display:flex;align-items:center;justify-content:center;font-weight:700;color:#3A2A05;font-size:18px; box-shadow:0 0 0 1px rgba(255,255,255,.08) inset;}
+  .brand .logo .word{font-weight:700;font-size:20px;letter-spacing:.2px; color:#fff;}
+  .brand-headline{font-weight:700; font-size:32px; letter-spacing:-.02em; color:#fff; margin-top:56px; max-width:420px;}
+  .brand-sub{font-size:14.5px; color:rgba(245,246,244,.68); margin-top:14px; max-width:400px; font-weight:400;}
+
+  .brand-points{position:relative; z-index:1; margin-top:40px;}
+  .brand-point{display:flex; align-items:flex-start; gap:12px; padding:11px 0; border-bottom:1px solid rgba(255,255,255,.1);}
+  .brand-point:last-child{border-bottom:none;}
+  .brand-point .dot{width:9px;height:9px;border-radius:50%; margin-top:5px; flex-shrink:0; background:var(--secondary);}
+  .brand-point .txt{font-size:13.5px; color:rgba(245,246,244,.82); font-weight:500;}
+
+  .brand-foot{position:relative; z-index:1; font-size:12px; color:rgba(245,246,244,.45);}
+
+  /* ---- Right form panel ---- */
+  .formside{flex:1; display:flex; align-items:center; justify-content:center; padding:40px 24px;}
+  .login-card{width:420px; max-width:100%;}
+  .login-card h1{font-weight:700; font-size:26px; margin:0 0 6px; color:var(--heading); letter-spacing:-.01em;}
+  .login-card .sub{font-size:13.5px; color:var(--muted); margin-bottom:28px;}
+
+  .role-toggle{display:flex; background:var(--card); border:1px solid var(--border); border-radius:var(--r-btn); padding:4px; margin-bottom:24px;}
+  .role-btn{flex:1; text-align:center; padding:10px 12px; border-radius:9px; font-size:13px; font-weight:600; color:var(--body); cursor:pointer; user-select:none; transition:background .18s ease-out, color .18s ease-out;}
+  .role-btn.active{background:var(--primary); color:#fff;}
+
+  .field-lbl{font-size:13px; color:var(--body); font-weight:600; display:block; margin-bottom:6px;}
+  .field-in{width:100%; padding:11px 14px; border:1px solid var(--border); border-radius:var(--r-input); font-size:14px; margin-bottom:16px; font-family:inherit; background:var(--card); color:var(--heading); transition:border-color .18s ease-out, box-shadow .18s ease-out;}
+  .field-in:focus{outline:none; border-color:var(--secondary); box-shadow:0 0 0 3px rgba(216,164,59,.18);}
+  .field-in.err{border-color:var(--danger);}
+
+  .row-between{display:flex; justify-content:space-between; align-items:center; margin:-6px 0 20px;}
+  .remember{display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--body);}
+  .link{font-size:12.5px; color:var(--primary); font-weight:600; text-decoration:none; cursor:pointer;}
+  .link:hover{text-decoration:underline;}
+
+  .btn{background:var(--primary); color:#F5F6F4; border:none; border-radius:var(--r-btn); padding:13px 18px; font-size:14px; font-weight:600; cursor:pointer; width:100%; transition:background .18s ease-out, transform .15s ease-out, box-shadow .18s ease-out;}
+  .btn:hover{background:var(--primary-deep); box-shadow:var(--shadow-sm);}
+  .btn:active{transform:scale(.98);}
+
+  .demo-note{font-size:12px; color:var(--muted); background:var(--bg); border:1px solid var(--border); border-radius:var(--r-input); padding:11px 13px; margin-top:20px; display:flex; gap:8px; align-items:flex-start;}
+  .demo-note b{color:var(--heading);}
+
+  .quick-demo{display:flex; gap:8px; margin-top:14px;}
+  .quick-demo button{flex:1; background:var(--card); border:1px solid var(--border); border-radius:var(--r-input); padding:9px 8px; font-size:12px; font-weight:600; color:var(--primary); cursor:pointer; transition:border-color .18s ease-out, background .18s ease-out;}
+  .quick-demo button:hover{border-color:var(--secondary); background:#FBF8F0;}
+
+  .footer-note{text-align:center; font-size:12.5px; color:var(--muted); margin-top:28px;}
+
+  @media (max-width:860px){
+    .brand{display:none;}
+    .formside{padding:32px 20px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <div class="brand">
+    <div class="brand-top">
+      <a href="pumpkino-home.html" style="text-decoration:none;"><div class="logo"><div class="mark">P</div><div class="word">pumpkino</div></div></a>
+      <div class="brand-headline">One platform connecting agencies and DMCs — end to end.</div>
+      <div class="brand-sub">Quotes, itineraries, inventory blocking, payments and invoices, all in one place — whichever side of the booking you're on.</div>
+    </div>
+    <div class="brand-points">
+      <div class="brand-point"><span class="dot"></span><span class="txt">Travel agencies manage leads, itineraries and DMC bookings</span></div>
+      <div class="brand-point"><span class="dot"></span><span class="txt">DMCs manage quote requests, inventory and payments</span></div>
+      <div class="brand-point"><span class="dot"></span><span class="txt">Pumpkino-to-Pumpkino requests sync instantly, no email needed</span></div>
+    </div>
+    <div class="brand-foot">© 2026 Pumpkino · Demo prototype</div>
+  </div>
+
+  <div class="formside">
+    <div class="login-card">
+      <h1 id="loginHeading">Log in to Pumpkino</h1>
+      <div class="sub" id="loginSub">Choose your account type to continue</div>
+
+      <div class="role-toggle">
+        <div class="role-btn active" id="roleBtnAgent" onclick="setRole('agent')">Travel Agency</div>
+        <div class="role-btn" id="roleBtnDmc" onclick="setRole('dmc')">DMC / Supplier</div>
+      </div>
+
+      <label class="field-lbl">Email</label>
+      <input id="loginEmail" class="field-in" type="email" placeholder="you@agency.com" value="ebina@trekkingmiles.com">
+
+      <label class="field-lbl">Password</label>
+      <input id="loginPassword" class="field-in" type="password" placeholder="Enter your password" value="demo1234">
+
+      <div class="row-between">
+        <label class="remember"><input type="checkbox" checked style="margin:0;"> Keep me logged in</label>
+        <a href="pumpkino-forgot-password.html" class="link">Forgot password?</a>
+      </div>
+
+      <button class="btn" id="loginBtn" onclick="submitLogin()">Log in as Travel Agency</button>
+
+      <div class="quick-demo">
+        <button type="button" onclick="quickDemo('agent')">Quick demo: Agency</button>
+        <button type="button" onclick="quickDemo('dmc')">Quick demo: DMC</button>
+      </div>
+
+      <div class="demo-note">ℹ️ <span><b>Demo prototype</b> — any email and password will work. Use the toggle above (or the quick-demo buttons) to choose which portal you land in.</span></div>
+
+      <div class="footer-note">New to Pumpkino? <a href="pumpkino-signup.html" class="link">Create an account</a> · <a href="pumpkino-pricing.html" class="link">View plans & pricing</a></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // NOTE: pumpkino-dashboard-final-v2.html and dmc-portal-final-v2.html (the full
+  // dashboards from earlier rounds) are currently missing from the output folder.
+  // Routing to onboarding instead keeps the whole prototype click-through-able;
+  // swap these back once the dashboard files are restored.
+  var DASHBOARDS = {
+    agent: 'pumpkino-onboarding.html?role=agent',
+    dmc: 'pumpkino-onboarding.html?role=dmc'
+  };
+  var currentRole = 'agent';
+
+  window.setRole = function(role){
+    currentRole = role;
+    document.getElementById('roleBtnAgent').classList.toggle('active', role==='agent');
+    document.getElementById('roleBtnDmc').classList.toggle('active', role==='dmc');
+    var heading = document.getElementById('loginHeading');
+    var sub = document.getElementById('loginSub');
+    var email = document.getElementById('loginEmail');
+    var btn = document.getElementById('loginBtn');
+    if(role==='agent'){
+      heading.textContent = 'Log in to Pumpkino';
+      sub.textContent = 'Travel agency workspace — leads, itineraries and bookings';
+      email.placeholder = 'you@agency.com';
+      email.value = 'ebina@trekkingmiles.com';
+      btn.textContent = 'Log in as Travel Agency';
+    } else {
+      heading.textContent = 'Log in to Pumpkino';
+      sub.textContent = 'DMC / supplier workspace — quote requests, inventory and payments';
+      email.placeholder = 'you@yourdmc.com';
+      email.value = 'suresh@keralatourmart.com';
+      btn.textContent = 'Log in as DMC';
+    }
+  };
+
+  window.submitLogin = function(){
+    var emailEl = document.getElementById('loginEmail');
+    var passEl = document.getElementById('loginPassword');
+    var email = emailEl.value.trim();
+    var pass = passEl.value.trim();
+    var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    emailEl.classList.toggle('err', !emailOk);
+    passEl.classList.toggle('err', !pass);
+    if(!emailOk || !pass) return;
+
+    var btn = document.getElementById('loginBtn');
+    btn.textContent = 'Logging in…';
+    setTimeout(function(){
+      window.location.href = DASHBOARDS[currentRole];
+    }, 450);
+  };
+
+  window.quickDemo = function(role){
+    setRole(role);
+    submitLogin();
+  };
+
+  // Allow Enter key to submit from either field
+  ['loginEmail','loginPassword'].forEach(function(id){
+    document.getElementById(id).addEventListener('keydown', function(e){
+      if(e.key === 'Enter') submitLogin();
+    });
+  });
+})();
+</script>
+</body>
+</html>

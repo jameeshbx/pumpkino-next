@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pumpkino — DMC Profile</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  :root{
+    --primary:#0D3B2F; --primary-deep:#0A3026; --secondary:#D8A43B;
+    --bg:#F8F7F3; --card:#FFFFFF; --border:#E9E5DD;
+    --heading:#16221D; --body:#5E625F; --muted:#8E948E;
+    --success:#2F8F5B; --success-bg:#E7F3EA;
+    --warning:#E39A22; --warning-bg:#FCF0DC;
+    --danger:#D9534F; --danger-bg:#FBEAE9;
+    --ai:#7B5CFA; --ai-bg:#EFEAFE;
+    --info:#3B82F6; --info-bg:#E8F1FE;
+    --r-btn:12px; --r-card:18px; --r-dialog:20px; --r-input:10px; --r-badge:999px;
+    --shadow-sm:0 4px 12px rgba(0,0,0,.04);
+    --shadow-md:0 8px 24px rgba(0,0,0,.06);
+    --shadow-lg:0 24px 60px rgba(0,0,0,.16);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); font-family:'Inter',sans-serif; color:var(--body); font-size:14.5px; line-height:1.5;}
+
+  .topbar{display:flex; align-items:center; justify-content:space-between; padding:16px 32px; background:var(--card); border-bottom:1px solid var(--border);}
+  .logo{display:flex; align-items:center; gap:10px; text-decoration:none;}
+  .logo .mark{width:32px;height:32px;border-radius:9px;background:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--secondary);font-size:14px;}
+  .logo .word{font-weight:700;font-size:16.5px;color:var(--heading);}
+  .topbar a.navlink{color:var(--primary); font-weight:600; text-decoration:none; font-size:12.5px; margin-left:16px;}
+
+  .wrap{max-width:980px; margin:0 auto; padding:26px 24px 70px;}
+  .back-link{font-size:12.5px; color:var(--primary); font-weight:600; text-decoration:none; display:inline-block; margin-bottom:16px;}
+  .back-link:hover{text-decoration:underline;}
+
+  .hero-card{background:var(--card); border:1px solid var(--border); border-radius:var(--r-card); padding:24px 26px; margin-bottom:22px;}
+  .hero-top{display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;}
+  .dmc-name{font-size:22px; font-weight:800; color:var(--heading); margin:0 0 4px;}
+  .dmc-loc{font-size:13px; color:var(--muted);}
+  .verified-badge{background:var(--success-bg); color:var(--success); font-size:11px; font-weight:700; padding:4px 11px; border-radius:var(--r-badge); white-space:nowrap;}
+  .unverified-badge{background:var(--bg); color:var(--muted); font-size:11px; font-weight:700; padding:4px 11px; border-radius:var(--r-badge); white-space:nowrap;}
+
+  .stars{color:var(--secondary); font-size:14px; letter-spacing:1px;}
+  .rating-row{display:flex; align-items:center; gap:6px; font-size:13px; color:var(--body); margin:10px 0;}
+  .rating-row b{color:var(--heading);}
+
+  .chip-row{display:flex; flex-wrap:wrap; gap:6px; margin:10px 0;}
+  .chip{background:var(--bg); border:1px solid var(--border); border-radius:var(--r-badge); font-size:11.5px; font-weight:600; color:var(--body); padding:5px 11px;}
+
+  .dmc-desc{font-size:13px; color:var(--body); margin:10px 0 16px;}
+
+  .trust-row{display:flex; gap:18px; font-size:12px; color:var(--muted); margin-bottom:16px; flex-wrap:wrap;}
+  .trust-row span b{color:var(--heading);}
+
+  .hero-actions{display:flex; gap:10px;}
+  .hero-actions button{border:none; border-radius:var(--r-btn); padding:11px 18px; font-size:13px; font-weight:700; cursor:pointer;}
+  .btn-primary{background:var(--primary); color:#fff;}
+  .btn-primary:hover{background:var(--primary-deep);}
+  .btn-outline{background:transparent; border:1px solid var(--primary) !important; color:var(--primary);}
+
+  .section-title{font-size:16px; font-weight:800; color:var(--heading); margin:30px 0 6px;}
+  .section-note{font-size:12px; color:var(--muted); margin-bottom:16px;}
+
+  .pkg-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  .pkg-card{background:var(--card); border:1px solid var(--border); border-radius:var(--r-card); overflow:hidden; display:flex; flex-direction:column;}
+  .pkg-img{height:90px; display:flex; align-items:center; justify-content:center; font-size:30px;}
+  .pkg-body{padding:14px 16px; display:flex; flex-direction:column; flex:1;}
+  .pkg-title{font-size:13.5px; font-weight:700; color:var(--heading); margin-bottom:4px;}
+  .pkg-meta{font-size:11.5px; color:var(--muted); margin-bottom:8px;}
+  .pkg-price{font-size:15px; font-weight:800; color:var(--primary); margin-bottom:10px;}
+  .pkg-price span{font-size:11px; font-weight:400; color:var(--muted);}
+  .pkg-actions{display:flex; gap:8px; margin-top:auto;}
+  .pkg-actions button{flex:1; border:none; border-radius:8px; padding:8px 10px; font-size:11.5px; font-weight:700; cursor:pointer;}
+
+  .review-item{border-top:1px solid var(--border); padding:12px 0; font-size:12.5px;}
+  .review-item:first-child{border-top:none;}
+  .review-item .rv-top{display:flex; justify-content:space-between; font-weight:700; color:var(--heading);}
+  .review-item .rv-date{font-weight:400; color:var(--muted); font-size:11px;}
+  .no-reviews{font-size:12.5px; color:var(--muted);}
+  .reviews-card{background:var(--card); border:1px solid var(--border); border-radius:var(--r-card); padding:18px 20px;}
+
+  .overlay{position:fixed; inset:0; background:rgba(13,59,47,.35); display:none; align-items:center; justify-content:center; z-index:50; padding:20px;}
+  .overlay.show{display:flex;}
+  .modal{background:var(--card); border-radius:var(--r-dialog); padding:26px; width:480px; max-width:100%; box-shadow:var(--shadow-lg); max-height:88vh; overflow-y:auto;}
+  .modal h2{font-size:17px; font-weight:800; color:var(--heading); margin:0 0 4px;}
+  .modal .m-sub{font-size:12px; color:var(--muted); margin-bottom:16px;}
+  .field-lbl{font-size:12px; font-weight:600; color:var(--body); display:block; margin-bottom:5px;}
+  .field-in, textarea.field-in{width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:var(--r-input); font-size:13px; margin-bottom:12px; font-family:inherit;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:0 12px;}
+  .modal-actions{display:flex; gap:10px; margin-top:6px;}
+  .modal-actions button{flex:1; border:none; border-radius:var(--r-btn); padding:11px; font-size:13px; font-weight:700; cursor:pointer;}
+  .modal-actions .cancel{background:var(--bg); color:var(--body);}
+  .modal-actions .confirm{background:var(--primary); color:#fff;}
+  .star-picker{display:flex; gap:6px; margin-bottom:14px;}
+  .star-picker span{font-size:22px; cursor:pointer; color:var(--border);}
+  .star-picker span.on{color:var(--secondary);}
+  .success-note{background:var(--success-bg); color:var(--success); border-radius:var(--r-input); padding:12px 14px; font-size:13px; font-weight:600; text-align:center;}
+  .pkg-detail-list{margin:0 0 14px; padding-left:18px; font-size:12.5px;}
+  .pkg-detail-list li{margin-bottom:4px;}
+
+  @media (max-width:800px){ .pkg-grid{grid-template-columns:1fr 1fr;} }
+  @media (max-width:560px){ .pkg-grid{grid-template-columns:1fr;} }
+
+  .sub-banner{display:flex; align-items:center; justify-content:space-between; gap:14px; border-radius:var(--r-card); padding:13px 18px; margin-bottom:18px; border:1px solid; flex-wrap:wrap; font-size:12.5px;}
+  .sub-banner.locked{background:var(--warning-bg); border-color:rgba(227,154,34,.35); color:#8A5A0F;}
+  .sub-banner.unlocked{background:var(--success-bg); border-color:rgba(47,143,91,.3); color:var(--success);}
+  .sub-banner b{font-weight:800;}
+  .sub-banner .toggle-demo{background:var(--card); border:1px solid currentColor; border-radius:var(--r-btn); padding:7px 13px; font-size:12px; font-weight:700; cursor:pointer; color:inherit; white-space:nowrap;}
+  .dmc-name.masked{color:var(--muted); font-style:italic;}
+  .lock-tag{font-size:10.5px; font-weight:700; color:var(--warning); background:var(--warning-bg); padding:2px 8px; border-radius:var(--r-badge); margin-left:6px; white-space:nowrap;}
+  .btn-locked{background:var(--bg) !important; color:var(--muted) !important; cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="logo" href="pumpkino-home.html"><div class="mark">P</div><div class="word">pumpkino</div></a>
+  <div>
+    <a class="navlink" href="pumpkino-marketplace.html">Marketplace</a>
+    <a class="navlink" href="pumpkino-login.html">Log out</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <a class="back-link" href="pumpkino-marketplace.html">← Back to Marketplace</a>
+  <div id="subBannerWrap"></div>
+  <div id="detailWrap"></div>
+</div>
+
+<div class="overlay" id="overlay"><div class="modal" id="modalBody"></div></div>
+
+<script>
+(function(){
+  var dmcs = [
+    {id:1, name:'Kerala Tour Mart DMC', city:'Kochi', country:'India', destinations:['Kerala','Backwaters'], services:['Hotels','Houseboats','Transport','Guides'],
+      verified:true, bookings:210, responseHrs:2, color:'#E7F3EA',
+      desc:'Full-service DMC covering Kerala backwaters, hill stations and beaches, with strong houseboat inventory in Alleppey and Kumarakom.',
+      reviews:[
+        {agency:'Trekking Miles Holidays', rating:5, comment:'Fast confirmations and great houseboat options. Our go-to Kerala partner.', date:'02 Jul 2026'},
+        {agency:'Blue Horizon Travels', rating:5, comment:'Reliable inventory blocking and clear communication throughout.', date:'19 Jun 2026'}
+      ],
+      packages:[
+        {id:'k1', title:'Backwater Bliss — Alleppey Houseboat', dest:'Alleppey, Kerala', duration:'2N / 3D', price:'₹18,500', unit:'per couple', icon:'🛶',
+          highlights:['Private premium houseboat with AC bedroom','All meals — Kerala cuisine on board','Sunset backwater cruise','Airport/station pickup included']},
+        {id:'k2', title:'Munnar Hills & Thekkady Wildlife', dest:'Munnar & Thekkady, Kerala', duration:'4N / 5D', price:'₹32,000', unit:'per person', icon:'🏞️',
+          highlights:['Tea garden walk & factory visit','Periyar wildlife jeep safari','Spice plantation tour','4-star hill resort stays']},
+        {id:'k3', title:'Kerala Grand Circuit', dest:'Kochi · Munnar · Alleppey · Kovalam', duration:'7N / 8D', price:'₹58,000', unit:'per person', icon:'🗺️',
+          highlights:['Covers 4 destinations end to end','Mix of houseboat + hill + beach stays','Private car with driver throughout','Ayurvedic spa session included']}
+      ]},
+    {id:2, name:'Coastal Karnataka DMC', city:'Mangalore', country:'India', destinations:['Karnataka','Coastal Karnataka'], services:['Hotels','Transport','Activities & Tours'],
+      verified:false, bookings:48, responseHrs:6, color:'#E8F1FE',
+      desc:'Boutique DMC specializing in coastal Karnataka — Gokarna, Udupi and Mangalore beach circuits.',
+      reviews:[{agency:'Spice Coast Travels', rating:4, comment:'Good local knowledge, decent response time.', date:'10 Jun 2026'}],
+      packages:[
+        {id:'c1', title:'Gokarna Beach Retreat', dest:'Gokarna, Karnataka', duration:'3N / 4D', price:'₹15,500', unit:'per person', icon:'🏖️',
+          highlights:['Beachfront cottage stay','Om Beach & Kudle Beach visits','Sunset dolphin-watching boat ride']}
+      ]},
+    {id:3, name:'Gulf Experience DMC', city:'Abu Dhabi', country:'UAE', destinations:['UAE','Abu Dhabi','Dubai'], services:['Hotels','Transport','Activities & Tours','Visa Assistance'],
+      verified:true, bookings:340, responseHrs:1, color:'#FCF0DC',
+      desc:'Premium UAE inbound DMC handling luxury hotels, desert safaris and visa assistance for international agencies.',
+      reviews:[
+        {agency:'Desert Rose Journeys', rating:5, comment:'Exceptional response time and visa support saved us so much back-and-forth.', date:'28 Jun 2026'},
+        {agency:'Trekking Miles Holidays', rating:5, comment:'Best UAE DMC we have worked with on Pumpkino.', date:'14 Jun 2026'}
+      ],
+      packages:[
+        {id:'g1', title:'Abu Dhabi City & Desert Safari', dest:'Abu Dhabi, UAE', duration:'3N / 4D', price:'$650', unit:'per person', icon:'🐫',
+          highlights:['Sheikh Zayed Grand Mosque tour','Evening desert safari with BBQ dinner','4-star city hotel','Visa assistance included']},
+        {id:'g2', title:'Dubai Luxury Weekend', dest:'Dubai, UAE', duration:'2N / 3D', price:'$480', unit:'per person', icon:'🏙️',
+          highlights:['Burj Khalifa fast-track entry','Dubai Marina yacht cruise','5-star hotel stay']},
+        {id:'g3', title:'UAE Grand Explorer', dest:'Abu Dhabi + Dubai', duration:'5N / 6D', price:'$980', unit:'per person', icon:'✈️',
+          highlights:['Covers both emirates','Private transfers throughout','Desert safari + city tours combined']}
+      ]},
+    {id:4, name:'Siam Discovery DMC', city:'Bangkok', country:'Thailand', destinations:['Thailand','Bangkok','Phuket'], services:['Hotels','Transport','Activities & Tours','Guides'],
+      verified:false, bookings:76, responseHrs:4, color:'#EFEAFE',
+      desc:'Thailand-based DMC covering Bangkok city breaks and Phuket beach packages with English-speaking guides.',
+      reviews:[{agency:'Wanderlust Corp Travel', rating:4, comment:'Solid itineraries, would like faster quote turnaround.', date:'05 Jul 2026'}],
+      packages:[
+        {id:'s1', title:'Bangkok City Explorer', dest:'Bangkok, Thailand', duration:'3N / 4D', price:'$420', unit:'per person', icon:'🛕',
+          highlights:['Grand Palace & Wat Pho tour','Chao Phraya river cruise dinner','English-speaking guide throughout']},
+        {id:'s2', title:'Phuket Beach Escape', dest:'Phuket, Thailand', duration:'4N / 5D', price:'$560', unit:'per person', icon:'🏝️',
+          highlights:['Beachfront resort stay','Phi Phi Islands day trip','Airport transfers included']}
+      ]},
+    {id:5, name:'Rajasthan Heritage DMC', city:'Jaipur', country:'India', destinations:['Rajasthan','Jaipur','Udaipur'], services:['Hotels','Transport','Guides','Cultural Tours'],
+      verified:true, bookings:190, responseHrs:3, color:'#E7F3EA',
+      desc:'Heritage-focused DMC with strong palace hotel relationships across Jaipur, Udaipur and Jodhpur.',
+      reviews:[
+        {agency:'Blue Horizon Travels', rating:5, comment:'Incredible palace hotel access, very professional.', date:'11 Jul 2026'},
+        {agency:'Spice Coast Travels', rating:4.5, comment:'Great cultural tour guides, good communication.', date:'02 Jun 2026'}
+      ],
+      packages:[
+        {id:'r1', title:'Jaipur Pink City Heritage Tour', dest:'Jaipur, Rajasthan', duration:'3N / 4D', price:'₹28,000', unit:'per person', icon:'🏰',
+          highlights:['Amber Fort & City Palace tours','Heritage haveli hotel stay','Traditional Rajasthani dinner with folk show']},
+        {id:'r2', title:'Udaipur Lake Palace Romance', dest:'Udaipur, Rajasthan', duration:'2N / 3D', price:'₹35,000', unit:'per couple', icon:'🛶',
+          highlights:['Lake-view heritage hotel','Private boat ride on Lake Pichola','Candlelight dinner arrangement']},
+        {id:'r3', title:'Royal Rajasthan Circuit', dest:'Jaipur · Udaipur · Jodhpur', duration:'6N / 7D', price:'₹62,000', unit:'per person', icon:'👑',
+          highlights:['3-city heritage circuit','Palace hotel stays throughout','Private car with driver']}
+      ]},
+    {id:6, name:'Goa Coastal Getaways DMC', city:'Panaji', country:'India', destinations:['Goa'], services:['Hotels','Transport','Activities & Tours','Houseboats'],
+      verified:true, bookings:33, responseHrs:5, color:'#E8F1FE',
+      desc:'Goa specialist DMC covering beach resorts, water sports and nightlife packages for leisure travelers.',
+      reviews:[{agency:'Wanderlust Corp Travel', rating:4, comment:'Good beach resort options, response could be quicker.', date:'15 Jun 2026'}],
+      packages:[
+        {id:'go1', title:'Goa Sun & Sea Package', dest:'North Goa', duration:'3N / 4D', price:'₹19,000', unit:'per person', icon:'🌊',
+          highlights:['Beach resort with pool','Water sports session included','Sunset cruise with dinner']}
+      ]},
+    {id:7, name:'Himalayan Trails DMC', city:'Manali', country:'India', destinations:['Himachal','Kashmir','Ladakh'], services:['Hotels','Transport','Guides','Trekking'],
+      verified:false, bookings:5, responseHrs:8, color:'#FCF0DC',
+      desc:'New-to-Pumpkino DMC covering Himalayan trekking circuits across Himachal, Kashmir and Ladakh.',
+      reviews:[],
+      packages:[
+        {id:'h1', title:'Manali Adventure Trek', dest:'Manali, Himachal Pradesh', duration:'5N / 6D', price:'₹24,000', unit:'per person', icon:'⛰️',
+          highlights:['Guided trek with camping equipment','Solang Valley & Rohtang excursion','Bonfire evenings included']}
+      ]}
+  ];
+
+  var params = new URLSearchParams(window.location.search);
+  var currentId = Number(params.get('id')) || 1;
+
+  function getDmc(){ return dmcs.find(function(d){return d.id===currentId;}); }
+
+  // Subscription gate — mirrors pumpkino-marketplace.html. Only paid subscribers
+  // (not free trial) see the DMC's real name/city and can send quote requests;
+  // everyone else sees destination/service-level info only. Persisted via
+  // localStorage (demo-only) so the state carries over from the marketplace page.
+  function isSubscribed(){ return window.localStorage.getItem('pumpkinoAgencySubscribed') === 'true'; }
+  window.toggleSubscribed = function(){
+    window.localStorage.setItem('pumpkinoAgencySubscribed', isSubscribed() ? 'false' : 'true');
+    renderSubBanner();
+    renderDetail();
+  };
+
+  function renderSubBanner(){
+    var subscribed = isSubscribed();
+    document.getElementById('subBannerWrap').innerHTML =
+      '<div class="sub-banner '+(subscribed?'unlocked':'locked')+'">' +
+        '<span>'+(subscribed ?
+          '✓ <b>Subscribed</b> — DMC name, exact location and quote requests are unlocked.' :
+          '🔒 <b>Not subscribed</b> — you can browse this destination and its packages, but the DMC\'s name and quote requests are unlocked only on a paid plan. <a href="pumpkino-pricing.html" style="color:inherit; font-weight:800;">See plans →</a>') +
+        '</span>' +
+        '<button class="toggle-demo" onclick="toggleSubscribed()">🧪 Demo: switch to '+(subscribed?'unsubscribed':'subscribed')+' view</button>' +
+      '</div>';
+  }
+
+  function avgRating(dmc){
+    if(!dmc.reviews.length) return null;
+    var sum = dmc.reviews.reduce(function(s,r){return s+r.rating;},0);
+    return sum/dmc.reviews.length;
+  }
+  function starString(avg){
+    if(avg===null) return '';
+    var full = Math.round(avg);
+    return '★★★★★'.slice(0,full) + '☆☆☆☆☆'.slice(0, 5-full);
+  }
+  function todayLabel(){
+    var d = new Date();
+    var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
+  }
+
+  function renderDetail(){
+    var d = getDmc();
+    if(!d){
+      document.getElementById('detailWrap').innerHTML = '<div class="reviews-card">DMC not found.</div>';
+      return;
+    }
+    var subscribed = isSubscribed();
+    var displayName = subscribed ? d.name : (d.verified ? '✓ Verified DMC' : 'Unverified DMC') + ' — '+d.destinations[0];
+    document.title = 'Pumpkino — ' + (subscribed ? d.name : d.destinations[0] + ' DMC');
+    var avg = avgRating(d);
+    var chipsHtml = d.services.map(function(s){return '<span class="chip">'+s+'</span>';}).join('');
+
+    var pkgHtml = d.packages.length ? d.packages.map(function(p){
+      var pkgActions = subscribed ?
+        ('<button class="btn-outline" onclick="openPackageDetail(\''+p.id+'\')">View details</button>' +
+         '<button class="btn-primary" onclick="openQuoteRequest(\''+p.id+'\')">Request quote</button>')
+        :
+        ('<button class="btn-outline" onclick="openPackageDetail(\''+p.id+'\')">View details</button>' +
+         '<button class="btn-primary btn-locked" onclick="window.location.href=\'pumpkino-pricing.html\'">🔒 Unlock</button>');
+      return '<div class="pkg-card">' +
+        '<div class="pkg-img" style="background:'+d.color+';">'+p.icon+'</div>' +
+        '<div class="pkg-body">' +
+          '<div class="pkg-title">'+p.title+'</div>' +
+          '<div class="pkg-meta">'+p.dest+' · '+p.duration+'</div>' +
+          '<div class="pkg-price">'+p.price+' <span>'+p.unit+'</span></div>' +
+          '<div class="pkg-actions">' +
+            pkgActions +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('') : '<div class="no-reviews">This DMC has not published any packages yet.</div>';
+
+    var reviewsHtml = d.reviews.length ? d.reviews.map(function(r){
+      return '<div class="review-item"><div class="rv-top"><span>'+r.agency+'</span><span class="rv-date">'+r.date+'</span></div><div class="stars">'+starString(r.rating)+'</div><div>'+r.comment+'</div></div>';
+    }).join('') : '<div class="no-reviews">No reviews yet — be the first to leave one.</div>';
+
+    var heroActions = subscribed ?
+      ('<button class="btn-outline" onclick="openReviewForm()">Leave a review</button>' +
+       '<button class="btn-primary" onclick="openQuoteRequest()">Send quote request</button>')
+      :
+      ('<button class="btn-outline" onclick="openReviewForm()">Leave a review</button>' +
+       '<button class="btn-primary btn-locked" onclick="window.location.href=\'pumpkino-pricing.html\'">🔒 Subscribe to send quote request</button>');
+
+    document.getElementById('detailWrap').innerHTML =
+      '<div class="hero-card">' +
+        '<div class="hero-top">' +
+          '<div><div class="dmc-name'+(subscribed?'':' masked')+'">'+displayName+'</div><div class="dmc-loc">'+(subscribed ? d.city+', '+d.country : d.country)+'</div></div>' +
+          '<span class="'+(d.verified?'verified-badge':'unverified-badge')+'">'+(d.verified?'✓ Verified business':'Unverified')+'</span>' +
+        '</div>' +
+        (avg!==null ? '<div class="rating-row"><span class="stars">'+starString(avg)+'</span><b>'+avg.toFixed(1)+'</b><span>('+d.reviews.length+' review'+(d.reviews.length===1?'':'s')+')</span></div>' : '<div class="no-reviews" style="margin:10px 0;">No reviews yet</div>') +
+        '<div class="chip-row">'+chipsHtml+'</div>' +
+        '<div class="dmc-desc">'+d.desc+'</div>' +
+        '<div class="trust-row"><span><b>'+d.bookings+'+</b> bookings completed</span><span>Responds within <b>'+d.responseHrs+'h</b></span><span><b>'+d.packages.length+'</b> packages published</span></div>' +
+        '<div class="hero-actions">' +
+          heroActions +
+        '</div>' +
+      '</div>' +
+
+      '<div class="section-title">Packages from '+(subscribed ? d.name : 'this DMC')+'</div>' +
+      '<div class="section-note">Published by this DMC from their own Packages catalog.</div>' +
+      '<div class="pkg-grid">'+pkgHtml+'</div>' +
+
+      '<div class="section-title">Reviews</div>' +
+      '<div class="reviews-card">'+reviewsHtml+'</div>';
+  }
+
+  window.openPackageDetail = function(pkgId){
+    var d = getDmc();
+    var p = d.packages.find(function(x){return x.id===pkgId;});
+    var actionBtn = isSubscribed() ?
+      '<button class="confirm" onclick="openQuoteRequest(\''+p.id+'\')">Request quote for this package</button>' :
+      '<button class="confirm btn-locked" onclick="window.location.href=\'pumpkino-pricing.html\'">🔒 Subscribe to request quote</button>';
+    showModal(
+      '<h2>'+p.title+'</h2>' +
+      '<div class="m-sub">'+p.dest+' · '+p.duration+' · '+p.price+' '+p.unit+'</div>' +
+      '<div style="font-weight:700; font-size:12.5px; color:var(--heading); margin-bottom:6px;">Highlights</div>' +
+      '<ul class="pkg-detail-list">'+p.highlights.map(function(h){return '<li>'+h+'</li>';}).join('')+'</ul>' +
+      '<div class="modal-actions">' +
+        '<button class="cancel" onclick="closeModal()">Close</button>' +
+        actionBtn +
+      '</div>'
+    );
+  };
+
+  window.openReviewForm = function(){
+    var d = getDmc();
+    showModal(
+      '<h2>Review '+d.name+'</h2>' +
+      '<div class="m-sub">Shared publicly with other agencies on the marketplace.</div>' +
+      '<label class="field-lbl">Your rating</label>' +
+      '<div class="star-picker" id="starPicker">' +
+        [1,2,3,4,5].map(function(n){ return '<span data-n="'+n+'" onclick="setStarRating('+n+')">★</span>'; }).join('') +
+      '</div>' +
+      '<label class="field-lbl">Your review</label>' +
+      '<textarea class="field-in" id="reviewComment" rows="3" placeholder="Share your experience working with this DMC…"></textarea>' +
+      '<div class="modal-actions">' +
+        '<button class="cancel" onclick="closeModal()">Cancel</button>' +
+        '<button class="confirm" onclick="submitReview()">Submit review</button>' +
+      '</div>'
+    );
+    window._pendingRating = 5;
+    setStarRating(5);
+  };
+
+  window.setStarRating = function(n){
+    window._pendingRating = n;
+    document.querySelectorAll('#starPicker span').forEach(function(s){
+      s.classList.toggle('on', Number(s.getAttribute('data-n')) <= n);
+    });
+  };
+
+  window.submitReview = function(){
+    var d = getDmc();
+    var comment = document.getElementById('reviewComment').value.trim();
+    if(!comment){ alert('Please write a short review before submitting.'); return; }
+    d.reviews.unshift({agency:'Trekking Miles Holidays', rating:window._pendingRating, comment:comment, date: todayLabel()});
+    closeModal();
+    renderDetail();
+  };
+
+  window.openQuoteRequest = function(pkgId){
+    if(!isSubscribed()){
+      showModal(
+        '<h2>Subscribe to send quote requests</h2>' +
+        '<div class="m-sub">Quote requests reveal your itinerary needs to the DMC. This is unlocked on any paid Pumpkino plan.</div>' +
+        '<div class="modal-actions"><button class="cancel" onclick="closeModal()">Cancel</button><button class="confirm" onclick="window.location.href=\'pumpkino-pricing.html\'">See plans</button></div>'
+      );
+      return;
+    }
+    var d = getDmc();
+    var pkg = pkgId ? d.packages.find(function(x){return x.id===pkgId;}) : null;
+    showModal(
+      '<h2>Send quote request — '+d.name+'</h2>' +
+      '<div class="m-sub">'+(pkg ? 'Regarding: '+pkg.title : 'This creates a new connection between your agency and this DMC.')+'</div>' +
+      '<div class="grid2">' +
+        '<div><label class="field-lbl">Destination</label><input class="field-in" id="qrDest" value="'+(pkg ? pkg.dest : d.destinations[0])+'"></div>' +
+        '<div><label class="field-lbl">Travel dates</label><input class="field-in" id="qrDates" placeholder="e.g. 12-16 Aug 2026"></div>' +
+      '</div>' +
+      '<div class="grid2">' +
+        '<div><label class="field-lbl">Travelers (pax)</label><input class="field-in" id="qrPax" placeholder="e.g. 2 adults" value="2 adults"></div>' +
+        '<div><label class="field-lbl">Budget (approx.)</label><input class="field-in" id="qrBudget" value="'+(pkg ? pkg.price : '')+'"></div>' +
+      '</div>' +
+      '<label class="field-lbl">Notes for the DMC</label>' +
+      '<textarea class="field-in" id="qrNotes" rows="3" placeholder="Any specific requirements…"></textarea>' +
+      '<div class="modal-actions">' +
+        '<button class="cancel" onclick="closeModal()">Cancel</button>' +
+        '<button class="confirm" onclick="confirmQuoteRequest()">Send request</button>' +
+      '</div>'
+    );
+  };
+
+  window.confirmQuoteRequest = function(){
+    var d = getDmc();
+    showModal(
+      '<h2>Request sent</h2>' +
+      '<div class="success-note">✓ Your quote request was sent to '+d.name+'. They typically respond within '+d.responseHrs+' hours.</div>' +
+      '<div class="modal-actions" style="margin-top:16px;"><button class="confirm" style="width:100%;" onclick="closeModal()">Done</button></div>'
+    );
+  };
+
+  function showModal(html){
+    document.getElementById('modalBody').innerHTML = html;
+    document.getElementById('overlay').classList.add('show');
+  }
+  window.closeModal = function(){ document.getElementById('overlay').classList.remove('show'); };
+  document.getElementById('overlay').addEventListener('click', function(e){
+    if(e.target.id==='overlay') window.closeModal();
+  });
+
+  renderSubBanner();
+  renderDetail();
+})();
+</script>
+</body>
+</html>

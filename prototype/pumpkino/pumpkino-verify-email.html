@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pumpkino — Verify your email</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  :root{
+    --primary:#0D3B2F; --primary-deep:#0A3026; --secondary:#D8A43B;
+    --bg:#F8F7F3; --card:#FFFFFF; --border:#E9E5DD;
+    --heading:#16221D; --body:#5E625F; --muted:#8E948E;
+    --success:#2F8F5B; --success-bg:#E7F3EA;
+    --danger:#D9534F; --danger-bg:#FBEAE9;
+    --ai:#7B5CFA; --ai-bg:#EFEAFE;
+    --r-btn:12px; --r-card:18px; --r-input:12px;
+    --shadow-lg:0 24px 60px rgba(0,0,0,.10);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); font-family:'Inter',sans-serif; color:var(--body); font-size:15px; line-height:1.55;}
+  .wrap{min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;}
+  .card{width:440px; max-width:100%; background:var(--card); border:1px solid var(--border); border-radius:var(--r-card); padding:34px 30px; box-shadow:var(--shadow-lg); text-align:center;}
+  .logo{display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:22px;}
+  .logo .mark{width:32px;height:32px;border-radius:9px;background:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--secondary);font-size:14px;}
+  .logo .word{font-weight:700;font-size:16.5px;color:var(--heading);}
+  .icon{width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 16px;}
+  .icon.wait{background:var(--ai-bg); color:var(--ai);}
+  .icon.ok{background:var(--success-bg); color:var(--success);}
+  h1{font-size:21px; font-weight:800; color:var(--heading); margin:0 0 8px;}
+  .sub{font-size:13.5px; color:var(--muted); margin-bottom:20px;}
+  .sub b{color:var(--heading);}
+  .btn{background:var(--primary); color:#fff; border:none; border-radius:var(--r-btn); padding:12px 18px; font-size:13.5px; font-weight:700; cursor:pointer; width:100%;}
+  .btn:hover{background:var(--primary-deep);}
+  .btn.ghost{background:transparent; border:1px solid var(--border); color:var(--body); margin-top:10px;}
+  .demo-note{background:var(--ai-bg); border:1px dashed var(--ai); border-radius:var(--r-input); padding:11px 13px; font-size:12px; color:#4B3A9E; margin:16px 0; text-align:left;}
+  .step{display:none;}
+  .step.show{display:block;}
+  .trial-note{background:var(--success-bg); border:1px solid rgba(47,143,91,.25); color:var(--success); border-radius:var(--r-input); padding:10px 13px; font-size:12px; font-weight:600; margin-top:14px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="logo"><div class="mark">P</div><div class="word">pumpkino</div></div>
+
+    <div class="step show" id="step1">
+      <div class="icon wait">✉️</div>
+      <h1>Verify your email</h1>
+      <div class="sub">We sent a verification link to <b id="emailLabel">you@company.com</b>. Click it to activate your account — your 7-day free trial is already running in the meantime.</div>
+      <div class="demo-note">🧪 <b>Demo prototype</b> — no real email is sent. Use the button below to simulate opening the link from your inbox.</div>
+      <button class="btn" onclick="simulateVerify()">Simulate clicking the verification link</button>
+      <button class="btn ghost" onclick="resendLink()">Resend link</button>
+    </div>
+
+    <div class="step" id="step2">
+      <div class="icon ok">✓</div>
+      <h1>Email verified</h1>
+      <div class="sub">Your account is fully active. Let's get you set up.</div>
+      <div class="trial-note">🎉 Your 7-day free trial is running — no action needed to keep using it.</div>
+      <button class="btn" style="margin-top:16px;" onclick="continueOn()">Continue</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var email = params.get('email') || 'you@company.com';
+  var role = params.get('role') || 'agent';
+  document.getElementById('emailLabel').textContent = email;
+
+  window.resendLink = function(){
+    alert('Verification link resent to ' + email + ' (demo — no real email is sent).');
+  };
+
+  window.simulateVerify = function(){
+    document.getElementById('step1').classList.remove('show');
+    document.getElementById('step2').classList.add('show');
+  };
+
+  window.continueOn = function(){
+    window.location.href = 'pumpkino-login.html';
+  };
+})();
+</script>
+</body>
+</html>

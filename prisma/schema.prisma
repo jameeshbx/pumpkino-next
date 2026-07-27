@@ -1,0 +1,591 @@
+// Pumpkino — Prisma schema
+// Derived from prototype/pumpkino/Pumpkino_PRD.md (Sections 3 & 8) and the
+// prototype HTML data models.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum AccountType {
+  AGENCY
+  DMC
+}
+
+enum Plan {
+  TRIAL
+  FREE
+  STARTER
+  GROWTH
+  SCALE
+}
+
+enum VerificationStatus {
+  NOT_SUBMITTED
+  SUBMITTED
+  APPROVED
+  REJECTED
+}
+
+enum GatewayKind {
+  RAZORPAY
+  PAYPAL
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+}
+
+enum InvoiceStatus {
+  PAID
+  PENDING
+  REFUNDED
+}
+
+enum ListingStatus {
+  PUBLISHED
+  DRAFT
+}
+
+// Agency CRM funnel — pure funnel position (PRD: keep `stage` clean).
+enum LeadStage {
+  NEW
+  SENT
+  CONFIRMED
+  DMC
+  MARKUP
+  PAYMENT
+  DONE
+}
+
+// DMC portal request funnel.
+enum RequestStage {
+  NEW
+  REVIEW
+  SENT
+  PAYMENT
+  DONE
+}
+
+// Outcome layer, deliberately separate from stage (PRD design decision).
+enum LifecycleStatus {
+  ACTIVE
+  LOST
+  CANCELLED
+}
+
+enum LostReason {
+  // Agency dashboard (customer-facing)
+  REJECTED_QUOTE
+  NO_RESPONSE_AFTER_REVISION
+  REJECTED_AFTER_PRICING
+  NO_RESPONSE_EXPIRED
+  // DMC portal (agency-facing)
+  AGENCY_DECLINED
+  AGENCY_BOOKED_ELSEWHERE
+}
+
+enum CancelReason {
+  CANCELLED_AFTER_ADVANCE
+  CANCELLED_AFTER_FULL_PAYMENT
+}
+
+enum InitiatedBy {
+  CUSTOMER
+  AGENCY
+  DMC
+  OPS
+}
+
+enum PaymentStateAtExit {
+  NONE
+  ADVANCE_PAID
+  FULLY_PAID
+}
+
+enum RefundStatus {
+  NOT_APPLICABLE
+  PENDING
+  PROCESSED
+  DENIED
+}
+
+enum DisputeStatus {
+  OPEN
+  RESOLVED
+}
+
+enum RoleScope {
+  PLATFORM
+  ACCOUNT
+}
+
+enum TaxAppliesTo {
+  TOTAL
+  MARGIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  REMOVED
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Accounts & users
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Account {
+  id                 String             @id @default(cuid())
+  type               AccountType
+  name               String
+  contactName        String
+  email              String             @unique
+  phone              String?
+  city               String?
+  state              String?
+  country            String
+  plan               Plan               @default(TRIAL)
+  trialEndsAt        DateTime?
+  verificationStatus VerificationStatus @default(NOT_SUBMITTED)
+  suspended          Boolean            @default(false)
+  mrr                Int                @default(0) // minor-free INR/USD amount for admin reporting
+  gateway            GatewayKind?
+  // Tax profile (admin-editable, pre-filled by country; PRD Section 3)
+  taxSchemeKey       String?
+  taxRate            Decimal?           @db.Decimal(5, 2)
+  taxAppliesTo       TaxAppliesTo?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  users                     User[]
+  subscriptions             Subscription[]
+  invoices                  Invoice[]
+  verificationSubmissions   VerificationSubmission[]
+  dmcListing                DmcListing?
+  leads                     Lead[]
+  agencyQuoteRequests       QuoteRequest[]           @relation("AgencyRequests")
+  dmcQuoteRequests          QuoteRequest[]           @relation("DmcRequests")
+  agencyDisputes            Dispute[]                @relation("AgencyDisputes")
+  dmcDisputes               Dispute[]                @relation("DmcDisputes")
+  auditLogs                 AuditLog[]
+
+  @@index([type, plan])
+  @@index([verificationStatus])
+}
+
+model User {
+  id                   String     @id @default(cuid())
+  accountId            String? // null → platform (ops) staff
+  account              Account?   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  name                 String
+  email                String     @unique
+  passwordHash         String
+  emailVerifiedAt      DateTime?
+  status               UserStatus @default(ACTIVE)
+  // Team model (PRD Section 3): explicit reference, not label matching.
+  teamType             String? // cosmetic label for Team Leads, e.g. "Sales"
+  teamLeadId           String?
+  teamLead             User?      @relation("TeamReports", fields: [teamLeadId], references: [id], onDelete: SetNull)
+  reports              User[]     @relation("TeamReports")
+  assignedDestinations String[]   @default([])
+  // Account lockout (OWASP)
+  failedLoginCount     Int        @default(0)
+  lockedUntil          DateTime?
+  passwordChangedAt    DateTime?
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+
+  roles                  UserRole[]
+  auditLogs              AuditLog[]
+  passwordResetTokens    PasswordResetToken[]
+  emailVerificationTokens EmailVerificationToken[]
+  assignedLeads          Lead[]                   @relation("AssignedLeads")
+  createdLeads           Lead[]                   @relation("CreatedLeads")
+
+  @@index([accountId])
+  @@index([teamLeadId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RBAC — roles are configurable rows, permissions are extensible rows
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Role {
+  id          String     @id @default(cuid())
+  key         String     @unique // e.g. "AGENCY_OWNER", "OPS_ADMIN"
+  name        String
+  scope       RoleScope
+  accountType AccountType? // which account type this role applies to (null → platform)
+  isSystem    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+
+  permissions RolePermission[]
+  users       UserRole[]
+}
+
+model Permission {
+  id          String @id @default(cuid())
+  key         String @unique // e.g. "leads:manage", "users:manage"
+  description String
+
+  roles RolePermission[]
+}
+
+model RolePermission {
+  roleId       String
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permissionId String
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+}
+
+model UserRole {
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roleId String
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Auth support
+// ─────────────────────────────────────────────────────────────────────────────
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique // sha256 of the raw token — raw value is never stored
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+model EmailVerificationToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+// DB-backed fixed-window rate limiting (no extra infra needed in dev; swap
+// for Redis behind the same port in a multi-region deployment).
+model RateLimitBucket {
+  key       String   @id // e.g. "login:1.2.3.4:user@x.com"
+  count     Int      @default(0)
+  resetsAt  DateTime
+
+  @@index([resetsAt])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Audit log
+// ─────────────────────────────────────────────────────────────────────────────
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorUserId String?
+  actor       User?    @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+  accountId   String?
+  account     Account? @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  action      String // e.g. "auth.login", "users.role_changed"
+  entityType  String?
+  entityId    String?
+  ipAddress   String?
+  userAgent   String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@index([accountId, createdAt])
+  @@index([actorUserId, createdAt])
+  @@index([action, createdAt])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Verification (decoupled from access — PRD key rule)
+// ─────────────────────────────────────────────────────────────────────────────
+
+model VerificationSubmission {
+  id           String             @id @default(cuid())
+  accountId    String
+  account      Account            @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  gstin        String?
+  iata         String?
+  bizReg       String?
+  extra        String?
+  fileAttached Boolean            @default(false)
+  status       VerificationStatus @default(SUBMITTED)
+  reviewNote   String?
+  reviewedById String?
+  submittedAt  DateTime           @default(now())
+  reviewedAt   DateTime?
+
+  @@index([status, submittedAt])
+  @@index([accountId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Billing (gateways mocked behind a port — PRD Section 7 defers real APIs)
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Subscription {
+  id               String             @id @default(cuid())
+  accountId        String
+  account          Account            @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  plan             Plan
+  status           SubscriptionStatus @default(ACTIVE)
+  gateway          GatewayKind
+  currency         String // "INR" | "USD"
+  amount           Int // per month, in whole currency units (matches prototype)
+  startedAt        DateTime           @default(now())
+  currentPeriodEnd DateTime
+  cancelledAt      DateTime?
+
+  invoices Invoice[]
+
+  @@index([accountId, status])
+}
+
+model Invoice {
+  id             String        @id @default(cuid())
+  number         String        @unique // e.g. "PMK-INV-2026-00001"
+  accountId      String
+  account        Account       @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  subscriptionId String?
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  description    String
+  amount         Int
+  currency       String
+  gateway        GatewayKind
+  status         InvoiceStatus @default(PAID)
+  issuedAt       DateTime      @default(now())
+
+  @@index([accountId, issuedAt])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Marketplace (phase 1: listings are admin-curated)
+// ─────────────────────────────────────────────────────────────────────────────
+
+model DmcListing {
+  id           String        @id @default(cuid())
+  accountId    String?       @unique // optional link to a real DMC account
+  account      Account?      @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  name         String
+  city         String
+  country      String
+  destinations String[]      @default([])
+  services     String[]      @default([])
+  verified     Boolean       @default(false)
+  bookings     Int           @default(0)
+  responseHrs  Int           @default(24)
+  description  String        @default("")
+  status       ListingStatus @default(DRAFT)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  packages      DmcPackage[]
+  reviews       DmcReview[]
+  quoteRequests QuoteRequest[]
+
+  @@index([status, country])
+}
+
+model DmcPackage {
+  id         String     @id @default(cuid())
+  listingId  String
+  listing    DmcListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  title      String
+  dest       String
+  duration   String // e.g. "4N / 5D" (matches prototype free-text)
+  price      Int
+  unit       String // e.g. "per person"
+  icon       String?
+  highlights String[]   @default([])
+
+  @@index([listingId])
+}
+
+model DmcReview {
+  id        String     @id @default(cuid())
+  listingId String
+  listing   DmcListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  agency    String
+  rating    Int
+  comment   String
+  date      DateTime   @default(now())
+
+  @@index([listingId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Quote requests — the single shared table both sides read (PRD Section 8)
+// ─────────────────────────────────────────────────────────────────────────────
+
+model QuoteRequest {
+  id              String       @id @default(cuid())
+  agencyAccountId String
+  agencyAccount   Account      @relation("AgencyRequests", fields: [agencyAccountId], references: [id], onDelete: Cascade)
+  dmcAccountId    String? // null while the listing has no linked DMC account
+  dmcAccount      Account?     @relation("DmcRequests", fields: [dmcAccountId], references: [id], onDelete: SetNull)
+  listingId       String?
+  listing         DmcListing?  @relation(fields: [listingId], references: [id], onDelete: SetNull)
+
+  agentName   String
+  agencyName  String
+  destination String
+  pax         String
+  nights      Int?
+  startDate   DateTime?
+  budget      String?
+  message     String?
+
+  stage       RequestStage @default(NEW)
+  // Set when the DMC actually sends a quote (never before — PRD Section 3).
+  quoteId     String?      @unique // "PMK-Q-{year}-{5-digit seq}"
+  quotedPrice Int?
+  // Set when the booking is fully paid; always traceable back to quoteId.
+  bookingId   String?      @unique // "PMK-B-{year}-{5-digit seq}"
+
+  // Outcome layer
+  lifecycleStatus    LifecycleStatus     @default(ACTIVE)
+  exitedAtStage      RequestStage?
+  lostReason         LostReason?
+  cancelReason       CancelReason?
+  initiatedBy        InitiatedBy?
+  paymentStateAtExit PaymentStateAtExit?
+  refundStatus       RefundStatus        @default(NOT_APPLICABLE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([dmcAccountId, lifecycleStatus, stage])
+  @@index([agencyAccountId, createdAt])
+  @@index([listingId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Agency CRM — leads
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Lead {
+  id        String  @id @default(cuid())
+  accountId String
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  name        String
+  destination String
+  pax         String?
+  mobile      String?
+  email       String?
+  startDate   DateTime?
+
+  stage      LeadStage @default(NEW)
+  quotedPrice Int?
+  dmcName     String?
+  dmcPrice    Int?
+  finalPrice  Int?
+  markupLabel String?
+  orderId     String?
+
+  assignedToId String?
+  assignedTo   User?   @relation("AssignedLeads", fields: [assignedToId], references: [id], onDelete: SetNull)
+  createdById  String?
+  createdBy    User?   @relation("CreatedLeads", fields: [createdById], references: [id], onDelete: SetNull)
+
+  // Outcome layer (mirrors QuoteRequest)
+  lifecycleStatus    LifecycleStatus     @default(ACTIVE)
+  exitedAtStage      LeadStage?
+  lostReason         LostReason?
+  cancelReason       CancelReason?
+  initiatedBy        InitiatedBy?
+  paymentStateAtExit PaymentStateAtExit?
+  refundStatus       RefundStatus        @default(NOT_APPLICABLE)
+
+  // CSV import provenance (PRD Section 3 "Lead import")
+  importedNotes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  activities LeadActivity[]
+
+  @@index([accountId, lifecycleStatus, stage])
+  @@index([assignedToId])
+}
+
+// Timeline of everything that happened to a lead (incl. lifecycle log).
+model LeadActivity {
+  id        String   @id @default(cuid())
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  type      String // "created" | "stage_changed" | "marked_lost" | "cancelled" | "reopened" | ...
+  message   String
+  metadata  Json?
+  actorName String?
+  createdAt DateTime @default(now())
+
+  @@index([leadId, createdAt])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Disputes
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Dispute {
+  id              String        @id @default(cuid())
+  agencyAccountId String?
+  agencyAccount   Account?      @relation("AgencyDisputes", fields: [agencyAccountId], references: [id], onDelete: SetNull)
+  dmcAccountId    String?
+  dmcAccount      Account?      @relation("DmcDisputes", fields: [dmcAccountId], references: [id], onDelete: SetNull)
+  subject         String
+  status          DisputeStatus @default(OPEN)
+  raisedBy        String
+  createdAt       DateTime      @default(now())
+
+  notes DisputeNote[]
+
+  @@index([status, createdAt])
+}
+
+model DisputeNote {
+  id        String   @id @default(cuid())
+  disputeId String
+  dispute   Dispute  @relation(fields: [disputeId], references: [id], onDelete: Cascade)
+  author    String
+  body      String
+  createdAt DateTime @default(now())
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Atomic document sequences (PMK-Q-…, PMK-B-…, PMK-INV-…) — PRD requires a
+// shared counter so concurrent writers can never collide.
+// ─────────────────────────────────────────────────────────────────────────────
+
+model DocumentSequence {
+  kind  String // "QUOTE" | "BOOKING" | "INVOICE"
+  year  Int
+  value Int    @default(0)
+
+  @@id([kind, year])
+}

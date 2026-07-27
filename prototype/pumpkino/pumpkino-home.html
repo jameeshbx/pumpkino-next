@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pumpkino — Every itinerary, quote, and booking, orchestrated by AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#FBFAF7;font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;text-wrap:pretty}
+  a{color:#123D2B;text-decoration:none}
+  a:hover{color:#E7B343}
+  ::selection{background:#E7B343;color:#123D2B}
+  details summary::-webkit-details-marker{display:none}
+  @keyframes pk-float{0%,100%{transform:translate(0,0)}50%{transform:translate(18px,-24px)}}
+  @keyframes pk-float2{0%,100%{transform:translate(0,0)}50%{transform:translate(-22px,20px)}}
+  @keyframes pk-pulse{0%,100%{box-shadow:0 0 0 0 rgba(231,179,67,0.45)}50%{box-shadow:0 0 0 10px rgba(231,179,67,0)}}
+  @keyframes pk-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.7)}}
+  @keyframes pk-shimmer{0%{background-position:0% 0}100%{background-position:200% 0}}
+  @keyframes pk-blink{0%,100%{opacity:1}50%{opacity:0}}
+  .navlink:hover{color:#123D2B !important; border-bottom-color:#E7B343 !important;}
+  .cta-ghost:hover{border-color:#123D2B !important;}
+  .cta-gold:hover{background:#d9a530 !important;}
+</style>
+</head>
+<body>
+
+<div id="pk-home" style="background:#FBFAF7;color:#1D1D1D;overflow-x:hidden">
+
+  <!-- NAV -->
+  <div style="position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:16px 5vw;background:rgba(251,250,247,0.85);backdrop-filter:blur(10px);border-bottom:1px solid rgba(18,61,43,0.08)">
+    <a href="pumpkino-home.html" style="display:flex;align-items:center;gap:10px">
+      <div style="width:30px;height:30px;border-radius:8px;background:#123D2B;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;color:#E7B343;font-size:16px">P</div>
+      <span style="font-family:'Playfair Display',serif;font-weight:700;font-size:19px;letter-spacing:-0.01em;color:#123D2B">Pumpkino</span>
+    </a>
+    <div style="display:flex;align-items:center;gap:36px;flex-wrap:wrap">
+      <a href="#platform" class="navlink" style="font-size:14.5px;font-weight:500;color:#3d3d3a;padding-bottom:2px;border-bottom:1.5px solid transparent">Platform</a>
+      <a href="pumpkino-marketplace.html" class="navlink" style="font-size:14.5px;font-weight:500;color:#3d3d3a;padding-bottom:2px;border-bottom:1.5px solid transparent">Find a DMC</a>
+      <a href="#dmc-portal" class="navlink" style="font-size:14.5px;font-weight:500;color:#3d3d3a;padding-bottom:2px;border-bottom:1.5px solid transparent">For DMCs</a>
+      <a href="pumpkino-pricing.html" class="navlink" style="font-size:14.5px;font-weight:500;color:#3d3d3a;padding-bottom:2px;border-bottom:1.5px solid transparent">Pricing</a>
+      <a href="pumpkino-support.html" class="navlink" style="font-size:14.5px;font-weight:500;color:#3d3d3a;padding-bottom:2px;border-bottom:1.5px solid transparent">Support</a>
+      <a href="#faq" class="navlink" style="font-size:14.5px;font-weight:500;color:#3d3d3a;padding-bottom:2px;border-bottom:1.5px solid transparent">FAQ</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:18px">
+      <a href="pumpkino-login.html" style="font-size:14.5px;font-weight:600;color:#1D1D1D">Log in</a>
+      <a href="pumpkino-signup.html" class="cta-gold" style="font-size:14px;font-weight:600;color:#123D2B;background:#E7B343;padding:10px 20px;border-radius:8px">Start free trial</a>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div style="position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;padding:88px 5vw 40px;gap:22px;overflow:hidden">
+    <div style="position:absolute;top:-60px;left:6%;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(231,179,67,0.22),transparent 70%);filter:blur(10px);animation:pk-float 9s ease-in-out infinite;pointer-events:none;z-index:0"></div>
+    <div style="position:absolute;top:40px;right:8%;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(18,61,43,0.12),transparent 70%);filter:blur(10px);animation:pk-float2 11s ease-in-out infinite;pointer-events:none;z-index:0"></div>
+    <div style="position:relative;display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:rgba(18,61,43,0.06);border:1px solid rgba(18,61,43,0.14);font-size:12.5px;font-weight:600;color:#123D2B;letter-spacing:0.02em;z-index:1">
+      <span style="width:6px;height:6px;border-radius:50%;background:#E7B343;animation:pk-dot 1.6s ease-in-out infinite"></span>
+      THE OPERATING SYSTEM FOR TRAVEL OPERATIONS
+    </div>
+    <h1 style="font-family:'Playfair Display',serif;font-weight:700;font-size:clamp(40px,4.6vw,62px);line-height:1.08;letter-spacing:-0.015em;margin:0;max-width:920px;color:#123D2B">Every itinerary, quote, and booking — orchestrated by AI.</h1>
+    <p style="font-size:18px;line-height:1.6;color:#5B5B54;max-width:620px;margin:0">Pumpkino unifies leads, AI-drafted itineraries, supplier quotes, and payments into one intelligent workspace built for agencies, DMCs, and tour operators.</p>
+    <div style="display:flex;gap:14px;margin-top:6px;flex-wrap:wrap;justify-content:center">
+      <a href="pumpkino-signup.html" class="cta-gold" style="font-size:15px;font-weight:600;color:#123D2B;background:#E7B343;padding:14px 26px;border-radius:9px">Start 7-day free trial</a>
+      <a href="pumpkino-marketplace.html" class="cta-ghost" style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:#123D2B;background:transparent;border:1px solid rgba(18,61,43,0.2);padding:14px 22px;border-radius:9px">Browse the DMC marketplace →</a>
+    </div>
+    <div style="display:inline-flex;align-items:center;gap:10px;font-size:13.5px;color:#123D2B;font-weight:600">
+      <span style="color:#E7B343">⚡</span> Lead to shared itinerary in <span style="background:#E7B343;color:#123D2B;font-weight:800;padding:2px 8px;border-radius:6px">8.42 seconds</span> — no credit card required
+    </div>
+  </div>
+
+  <!-- HERO FLOW INFOGRAPHIC -->
+  <div style="display:flex;justify-content:center;padding:12px 5vw 96px">
+    <div style="width:100%;max-width:1180px">
+      <div style="display:flex;align-items:baseline;justify-content:center;gap:10px;margin-bottom:44px">
+        <span style="font-size:13px;font-weight:700;color:#8a8a7f;letter-spacing:0.06em;text-transform:uppercase">Total elapsed time</span>
+        <span style="font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:#123D2B"><span id="pk-counter">0.00</span><span style="font-size:16px;font-weight:600;color:#E7B343">s</span></span>
+      </div>
+      <div style="position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding:0 20px">
+        <div style="position:absolute;top:19px;left:12%;right:12%;height:2px;background:linear-gradient(90deg,#123D2B,#E7B343,#123D2B,#E7B343);background-size:200% 100%;animation:pk-shimmer 3s linear infinite"></div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:0 14px">
+          <div style="width:40px;height:40px;border-radius:50%;background:#123D2B;color:#E7B343;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;z-index:1;border:4px solid #FBFAF7">1</div>
+          <div style="text-align:center">
+            <div style="font-size:13.5px;font-weight:700;color:#123D2B">Lead received</div>
+            <div style="font-size:11.5px;color:#8a8a7f;margin-top:2px">0.00s · via WhatsApp</div>
+          </div>
+          <div style="background:#fff;border:1px solid rgba(18,61,43,0.1);border-radius:12px;padding:12px;width:100%">
+            <div style="background:#F5F3EE;border-radius:10px 10px 10px 2px;padding:10px;font-size:11.5px;color:#1D1D1D;line-height:1.5">"5N Bali trip, 4 people, honeymoon, ₹2L budget."<span style="display:inline-block;width:2px;height:12px;background:#123D2B;margin-left:2px;vertical-align:middle;animation:pk-blink 1s step-end infinite"></span></div>
+            <div style="font-size:10px;color:#8a8a7f;margin-top:6px">Priya Nair</div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:0 14px">
+          <div style="width:40px;height:40px;border-radius:50%;background:#123D2B;color:#E7B343;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;z-index:1;border:4px solid #FBFAF7;animation:pk-pulse 2s ease-out infinite">2</div>
+          <div style="text-align:center">
+            <div style="font-size:13.5px;font-weight:700;color:#123D2B">AI drafts itinerary</div>
+            <div style="font-size:11.5px;color:#8a8a7f;margin-top:2px">4.10s · auto-priced</div>
+          </div>
+          <div style="background:#fff;border:1px solid rgba(18,61,43,0.1);border-radius:12px;padding:12px;width:100%;display:flex;flex-direction:column;gap:6px">
+            <div style="background:#F5F3EE;border-radius:8px;padding:7px 9px;font-size:11px;font-weight:600;color:#123D2B">D1–2 · Ubud villa</div>
+            <div style="background:#F5F3EE;border-radius:8px;padding:7px 9px;font-size:11px;font-weight:600;color:#123D2B">D3–4 · Seminyak resort</div>
+            <div style="background:#F5F3EE;border-radius:8px;padding:7px 9px;font-size:11px;font-weight:600;color:#123D2B">D5 · Sunset cruise</div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:0 14px">
+          <div style="width:40px;height:40px;border-radius:50%;background:#123D2B;color:#E7B343;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;z-index:1;border:4px solid #FBFAF7">3</div>
+          <div style="text-align:center">
+            <div style="font-size:13.5px;font-weight:700;color:#123D2B">Agent fine-tunes</div>
+            <div style="font-size:11.5px;color:#8a8a7f;margin-top:2px">7.05s · one edit</div>
+          </div>
+          <div style="background:#fff;border:1px solid rgba(18,61,43,0.1);border-radius:12px;padding:12px;width:100%">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#8a8a7f;margin-bottom:6px"><span>Seminyak resort</span><span style="text-decoration:line-through">₹1,10,000</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;color:#123D2B"><span>Upgraded to ocean villa</span><span>₹1,42,000</span></div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:0 14px">
+          <div style="width:40px;height:40px;border-radius:50%;background:#E7B343;color:#123D2B;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;z-index:1;border:4px solid #FBFAF7">✓</div>
+          <div style="text-align:center">
+            <div style="font-size:13.5px;font-weight:700;color:#123D2B">Shared with customer</div>
+            <div style="font-size:11.5px;color:#8a8a7f;margin-top:2px">8.42s · PDF + WhatsApp</div>
+          </div>
+          <div style="background:#123D2B;border-radius:12px;padding:12px;width:100%">
+            <div style="font-size:12px;font-weight:700;color:#fff">Bali Honeymoon · 5N/6D</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+              <span style="font-size:10.5px;color:rgba(245,243,238,0.7)">Sent to Priya</span>
+              <span style="font-size:13.5px;font-weight:700;color:#E7B343">₹4,44,000</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VALUE PROPS -->
+  <div id="platform" style="padding:64px 5vw 120px;max-width:1240px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:64px">
+      <div style="font-size:13px;font-weight:700;color:#E7B343;letter-spacing:0.08em;text-transform:uppercase">Our value to you</div>
+      <h2 style="font-family:'Playfair Display',serif;font-weight:700;font-size:36px;color:#123D2B;margin:10px 0 0">Everything a modern agency runs on</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+      <div style="background:#fff;border:1px solid rgba(18,61,43,0.07);border-radius:14px;padding:28px">
+        <div style="width:40px;height:40px;border-radius:11px;background:rgba(231,179,67,0.16);margin-bottom:20px;display:flex;align-items:center;justify-content:center;font-size:18px">✦</div>
+        <div style="font-weight:700;font-size:16.5px;color:#123D2B;margin-bottom:7px">AI Itinerary Builder</div>
+        <div style="font-size:14px;color:#5B5B54;line-height:1.55;margin-bottom:14px">Turn a customer inquiry into a priced, day-by-day itinerary in minutes, not hours.</div>
+      </div>
+      <div style="background:#fff;border:1px solid rgba(18,61,43,0.07);border-radius:14px;padding:28px">
+        <div style="width:40px;height:40px;border-radius:11px;background:rgba(18,61,43,0.07);margin-bottom:20px;display:flex;align-items:center;justify-content:center;font-size:18px">◈</div>
+        <div style="font-weight:700;font-size:16.5px;color:#123D2B;margin-bottom:7px">DMC & Supplier Marketplace</div>
+        <div style="font-size:14px;color:#5B5B54;line-height:1.55;margin-bottom:14px">Request, compare, and lock in quotes from vetted DMCs and tour operators.</div>
+        <a href="pumpkino-marketplace.html" style="font-size:13px;font-weight:600">Browse marketplace →</a>
+      </div>
+      <div style="background:#fff;border:1px solid rgba(18,61,43,0.07);border-radius:14px;padding:28px">
+        <div style="width:40px;height:40px;border-radius:11px;background:rgba(231,179,67,0.16);margin-bottom:20px;display:flex;align-items:center;justify-content:center;font-size:18px">◎</div>
+        <div style="font-weight:700;font-size:16.5px;color:#123D2B;margin-bottom:7px">Payments, Forex & Invoicing</div>
+        <div style="font-size:14px;color:#5B5B54;line-height:1.55;margin-bottom:14px">Collect global payments via Razorpay or PayPal, track exchange rates, and reconcile GST automatically.</div>
+      </div>
+      <div style="background:#fff;border:1px solid rgba(18,61,43,0.07);border-radius:14px;padding:28px">
+        <div style="width:40px;height:40px;border-radius:11px;background:rgba(18,61,43,0.07);margin-bottom:20px;display:flex;align-items:center;justify-content:center;font-size:18px">▤</div>
+        <div style="font-weight:700;font-size:16.5px;color:#123D2B;margin-bottom:7px">Unified CRM & Pipeline</div>
+        <div style="font-size:14px;color:#5B5B54;line-height:1.55;margin-bottom:14px">Every lead, conversation, and document lives in one AI-scored pipeline.</div>
+      </div>
+      <div style="background:#fff;border:1px solid rgba(18,61,43,0.07);border-radius:14px;padding:28px">
+        <div style="width:40px;height:40px;border-radius:11px;background:rgba(231,179,67,0.16);margin-bottom:20px;display:flex;align-items:center;justify-content:center;font-size:18px">◐</div>
+        <div style="font-weight:700;font-size:16.5px;color:#123D2B;margin-bottom:7px">Live Dashboards & Reports</div>
+        <div style="font-size:14px;color:#5B5B54;line-height:1.55;margin-bottom:14px">Revenue, conversion, and agent performance — updated in real time.</div>
+      </div>
+      <div style="background:#fff;border:1px solid rgba(18,61,43,0.07);border-radius:14px;padding:28px">
+        <div style="width:40px;height:40px;border-radius:11px;background:rgba(18,61,43,0.07);margin-bottom:20px;display:flex;align-items:center;justify-content:center;font-size:18px">⟲</div>
+        <div style="font-weight:700;font-size:16.5px;color:#123D2B;margin-bottom:7px">Workflow Automation</div>
+        <div style="font-size:14px;color:#5B5B54;line-height:1.55;margin-bottom:14px">Auto-assign leads, send follow-ups, and trigger reminders — no manual chasing.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DMC SEARCH -->
+  <div id="dmc-search" style="padding:96px 5vw;max-width:1240px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:44px">
+      <div style="font-size:13px;font-weight:700;color:#E7B343;letter-spacing:0.08em;text-transform:uppercase">DMC marketplace</div>
+      <h2 style="font-family:'Playfair Display',serif;font-weight:700;font-size:36px;color:#123D2B;margin:10px 0 8px">Find a DMC for any destination, worldwide</h2>
+      <p style="font-size:15px;color:#5B5B54;margin:0;max-width:560px;margin-left:auto;margin-right:auto">Browse packages by destination for free. Subscribe to unlock DMC names, exact location and direct quote requests.</p>
+    </div>
+    <a href="pumpkino-marketplace.html" style="display:flex;gap:12px;max-width:640px;margin:0 auto 36px;background:#fff;border:1px solid rgba(18,61,43,0.14);border-radius:12px;padding:8px 8px 8px 18px;align-items:center;box-shadow:0 6px 18px rgba(18,61,43,0.06)">
+      <span style="color:#8a8a7f;font-size:14px">🔍</span>
+      <span style="flex:1;font-size:14.5px;color:#8a8a7f;text-align:left">Search destination — e.g. Bali, Kerala, Vietnam…</span>
+      <span class="cta-gold" style="font-size:13.5px;font-weight:600;color:#123D2B;background:#E7B343;padding:11px 20px;border-radius:8px">Search</span>
+    </a>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:40px">
+      <a href="pumpkino-marketplace.html" style="font-size:12.5px;font-weight:600;color:#123D2B;background:rgba(18,61,43,0.06);border:1px solid rgba(18,61,43,0.12);padding:7px 14px;border-radius:999px">Kerala, India</a>
+      <a href="pumpkino-marketplace.html" style="font-size:12.5px;font-weight:600;color:#123D2B;background:rgba(18,61,43,0.06);border:1px solid rgba(18,61,43,0.12);padding:7px 14px;border-radius:999px">Rajasthan, India</a>
+      <a href="pumpkino-marketplace.html" style="font-size:12.5px;font-weight:600;color:#123D2B;background:rgba(18,61,43,0.06);border:1px solid rgba(18,61,43,0.12);padding:7px 14px;border-radius:999px">UAE</a>
+      <a href="pumpkino-marketplace.html" style="font-size:12.5px;font-weight:600;color:#123D2B;background:rgba(18,61,43,0.06);border:1px solid rgba(18,61,43,0.12);padding:7px 14px;border-radius:999px">Thailand</a>
+      <a href="pumpkino-marketplace.html" style="font-size:12.5px;font-weight:600;color:#123D2B;background:rgba(18,61,43,0.06);border:1px solid rgba(18,61,43,0.12);padding:7px 14px;border-radius:999px">Goa</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+      <a href="pumpkino-dmc-detail.html?id=1" style="background:#fff;border:1px solid rgba(18,61,43,0.1);border-radius:16px;overflow:hidden;display:block">
+        <div style="height:120px;background:#E7F3EA;display:flex;align-items:center;justify-content:center;font-size:34px">🛶</div>
+        <div style="padding:18px;display:flex;flex-direction:column;gap:10px">
+          <div style="font-size:12px;font-weight:700;color:#E7B343;letter-spacing:0.04em;text-transform:uppercase">Kerala, India</div>
+          <div style="font-size:14.5px;font-weight:700;color:#123D2B">Backwater Bliss — Alleppey Houseboat</div>
+          <div style="font-size:13px;color:#5B5B54">Private houseboat · All meals · From ₹18,500/couple</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:10px;border-top:1px solid rgba(18,61,43,0.08)">
+            <span style="font-size:12.5px;color:#8a8a7f;font-style:italic">✓ Verified DMC — Kerala</span>
+            <span style="font-size:11px;font-weight:700;color:#123D2B;background:rgba(231,179,67,0.2);padding:5px 10px;border-radius:999px">🔒 Subscribe to unlock</span>
+          </div>
+        </div>
+      </a>
+      <a href="pumpkino-dmc-detail.html?id=3" style="background:#fff;border:1px solid rgba(18,61,43,0.1);border-radius:16px;overflow:hidden;display:block">
+        <div style="height:120px;background:#FCF0DC;display:flex;align-items:center;justify-content:center;font-size:34px">🐫</div>
+        <div style="padding:18px;display:flex;flex-direction:column;gap:10px">
+          <div style="font-size:12px;font-weight:700;color:#E7B343;letter-spacing:0.04em;text-transform:uppercase">Abu Dhabi, UAE</div>
+          <div style="font-size:14.5px;font-weight:700;color:#123D2B">Abu Dhabi City & Desert Safari</div>
+          <div style="font-size:13px;color:#5B5B54">Grand Mosque tour · Desert safari · From $650/pax</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:10px;border-top:1px solid rgba(18,61,43,0.08)">
+            <span style="font-size:12.5px;color:#8a8a7f;font-style:italic">✓ Verified DMC — UAE</span>
+            <span style="font-size:11px;font-weight:700;color:#123D2B;background:rgba(231,179,67,0.2);padding:5px 10px;border-radius:999px">🔒 Subscribe to unlock</span>
+          </div>
+        </div>
+      </a>
+      <a href="pumpkino-dmc-detail.html?id=4" style="background:#fff;border:1px solid rgba(18,61,43,0.1);border-radius:16px;overflow:hidden;display:block">
+        <div style="height:120px;background:#EFEAFE;display:flex;align-items:center;justify-content:center;font-size:34px">🛕</div>
+        <div style="padding:18px;display:flex;flex-direction:column;gap:10px">
+          <div style="font-size:12px;font-weight:700;color:#E7B343;letter-spacing:0.04em;text-transform:uppercase">Bangkok, Thailand</div>
+          <div style="font-size:14.5px;font-weight:700;color:#123D2B">Bangkok City Explorer</div>
+          <div style="font-size:13px;color:#5B5B54">Grand Palace tour · River cruise · From $420/pax</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:10px;border-top:1px solid rgba(18,61,43,0.08)">
+            <span style="font-size:12.5px;color:#8a8a7f;font-style:italic">Unverified DMC — Thailand</span>
+            <span style="font-size:11px;font-weight:700;color:#123D2B;background:rgba(231,179,67,0.2);padding:5px 10px;border-radius:999px">🔒 Subscribe to unlock</span>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div style="text-align:center;margin-top:32px">
+      <span style="font-size:13.5px;color:#8a8a7f">Package details are always free to browse. </span>
+      <a href="pumpkino-marketplace.html" style="font-size:13.5px;font-weight:600">View the full DMC marketplace →</a>
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <div id="pricing" style="padding:96px 5vw;background:#F5F3EE">
+    <div style="text-align:center;margin-bottom:52px">
+      <div style="font-size:13px;font-weight:700;color:#E7B343;letter-spacing:0.08em;text-transform:uppercase">Pricing</div>
+      <h2 style="font-family:'Playfair Display',serif;font-weight:700;font-size:36px;color:#123D2B;margin:10px 0 8px">Plans that grow with your agency</h2>
+      <p style="font-size:15px;color:#5B5B54;margin:0 0 22px">All plans include a 7-day free trial. Secure payments via Razorpay (India) or PayPal (international).</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:1120px;margin:0 auto">
+      <div style="background:#fff;border:1px solid rgba(18,61,43,0.1);border-radius:18px;padding:32px;display:flex;flex-direction:column;gap:18px">
+        <div style="font-size:15px;font-weight:700;color:#123D2B">Starter</div>
+        <div style="font-size:13px;color:#8a8a7f;min-height:34px">For solo consultants & small teams</div>
+        <div style="display:flex;align-items:baseline;gap:4px"><span style="font-size:34px;font-weight:700;color:#123D2B">₹1,499</span><span style="font-size:13px;color:#8a8a7f">/ month</span></div>
+        <a href="pumpkino-signup.html" style="text-align:center;font-size:14px;font-weight:600;color:#123D2B;background:transparent;border:1px solid rgba(18,61,43,0.25);padding:12px;border-radius:9px">Start free trial</a>
+      </div>
+      <div style="background:#123D2B;border-radius:18px;padding:32px;display:flex;flex-direction:column;gap:18px;position:relative;box-shadow:0 24px 48px rgba(18,61,43,0.25)">
+        <span style="position:absolute;top:-13px;left:32px;background:#E7B343;color:#123D2B;font-size:11.5px;font-weight:700;padding:5px 12px;border-radius:999px">MOST POPULAR</span>
+        <div style="font-size:15px;font-weight:700;color:#fff">Growth</div>
+        <div style="font-size:13px;color:rgba(245,243,238,0.65);min-height:34px">For growing agencies managing multiple DMCs</div>
+        <div style="display:flex;align-items:baseline;gap:4px"><span style="font-size:34px;font-weight:700;color:#fff">₹4,999</span><span style="font-size:13px;color:rgba(245,243,238,0.6)">/ month</span></div>
+        <a href="pumpkino-signup.html" class="cta-gold" style="text-align:center;font-size:14px;font-weight:600;color:#123D2B;background:#E7B343;padding:12px;border-radius:9px">Start free trial</a>
+      </div>
+      <div style="background:#fff;border:1px solid rgba(18,61,43,0.1);border-radius:18px;padding:32px;display:flex;flex-direction:column;gap:18px">
+        <div style="font-size:15px;font-weight:700;color:#123D2B">Scale</div>
+        <div style="font-size:13px;color:#8a8a7f;min-height:34px">For large agencies & DMC networks</div>
+        <div style="display:flex;align-items:baseline;gap:4px"><span style="font-size:34px;font-weight:700;color:#123D2B">₹14,999</span><span style="font-size:13px;color:#8a8a7f">/ month</span></div>
+        <a href="pumpkino-pricing.html" style="text-align:center;font-size:14px;font-weight:600;color:#123D2B;background:transparent;border:1px solid rgba(18,61,43,0.25);padding:12px;border-radius:9px">See full plan details</a>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:28px">
+      <a href="pumpkino-pricing.html" style="font-size:13.5px;font-weight:600">Compare all plan features →</a>
+    </div>
+  </div>
+
+  <!-- DMC ADVANTAGES -->
+  <div id="dmc-portal" style="background:#123D2B;padding:96px 5vw">
+    <div style="max-width:1240px;margin:0 auto;display:grid;grid-template-columns:0.85fr 1.15fr;gap:64px;align-items:center">
+      <div>
+        <div style="display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:#123D2B;background:#E7B343;padding:6px 14px;border-radius:999px;letter-spacing:0.04em;margin-bottom:18px"><span style="width:6px;height:6px;border-radius:50%;background:#123D2B;animation:pk-dot 1.6s ease-in-out infinite"></span>FREE FOR DMCs · NO SUBSCRIPTION</div>
+        <h2 style="font-family:'Playfair Display',serif;font-weight:700;font-size:34px;color:#fff;line-height:1.2;margin:0 0 18px">Win more bookings by responding first.</h2>
+        <p style="font-size:15.5px;color:rgba(245,243,238,0.75);line-height:1.65;margin:0 0 28px">Every quote request — from Pumpkino agents, direct clients, or your own channels — lands in one AI-sorted queue. List your packages on the Pumpkino marketplace and get discovered by subscribed agencies searching your destinations.</p>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;gap:14px"><span style="width:8px;height:8px;border-radius:50%;background:#E7B343;margin-top:7px;flex-shrink:0"></span><div><div style="font-size:14.5px;font-weight:700;color:#fff">Receive quote requests instantly</div><div style="font-size:13.5px;color:rgba(245,243,238,0.65);margin-top:2px">New inquiries from agents nationwide arrive in one live queue — no email chasing.</div></div></div>
+          <div style="display:flex;gap:14px"><span style="width:8px;height:8px;border-radius:50%;background:#E7B343;margin-top:7px;flex-shrink:0"></span><div><div style="font-size:14.5px;font-weight:700;color:#fff">Get listed on the DMC marketplace</div><div style="font-size:13.5px;color:rgba(245,243,238,0.65);margin-top:2px">Your destinations and packages become discoverable to every subscribed agency on Pumpkino.</div></div></div>
+          <div style="display:flex;gap:14px"><span style="width:8px;height:8px;border-radius:50%;background:#E7B343;margin-top:7px;flex-shrink:0"></span><div><div style="font-size:14.5px;font-weight:700;color:#fff">Manage travel agent relationships</div><div style="font-size:13.5px;color:rgba(245,243,238,0.65);margin-top:2px">See every connected agent, their booking history, and repeat business at a glance.</div></div></div>
+          <div style="display:flex;gap:14px"><span style="width:8px;height:8px;border-radius:50%;background:#E7B343;margin-top:7px;flex-shrink:0"></span><div><div style="font-size:14.5px;font-weight:700;color:#fff">Track bookings, payments & invoices</div><div style="font-size:13.5px;color:rgba(245,243,238,0.65);margin-top:2px">Confirmed trips, advance payments, and invoices stay reconciled automatically.</div></div></div>
+        </div>
+        <a href="pumpkino-signup.html?role=dmc" class="cta-gold" style="display:inline-flex;margin-top:30px;font-size:14.5px;font-weight:600;color:#123D2B;background:#E7B343;padding:13px 26px;border-radius:9px">Join as a DMC — it's free</a>
+      </div>
+      <div style="background:#F5F3EE;border-radius:18px;padding:22px;box-shadow:0 30px 60px rgba(0,0,0,0.35)">
+        <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#123D2B;margin-bottom:2px">Good morning, Meridian DMC Group</div>
+        <div style="font-size:12px;color:#8a8a7f;margin-bottom:16px">3 quote requests awaiting response</div>
+        <div style="background:#123D2B;border-radius:12px;padding:16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div>
+            <div style="font-size:10.5px;font-weight:700;color:rgba(245,243,238,0.6);letter-spacing:0.04em">AVG. QUOTE RESPONSE TIME</div>
+            <div style="font-size:24px;font-weight:700;color:#fff;margin-top:4px">3h 40m</div>
+            <div style="font-size:11px;color:rgba(245,243,238,0.55);margin-top:2px">Industry benchmark is 24h+</div>
+          </div>
+          <span style="font-size:11px;font-weight:700;color:#123D2B;background:#E7B343;padding:6px 12px;border-radius:999px;white-space:nowrap">Beating average</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px">
+          <div style="background:#fff;border-radius:9px;padding:10px"><div style="font-size:9.5px;font-weight:700;color:#8a8a7f">PENDING</div><div style="font-size:17px;font-weight:700;color:#123D2B">3</div></div>
+          <div style="background:#fff;border-radius:9px;padding:10px"><div style="font-size:9.5px;font-weight:700;color:#8a8a7f">QUOTES SENT</div><div style="font-size:17px;font-weight:700;color:#123D2B">1</div></div>
+          <div style="background:#fff;border-radius:9px;padding:10px"><div style="font-size:9.5px;font-weight:700;color:#8a8a7f">INVENTORY</div><div style="font-size:17px;font-weight:700;color:#123D2B">9</div></div>
+          <div style="background:#fff;border-radius:9px;padding:10px"><div style="font-size:9.5px;font-weight:700;color:#8a8a7f">AGENTS</div><div style="font-size:17px;font-weight:700;color:#123D2B">2</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+          <div style="background:#fff;border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:7px">
+            <div style="font-size:10px;font-weight:700;color:#8a8a7f">NEW REQUEST · 2</div>
+            <div style="background:#F5F3EE;border-radius:8px;padding:8px"><div style="font-size:11.5px;font-weight:700;color:#123D2B">Lucas Ferreira</div><div style="font-size:10px;color:#8a8a7f">Munnar · 3N · Family of 4</div></div>
+          </div>
+          <div style="background:#fff;border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:7px">
+            <div style="font-size:10px;font-weight:700;color:#8a8a7f">QUOTE SENT · 1</div>
+            <div style="background:#F5F3EE;border-radius:8px;padding:8px"><div style="font-size:11.5px;font-weight:700;color:#123D2B">Arjun Menon</div><div style="font-size:10px;color:#8a8a7f">Kumarakom · ₹38,000</div></div>
+          </div>
+          <div style="background:#fff;border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:7px">
+            <div style="font-size:10px;font-weight:700;color:#8a8a7f">PAYMENT PENDING · 1</div>
+            <div style="background:#F5F3EE;border-radius:8px;padding:8px"><div style="font-size:11.5px;font-weight:700;color:#123D2B">Sneha Rao</div><div style="font-size:10px;color:#8a8a7f">Munnar · ₹21,500</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div style="padding:96px 5vw;max-width:1100px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:56px">
+      <div style="font-size:13px;font-weight:700;color:#E7B343;letter-spacing:0.08em;text-transform:uppercase">How this works</div>
+      <h2 style="font-family:'Playfair Display',serif;font-weight:700;font-size:36px;color:#123D2B;margin:10px 0 0">Create, customize, confirm — in five steps</h2>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0">
+      <div style="display:flex;gap:24px;padding:24px 0;border-top:1px solid rgba(18,61,43,0.1)">
+        <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#E7B343;width:56px;flex-shrink:0">01</div>
+        <div><div style="font-size:17px;font-weight:700;color:#123D2B;margin-bottom:4px">Sign up & start free instantly</div><div style="font-size:14.5px;color:#5B5B54;line-height:1.6">Register your agency and start your 7-day trial right away — verification is optional and never blocks access.</div></div>
+      </div>
+      <div style="display:flex;gap:24px;padding:24px 0;border-top:1px solid rgba(18,61,43,0.1)">
+        <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#E7B343;width:56px;flex-shrink:0">02</div>
+        <div><div style="font-size:17px;font-weight:700;color:#123D2B;margin-bottom:4px">Customize your agency profile</div><div style="font-size:14.5px;color:#5B5B54;line-height:1.6">Add your logo, brand details, and (whenever ready) submit business documents for verification.</div></div>
+      </div>
+      <div style="display:flex;gap:24px;padding:24px 0;border-top:1px solid rgba(18,61,43,0.1)">
+        <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#E7B343;width:56px;flex-shrink:0">03</div>
+        <div><div style="font-size:17px;font-weight:700;color:#123D2B;margin-bottom:4px">Manage itinerary requests</div><div style="font-size:14.5px;color:#5B5B54;line-height:1.6">Inquiries land from WhatsApp or email; draft tailored plans with the AI builder.</div></div>
+      </div>
+      <div style="display:flex;gap:24px;padding:24px 0;border-top:1px solid rgba(18,61,43,0.1)">
+        <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#E7B343;width:56px;flex-shrink:0">04</div>
+        <div><div style="font-size:17px;font-weight:700;color:#123D2B;margin-bottom:4px">Find DMCs on the marketplace</div><div style="font-size:14.5px;color:#5B5B54;line-height:1.6">Subscribe to unlock DMC names and send quote requests directly from their profile.</div></div>
+      </div>
+      <div style="display:flex;gap:24px;padding:24px 0;border-top:1px solid rgba(18,61,43,0.1);border-bottom:1px solid rgba(18,61,43,0.1)">
+        <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#E7B343;width:56px;flex-shrink:0">05</div>
+        <div><div style="font-size:17px;font-weight:700;color:#123D2B;margin-bottom:4px">Confirm & track bookings</div><div style="font-size:14.5px;color:#5B5B54;line-height:1.6">Notify the DMC, track status live, and manage payments through the forex module.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div id="faq" style="padding:96px 5vw;max-width:840px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:44px">
+      <div style="font-size:13px;font-weight:700;color:#E7B343;letter-spacing:0.08em;text-transform:uppercase">FAQ</div>
+      <h2 style="font-family:'Playfair Display',serif;font-weight:700;font-size:32px;color:#123D2B;margin:10px 0 0">Got questions? We've got answers</h2>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <details style="background:#fff;border:1px solid rgba(18,61,43,0.1);border-radius:12px;padding:18px 20px"><summary style="cursor:pointer;font-size:15px;font-weight:600;color:#123D2B;list-style:none">What is Pumpkino for?</summary><p style="font-size:14px;color:#5B5B54;line-height:1.6;margin:12px 0 0">Pumpkino helps travel agencies create, customize, and manage itineraries while connecting with a marketplace of DMCs and handling bookings and payments in one workspace.</p></details>
+      <details style="background:#fff;border:1px solid rgba(18,61,43,0.1);border-radius:12px;padding:18px 20px"><summary style="cursor:pointer;font-size:15px;font-weight:600;color:#123D2B;list-style:none">Who can see a DMC's name on the marketplace?</summary><p style="font-size:14px;color:#5B5B54;line-height:1.6;margin:12px 0 0">Anyone can browse destinations and packages for free. Only agencies on a paid subscription can see the DMC's real name, exact location, and send quote requests — this protects DMCs from being contacted outside the platform.</p></details>
+      <details style="background:#fff;border:1px solid rgba(18,61,43,0.1);border-radius:12px;padding:18px 20px"><summary style="cursor:pointer;font-size:15px;font-weight:600;color:#123D2B;list-style:none">Do you support direct bookings with DMCs and suppliers?</summary><p style="font-size:14px;color:#5B5B54;line-height:1.6;margin:12px 0 0">Yes — request, compare, and confirm quotes from your DMC network without leaving the platform.</p></details>
+      <details style="background:#fff;border:1px solid rgba(18,61,43,0.1);border-radius:12px;padding:18px 20px"><summary style="cursor:pointer;font-size:15px;font-weight:600;color:#123D2B;list-style:none">What payment options are available?</summary><p style="font-size:14px;color:#5B5B54;line-height:1.6;margin:12px 0 0">Razorpay for India-billed accounts, PayPal for international accounts — plus built-in forex conversion and GST-ready invoicing.</p></details>
+      <details style="background:#fff;border:1px solid rgba(18,61,43,0.1);border-radius:12px;padding:18px 20px"><summary style="cursor:pointer;font-size:15px;font-weight:600;color:#123D2B;list-style:none">Is there a free trial?</summary><p style="font-size:14px;color:#5B5B54;line-height:1.6;margin:12px 0 0">Every plan includes a 7-day free trial — no credit card required, and business verification is optional and never blocks access.</p></details>
+    </div>
+  </div>
+
+  <!-- FINAL CTA -->
+  <div style="background:#123D2B;padding:96px 5vw;text-align:center">
+    <h2 style="font-family:'Playfair Display',serif;font-weight:700;font-size:38px;color:#fff;margin:0 0 14px">Ready to supercharge your agency?</h2>
+    <p style="font-size:16px;color:rgba(245,243,238,0.75);margin:0 0 30px">Create, edit & share travel plans in minutes.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a href="pumpkino-signup.html" class="cta-gold" style="font-size:15px;font-weight:600;color:#123D2B;background:#E7B343;padding:14px 26px;border-radius:9px">Try for free</a>
+      <a href="pumpkino-support.html" style="font-size:15px;font-weight:600;color:#fff;background:transparent;border:1px solid rgba(255,255,255,0.3);padding:14px 26px;border-radius:9px">Contact us</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="padding:48px 5vw;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:20px;border-top:1px solid rgba(18,61,43,0.08)">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:24px;height:24px;border-radius:6px;background:#123D2B;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;color:#E7B343;font-size:13px">P</div>
+      <span style="font-size:13.5px;color:#8a8a7f">© 2026 Pumpkino. All rights reserved.</span>
+    </div>
+    <div style="display:flex;gap:24px;font-size:13.5px;color:#5B5B54;flex-wrap:wrap">
+      <a href="pumpkino-marketplace.html">Marketplace</a>
+      <a href="pumpkino-pricing.html">Pricing</a>
+      <a href="pumpkino-support.html">Support</a>
+      <a href="pumpkino-terms.html">Terms</a>
+      <a href="pumpkino-privacy.html">Privacy</a>
+      <a href="pumpkino-refund-policy.html">Refunds</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  function pkRunCounter(){
+    var el = document.getElementById('pk-counter');
+    if (!el) return;
+    var start = null, dur = 1400, target = 8.42;
+    function step(ts){
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      el.textContent = (target * p).toFixed(2);
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', pkRunCounter);
+  } else {
+    pkRunCounter();
+  }
+
+  // Scroll-reveal for sections (progressive enhancement — page is fully
+  // readable even if this never runs).
+  var revealTargets = ['#platform','#dmc-search','#pricing','#dmc-portal','#faq'];
+  var els = [];
+  revealTargets.forEach(function(sel){
+    var el = document.querySelector(sel);
+    if (el) els.push(el);
+  });
+  if (window.IntersectionObserver && els.length){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){
+          entry.target.style.opacity = 1;
+          entry.target.style.transform = 'translateY(0)';
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    els.forEach(function(el){
+      el.style.opacity = 0;
+      el.style.transform = 'translateY(24px)';
+      el.style.transition = 'opacity .7s ease, transform .7s ease';
+      io.observe(el);
+    });
+  }
+})();
+</script>
+</body>
+</html>

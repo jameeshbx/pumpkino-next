@@ -1,0 +1,2312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pumpkino — DMC Portal</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    /* ---- Design System v2.0 tokens ---- */
+    --primary:#0D3B2F;
+    --primary-deep:#0A3026;
+    --secondary:#D8A43B;
+    --bg:#F8F7F3;
+    --card:#FFFFFF;
+    --border:#E9E5DD;
+    --heading:#16221D;
+    --body:#5E625F;
+    --muted:#8E948E;
+    --success:#2F8F5B;
+    --success-bg:#E7F3EA;
+    --warning:#E39A22;
+    --warning-bg:#FCF0DC;
+    --danger:#D9534F;
+    --danger-bg:#FBEAE9;
+    --ai:#7B5CFA;
+    --ai-bg:#EFEAFE;
+    --info:#3B82F6;
+    --info-bg:#E8F1FE;
+
+    --sidebar-bg:#0D3B2F;
+    --sidebar-active:#174D3A;
+    --sidebar-hover:#124535;
+    --sidebar-text:#F5F6F4;
+    --sidebar-inactive:rgba(255,255,255,0.72);
+
+    --r-btn:12px;
+    --r-card:18px;
+    --r-dialog:20px;
+    --r-search:18px;
+    --r-input:12px;
+    --r-badge:999px;
+
+    --shadow-sm:0 4px 12px rgba(0,0,0,.04);
+    --shadow-md:0 8px 24px rgba(0,0,0,.06);
+    --shadow-lg:0 20px 60px rgba(0,0,0,.08);
+
+    --fs-hero:34px;
+    --fs-section:24px;
+    --fs-card:20px;
+    --fs-body:15px;
+    --fs-caption:13px;
+    --fs-small:11px;
+
+    --sp-4:4px; --sp-8:8px; --sp-12:12px; --sp-16:16px; --sp-24:24px; --sp-32:32px; --sp-48:48px; --sp-64:64px;
+  }
+
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); font-family:'Inter',sans-serif; color:var(--body); font-size:var(--fs-body); line-height:1.55; -webkit-font-smoothing:antialiased;}
+  .shell{display:flex; min-height:100vh;}
+
+  /* ================= Sidebar ================= */
+  .sidebar{width:260px; background:var(--sidebar-bg); color:var(--sidebar-text); padding:0 var(--sp-12) var(--sp-16); flex-shrink:0; display:flex; flex-direction:column; gap:0; position:sticky; top:0; height:100vh; overflow-y:auto;}
+  .logo{display:flex; align-items:center; gap:10px; height:88px; padding:0 var(--sp-8);}
+  .logo .mark{width:34px;height:34px;border-radius:var(--r-btn);background:var(--secondary);display:flex;align-items:center;justify-content:center;font-weight:700;color:#3A2A05;font-size:15px; box-shadow:0 0 0 1px rgba(255,255,255,.08) inset;}
+  .logo .word{font-weight:700;font-size:17.5px;letter-spacing:.2px; color:#fff;}
+  .logo .sub{font-size:var(--fs-small); color:rgba(255,255,255,.5); margin-top:2px;}
+  .nav-item{display:flex; align-items:center; gap:12px; height:46px; padding:0 var(--sp-12); border-radius:var(--r-btn); font-size:var(--fs-caption); color:var(--sidebar-inactive); font-weight:500; cursor:default; position:relative; margin-bottom:var(--sp-4); transition:background .18s ease-out, color .18s ease-out;}
+  .nav-item .nav-dot{display:inline-block; width:19px; height:19px; border-radius:0; flex-shrink:0; opacity:1; background:currentColor; -webkit-mask-size:contain; mask-size:contain; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat; -webkit-mask-position:center; mask-position:center;}
+  .nav-item.active{background:var(--sidebar-active); color:var(--sidebar-text); font-weight:600;}
+  .nav-item.active::before{content:'';position:absolute; left:-12px; top:9px; bottom:9px; width:3px; background:var(--secondary); border-radius:0 3px 3px 0;}
+  .nav-item[onclick]{cursor:pointer;}
+  .nav-item[onclick]:hover{background:var(--sidebar-hover); color:var(--sidebar-text);}
+  .nav-section{font-size:var(--fs-small); text-transform:uppercase; letter-spacing:.8px; color:rgba(255,255,255,.45); margin:var(--sp-24) var(--sp-12) var(--sp-8); font-weight:700;}
+
+  #navDashboard .nav-dot{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 11l9-7 9 7'/><path d='M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9'/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 11l9-7 9 7'/><path d='M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9'/></svg>");}
+  #navQuoteRequests .nav-dot{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='8' cy='8' r='3'/><path d='M2 20c0-3.3 2.7-6 6-6s6 2.7 6 6'/><circle cx='17' cy='8' r='2.5'/><path d='M14.5 14.2c2.9.4 5 2.8 5 5.8'/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='8' cy='8' r='3'/><path d='M2 20c0-3.3 2.7-6 6-6s6 2.7 6 6'/><circle cx='17' cy='8' r='2.5'/><path d='M14.5 14.2c2.9.4 5 2.8 5 5.8'/></svg>");}
+  #navPackages .nav-dot{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M9 4 4 6v14l5-2 6 2 5-2V4l-5 2-6-2z'/><path d='M9 4v14M15 6v14'/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M9 4 4 6v14l5-2 6 2 5-2V4l-5 2-6-2z'/><path d='M9 4v14M15 6v14'/></svg>");}
+  #navInventory .nav-dot{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 7l9-4 9 4-9 4-9-4z'/><path d='M3 7v10l9 4 9-4V7'/><path d='M12 11v10'/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 7l9-4 9 4-9 4-9-4z'/><path d='M3 7v10l9 4 9-4V7'/><path d='M12 11v10'/></svg>");}
+  #navAgents .nav-dot{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='2' y='7' width='20' height='13' rx='2'/><path d='M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'/><path d='M2 13h20'/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='2' y='7' width='20' height='13' rx='2'/><path d='M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'/><path d='M2 13h20'/></svg>");}
+  #navBookings .nav-dot{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M8 12.5l2.5 2.5L16 9'/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M8 12.5l2.5 2.5L16 9'/></svg>");}
+  #navUpcoming .nav-dot{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='16' rx='2'/><path d='M3 9h18M8 3v4M16 3v4'/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='5' width='18' height='16' rx='2'/><path d='M3 9h18M8 3v4M16 3v4'/></svg>");}
+  #navPayments .nav-dot{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='2' y='6' width='20' height='13' rx='2'/><path d='M2 10h20'/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='2' y='6' width='20' height='13' rx='2'/><path d='M2 10h20'/></svg>");}
+  #navInvoices .nav-dot{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 3h9l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z'/><path d='M9 12h6M9 16h6'/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 3h9l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z'/><path d='M9 12h6M9 16h6'/></svg>");}
+  #navBankDetails .nav-dot{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 10 12 4l9 6'/><path d='M5 10v9M9 10v9M15 10v9M19 10v9'/><path d='M3 21h18'/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 10 12 4l9 6'/><path d='M5 10v9M9 10v9M15 10v9M19 10v9'/><path d='M3 21h18'/></svg>");}
+  #navUsers .nav-dot{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='9' cy='8' r='3'/><path d='M2.5 20c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5'/><circle cx='18' cy='8.5' r='2.3'/><path d='M15.8 13.8c2.5.5 4.2 2.7 4.2 5.4'/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='9' cy='8' r='3'/><path d='M2.5 20c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5'/><circle cx='18' cy='8.5' r='2.3'/><path d='M15.8 13.8c2.5.5 4.2 2.7 4.2 5.4'/></svg>");}
+  #navSettings .nav-dot{-webkit-mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='3'/><path d='M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z'/></svg>");mask-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='3'/><path d='M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z'/></svg>");}
+
+  .side-foot{margin-top:auto; display:flex; align-items:center; gap:10px; padding:var(--sp-12); border-top:1px solid rgba(255,255,255,.08); border-radius:var(--r-btn); transition:background .18s ease-out;}
+  .side-foot:hover{background:var(--sidebar-hover);}
+  .side-foot .av{width:34px;height:34px;border-radius:100%;background:var(--secondary);color:#3A2A05;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;}
+  .side-foot .nm{font-size:var(--fs-caption); font-weight:600; color:#fff;}
+  .side-foot .rl{font-size:var(--fs-small); color:rgba(255,255,255,.55);}
+
+  /* ================= Main ================= */
+  .main{flex:1; min-width:0; padding:var(--sp-32) var(--sp-32) 60px; max-width:1280px; margin:0 auto;}
+  .topbar{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:var(--sp-24); gap:16px;}
+  .topbar h1{font-weight:700; font-size:var(--fs-hero); margin:0; letter-spacing:-.02em; color:var(--heading);}
+  .topbar .sub{font-size:var(--fs-caption); color:var(--muted); margin-top:8px; font-weight:400;}
+  .search{background:var(--card); border:1px solid var(--border); border-radius:var(--r-search); padding:10px 16px 10px 36px; font-size:var(--fs-caption); color:var(--muted); width:236px; position:relative; flex-shrink:0;}
+  .search::before{content:'\26b2'; position:absolute; left:14px; top:50%; transform:translateY(-50%) rotate(90deg); font-size:12px; color:var(--muted);}
+
+  /* ---- Hero stat card ---- */
+  .hero{position:relative; overflow:hidden; background:linear-gradient(160deg, var(--primary) 0%, var(--primary-deep) 100%); color:var(--sidebar-text); border-radius:var(--r-card); padding:var(--sp-24) var(--sp-32); display:flex; justify-content:space-between; align-items:center; margin-bottom:var(--sp-24); box-shadow:var(--shadow-lg);}
+  .hero::before{content:''; position:absolute; inset:0; opacity:.12; pointer-events:none; background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 300'><circle cx='480' cy='90' r='58' fill='white'/><path d='M60 230 Q160 170 260 210 T460 190 T600 210 V300 H0 V250 Z' fill='white'/></svg>"); background-repeat:no-repeat; background-position:right -10px top -10px; background-size:50% auto;}
+  .hero>div:first-child{position:relative; z-index:1;}
+  .hero .lab{font-size:var(--fs-caption); color:rgba(245,246,244,.62); letter-spacing:.3px; text-transform:uppercase; font-weight:600;}
+  .hero .val{font-size:30px; font-weight:700; margin-top:6px; letter-spacing:-.01em;}
+  .hero .note{font-size:var(--fs-caption); color:rgba(245,246,244,.62); margin-top:6px;}
+  .hero .pill{background:rgba(255,255,255,.1); color:var(--secondary); font-size:var(--fs-caption); padding:6px 14px; border-radius:var(--r-badge); font-weight:600; position:relative; z-index:1;}
+
+  /* ---- KPI cards ---- */
+  .kpis{display:grid; grid-template-columns:repeat(5,1fr); gap:var(--sp-16); margin-bottom:var(--sp-24);}
+  .kpi{background:var(--card); border:1px solid var(--border); border-radius:var(--r-card); padding:var(--sp-16); text-align:left; min-width:0; overflow:hidden; height:104px; display:flex; flex-direction:column; justify-content:space-between; transition:transform .2s ease-out, box-shadow .2s ease-out, border-color .2s ease-out; position:relative;}
+  .kpi:hover{transform:translateY(-3px); box-shadow:var(--shadow-md); border-color:var(--secondary);}
+  .kpi .l{font-size:var(--fs-caption); color:var(--body); font-weight:500;}
+  .kpi .v{font-size:22px; font-weight:700; color:var(--heading); letter-spacing:-.01em; word-break:break-word; overflow-wrap:anywhere;}
+  .kpi::before{content:''; width:32px; height:32px; border-radius:50%; flex-shrink:0; background-repeat:no-repeat; background-position:center; background-size:15px 15px;}
+  .kpi:nth-child(1)::before{background-color:var(--info-bg); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233B82F6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M12 7v5l3.5 2'/></svg>");}
+  .kpi:nth-child(2)::before{background-color:var(--ai-bg); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237B5CFA' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M9 4 4 6v14l5-2 6 2 5-2V4l-5 2-6-2z'/><path d='M9 4v14M15 6v14'/></svg>");}
+  .kpi:nth-child(3)::before{background-color:var(--success-bg); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232F8F5B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M8 12.5l2.5 2.5L16 9'/></svg>");}
+  .kpi:nth-child(4)::before{background-color:var(--warning-bg); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E39A22' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 7l9-4 9 4-9 4-9-4z'/><path d='M3 7v10l9 4 9-4V7'/></svg>");}
+  .kpi:nth-child(5)::before{background-color:var(--info-bg); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233B82F6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='9' cy='8' r='3'/><path d='M2.5 20c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5'/><circle cx='18' cy='8.5' r='2.3'/><path d='M15.8 13.8c2.5.5 4.2 2.7 4.2 5.4'/></svg>");}
+
+  .board-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:var(--sp-16); flex-wrap:wrap; gap:10px;}
+  .board-head h2{font-weight:700; font-size:var(--fs-section); margin:0; color:var(--heading); letter-spacing:-.01em;}
+  .board-head .tag{font-size:var(--fs-caption); color:var(--muted);}
+
+  /* ---- AI Assistant reminders card ---- */
+  .ai-card{background:var(--card); border:1px solid var(--border); border-radius:var(--r-card); padding:var(--sp-16) var(--sp-24); margin-bottom:var(--sp-24); box-shadow:var(--shadow-sm);}
+  .ai-card-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
+  .ai-card-title{font-weight:700; font-size:16px; color:var(--heading); display:flex; align-items:center; gap:8px;}
+  .ai-item{display:flex; align-items:flex-start; gap:10px; padding:9px 0; border-bottom:1px solid var(--border); font-size:var(--fs-caption); color:var(--body);}
+  .ai-item:last-child{border-bottom:none;}
+  .ai-dot{width:8px;height:8px;border-radius:50%; margin-top:5px; flex-shrink:0;}
+
+  /* ---- Kanban ---- */
+  .board{display:flex; gap:16px; overflow-x:auto; padding-bottom:10px;}
+  .col{background:#FBFAF6; border-radius:var(--r-card); padding:var(--sp-16) 12px; min-height:60px; border:1px solid var(--border); flex:1 1 160px; min-width:160px; max-width:280px;}
+  .col-head{display:flex; align-items:center; gap:8px; margin-bottom:var(--sp-12); padding:0 3px;}
+  .col-dot{width:9px;height:9px;border-radius:50%; flex-shrink:0;}
+  .col-title{font-size:var(--fs-caption); font-weight:700; color:var(--heading);}
+  .col-count{margin-left:auto; font-size:var(--fs-small); color:var(--muted);}
+
+  .card{background:var(--card); border-radius:var(--r-input); padding:var(--sp-16); margin-bottom:var(--sp-12); border:1px solid var(--border); cursor:pointer; transition:transform .2s ease-out, box-shadow .2s ease-out, border-color .2s ease-out;}
+  .card:hover{transform:translateY(-3px); box-shadow:var(--shadow-md); border-color:var(--secondary);}
+  .card .nm{font-size:var(--fs-body); font-weight:700; color:var(--heading);}
+  .card .dest{font-size:var(--fs-caption); color:var(--muted); margin-top:4px;}
+  .card .meta{display:flex; justify-content:space-between; align-items:center; margin-top:10px;}
+  .card .amt{font-size:var(--fs-caption); font-weight:700; color:var(--heading);}
+  .card .avatar{width:22px;height:22px;border-radius:100%;background:var(--bg);color:var(--body);font-size:var(--fs-small);font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .badge{display:inline-block; font-size:var(--fs-small); padding:4px 10px; border-radius:var(--r-badge); margin-top:8px; font-weight:700; letter-spacing:.01em;}
+  .badge.pk{background:var(--info-bg); color:var(--info);}
+  .badge.rev{background:var(--warning-bg); color:var(--warning);}
+  .badge.done{background:var(--success-bg); color:var(--success);}
+  .badge.paypend{background:var(--danger-bg); color:var(--danger);}
+  .badge.ai{background:var(--ai-bg); color:var(--ai);}
+
+  .dot-new{background:var(--info);}
+  .dot-review{background:var(--warning);}
+  .dot-sent{background:var(--ai);}
+  .dot-done{background:var(--success);}
+  .dot-paypend{background:var(--danger);}
+
+  /* ================= Modal ================= */
+  .overlay{display:none; position:fixed; inset:0; background:rgba(13,59,47,0.55); backdrop-filter:blur(2px); align-items:center; justify-content:center; z-index:50;}
+  .overlay.show{display:flex;}
+  .modal{background:var(--card); width:500px; max-width:92vw; max-height:86vh; overflow-y:auto; overflow-x:auto; border-radius:var(--r-dialog); padding:var(--sp-24) var(--sp-32); box-shadow:var(--shadow-lg); transition:width .15s ease-out;}
+  .modal.wide{width:820px;}
+  .seg-btn{display:inline-flex; gap:6px; flex-wrap:wrap;}
+  .modal h3{font-weight:700; font-size:var(--fs-card); margin:0 0 6px; letter-spacing:-.01em; color:var(--heading);}
+  .modal .subline{font-size:var(--fs-caption); color:var(--muted); margin-bottom:var(--sp-24); font-weight:400;}
+  .btn{background:var(--primary); color:#F5F6F4; border:none; border-radius:var(--r-btn); padding:12px 18px; font-size:var(--fs-caption); font-weight:600; cursor:pointer; width:100%; transition:background .18s ease-out, transform .15s ease-out, box-shadow .18s ease-out;}
+  .btn:hover{background:var(--primary-deep); box-shadow:var(--shadow-sm);}
+  .btn:active{transform:scale(.97);}
+  .btn.ghost{background:var(--card); color:var(--primary); border:1px solid var(--border);}
+  .btn.ghost:hover{border-color:var(--secondary); background:var(--bg);}
+  .steps{margin:var(--sp-16) 0;}
+  .step{display:flex; align-items:center; gap:10px; padding:10px 0; font-size:var(--fs-caption); color:var(--muted);}
+  .step .chk{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:10px;}
+  .step.active{color:var(--heading); font-weight:600;}
+  .step.active .chk{border-color:var(--secondary); background:#FBF2DF;}
+  .step.done{color:var(--heading);}
+  .step.done .chk{border-color:var(--success); background:var(--success); color:#fff;}
+  .price-box{background:var(--bg); border-radius:var(--r-card); padding:14px 16px; margin:var(--sp-16) 0; display:flex; justify-content:space-between; align-items:center; border:1px solid var(--border);}
+  .price-box .l{font-size:var(--fs-caption); color:var(--muted);}
+  .price-box .v{font-size:22px; font-weight:700; color:var(--primary);}
+  .lib-card{border:1px solid var(--border); border-radius:var(--r-card); padding:var(--sp-16); margin-bottom:var(--sp-12); background:var(--card); transition:transform .2s ease-out, box-shadow .2s ease-out, border-color .2s ease-out;}
+  .lib-card.pick{cursor:pointer;}
+  .lib-card.pick:hover{transform:translateY(-3px); border-color:var(--secondary); box-shadow:var(--shadow-md);}
+  .lib-card .t{font-size:var(--fs-body); font-weight:600; color:var(--heading);}
+  .lib-card .s{font-size:var(--fs-caption); color:var(--muted); margin-top:3px;}
+  .inv-row{display:flex; justify-content:space-between; align-items:center; padding:var(--sp-12) 2px; border-bottom:1px solid var(--border); font-size:var(--fs-caption); color:var(--body);}
+  .field-lbl{font-size:var(--fs-caption); color:var(--body); font-weight:600; display:block; margin-bottom:6px;}
+  .field-in{width:100%; padding:10px 13px; border:1px solid var(--border); border-radius:var(--r-input); font-size:var(--fs-caption); margin-top:4px; font-family:inherit; background:var(--card); color:var(--heading); transition:border-color .18s ease-out, box-shadow .18s ease-out;}
+  .field-in:focus{outline:none; border-color:var(--secondary); box-shadow:0 0 0 3px rgba(216,164,59,.18);}
+  .avail{font-size:var(--fs-small); font-weight:700; padding:3px 9px; border-radius:var(--r-badge);}
+  .avail.ok{background:var(--success-bg); color:var(--success);}
+  .avail.low{background:var(--warning-bg); color:var(--warning);}
+  .avail.none{background:var(--danger-bg); color:var(--danger);}
+
+  /* ================= Responsive ================= */
+  @media (max-width:1300px){
+    .kpis{grid-template-columns:repeat(3,1fr);}
+  }
+  @media (max-width:960px){
+    .kpis{grid-template-columns:repeat(2,1fr);}
+    .main{padding:24px 20px 48px;}
+    .sidebar{width:220px;}
+    .hero{padding:20px;}
+  }
+  @media (max-width:680px){
+    .kpis{grid-template-columns:1fr;}
+    .topbar{flex-direction:column; align-items:flex-start; gap:14px;}
+    .search{width:100%;}
+    .sidebar{width:200px; padding:0 8px 12px;}
+    .nav-item{font-size:12px; padding:0 8px; gap:8px;}
+    .hero{flex-direction:column; align-items:flex-start; gap:14px;}
+    .col{min-width:210px;}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="sidebar">
+    <div class="logo"><div class="mark">P</div><div><div class="word">pumpkino</div><div class="sub">DMC portal</div></div></div>
+    <div class="nav-item active" id="navDashboard"><span class="nav-dot"></span>Dashboard</div>
+    <div class="nav-item" id="navQuoteRequests" onclick="openQuoteInbox()"><span class="nav-dot"></span>Quote requests</div>
+    <div class="nav-item" id="navLostCancelled" onclick="openLostCancelled()"><span class="nav-dot"></span>Lost &amp; cancelled</div>
+    <div class="nav-item" id="navPackages" onclick="openPackages()"><span class="nav-dot"></span>Destinations &amp; packages</div>
+    <div class="nav-item" id="navInventory" onclick="openInventory()"><span class="nav-dot"></span>Inventory</div>
+    <div class="nav-item" id="navAgents" onclick="openAgents()"><span class="nav-dot"></span>Travel agents</div>
+    <div class="nav-item" id="navBookings" onclick="openBookings()"><span class="nav-dot"></span>Confirmed bookings</div>
+    <div class="nav-item" id="navUpcoming" onclick="openUpcomingTrips()"><span class="nav-dot"></span>Upcoming trips</div>
+    <div class="nav-item" id="navPayments" onclick="openPayments()"><span class="nav-dot"></span>Payments</div>
+    <div class="nav-item" id="navInvoices" onclick="openInvoices()"><span class="nav-dot"></span>Invoices</div>
+    <div class="nav-item" id="navBankDetails" onclick="openBankDetails()"><span class="nav-dot"></span>Bank &amp; business details</div>
+    <div class="nav-section">Account</div>
+    <div class="nav-item" id="navUsers" onclick="openUsers()"><span class="nav-dot"></span>Users</div>
+    <div class="nav-item" id="navSettings" onclick="openTaxSettings()"><span class="nav-dot"></span>Settings</div>
+    <div class="side-foot" id="sideFoot" onclick="openSwitchUser()" style="cursor:pointer;">
+      <div class="av" id="sfAvatar">KT</div><div><div class="nm" id="sfName">Kerala Tour Mart</div><div class="rl" id="sfRole">DMC admin</div></div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div><h1 id="welcomeMsg">Good morning, Kerala Tour Mart</h1><div class="sub" id="topbarSub">14 July 2026 \u00b7 3 quote requests awaiting response</div></div>
+      <div class="search">Search requests, agents, inventory...</div>
+    </div>
+
+    <div class="ai-card" id="aiCard">
+      <div class="ai-card-head">
+        <div class="ai-card-title">\ud83e\udd16 AI Assistant</div>
+        <span class="badge pk" style="margin-top:0;">Reminders &amp; alerts</span>
+      </div>
+      <div id="aiCardBody"></div>
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div id="leadsPanel">
+      <div class="board-head"><h2>Quote requests</h2><div style="display:flex; align-items:center; gap:12px;"><div class="tag" id="boardTag">click a card to work on it</div><button class="btn" style="width:auto; padding:8px 14px;" onclick="openAddQuoteRequest()">+ Add quote request</button></div></div>
+      <div class="board" id="board"></div>
+    </div>
+
+    <div id="inventoryPanel" style="display:none;">
+      <div class="board-head"><h2>Inventory at a glance</h2><div style="display:flex; align-items:center; gap:12px;"><button class="btn" style="width:auto; padding:8px 14px;" onclick="openInventory()">Open inventory</button></div></div>
+      <div id="inventoryPanelBody"></div>
+    </div>
+
+    <div id="financePanel" style="display:none;">
+      <div class="board-head"><h2>Payments at a glance</h2><div style="display:flex; align-items:center; gap:12px;"><button class="btn" style="width:auto; padding:8px 14px;" onclick="openPayments()">Open payments</button></div></div>
+      <div id="financePanelBody"></div>
+    </div>
+
+    <div id="reservationsPanel" style="display:none;">
+      <div class="board-head"><h2>Upcoming trips at a glance</h2><div style="display:flex; align-items:center; gap:12px;"><button class="btn" style="width:auto; padding:8px 14px;" onclick="openUpcomingTrips()">Open upcoming trips</button></div></div>
+      <div id="reservationsPanelBody"></div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
+
+<script>
+(function(){
+
+  var requests = [
+    {id:1, agentName:'Ebina Paul', agency:'Trekking Miles Travel', isPumpkino:true, dest:'Munnar', pax:'Family of 4', nights:3, startDate:'2026-08-10', budget:'\u20b915,000/head', stage:'new'},
+    {id:2, agentName:'Rahul Nair', agency:'Blue Horizon Tours', isPumpkino:false, dest:'Alleppey', pax:'Couple', nights:2, startDate:'2026-08-05', budget:'\u20b920,000/head', stage:'new'},
+    {id:3, agentName:'Priya Suresh', agency:'Wanderlust Kerala', isPumpkino:true, dest:'Munnar', pax:'Group of 8', nights:4, startDate:'2026-09-01', budget:'\u20b912,000/head', stage:'review'},
+    {id:4, agentName:'Arjun Menon', agency:'Coastal Escapes', isPumpkino:false, dest:'Kumarakom', pax:'Family of 2', nights:2, startDate:'2026-07-28', budget:'\u20b918,000/head', stage:'sent', quotedPrice:'\u20b938,000', quoteId:'PMK-Q-2026-00001'},
+    {id:5, agentName:'Sneha Rao', agency:'Trekking Miles Travel', isPumpkino:true, dest:'Munnar', pax:'Solo traveller', nights:2, startDate:'2026-07-20', budget:'\u20b910,000/head', stage:'payment', quotedPrice:'\u20b921,500', quoteId:'PMK-Q-2026-00002'}
+  ];
+  var nextReqId = 6;
+
+  // Quote IDs are created the moment a DMC sends a quote (sendQuote()) \u2014 a request has
+  // no quoteId while it's still 'new'/'review', since nothing's been quoted yet. Booking
+  // IDs are created the moment a booking is fully paid (markAgentFullyPaid()), and always
+  // carry the originating quoteId forward so a booking can be traced back to the quote it
+  // was made against, per the PRD's quote_requests entity.
+  var nextQuoteSeq = 3;
+  var nextBookingSeq = 1;
+  function formatQuoteId(n){ return 'PMK-Q-2026-'+String(n).padStart(5,'0'); }
+  function formatBookingId(n){ return 'PMK-B-2026-'+String(n).padStart(5,'0'); }
+
+  var hotels = [
+    {id:1, name:'Fragrant Nature Munnar', dest:'Munnar', cat:'4-star', roomsTotal:20, roomsAvailable:6,
+      rateRows:[
+        {id:1, roomCategory:'Deluxe', fromMonth:'Oct', toMonth:'Feb', roomsTotal:12, roomsAvailable:4, rate:6500},
+        {id:2, roomCategory:'Deluxe', fromMonth:'Mar', toMonth:'Sep', roomsTotal:12, roomsAvailable:4, rate:4800},
+        {id:3, roomCategory:'Suite', fromMonth:'Oct', toMonth:'Feb', roomsTotal:8, roomsAvailable:2, rate:9500}
+      ]},
+    {id:2, name:'Munnar Hillside Resort', dest:'Munnar', cat:'3-star', roomsTotal:15, roomsAvailable:1,
+      rateRows:[{id:1, roomCategory:'Standard', fromMonth:'Jan', toMonth:'Dec', roomsTotal:15, roomsAvailable:1, rate:3200}]},
+    {id:3, name:'Lake Palace Kumarakom', dest:'Kumarakom', cat:'5-star', roomsTotal:10, roomsAvailable:0,
+      rateRows:[{id:1, roomCategory:'Lake View Suite', fromMonth:'Jan', toMonth:'Dec', roomsTotal:10, roomsAvailable:0, rate:14000}]},
+    {id:4, name:'Alleppey Backwater Homestay', dest:'Alleppey', cat:'3-star', roomsTotal:8, roomsAvailable:4,
+      rateRows:[{id:1, roomCategory:'Standard', fromMonth:'Jan', toMonth:'Dec', roomsTotal:8, roomsAvailable:4, rate:2800}]}
+  ];
+  var nextHotelId = 5;
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  var transport = [
+    {id:1, type:'Sedan (4-seater)', dest:'Munnar', count:6},
+    {id:2, type:'Tempo Traveller (12-seater)', dest:'Munnar', count:2},
+    {id:3, type:'Houseboat', dest:'Alleppey', count:3}
+  ];
+  var nextTransportId = 4;
+
+  var vendors = [
+    {id:1, name:'Munnar Spice Garden Tours', service:'Sightseeing guide', contact:'+91 94470 22110'},
+    {id:2, name:'Backwater Cruise Co.', service:'Houseboat operator', contact:'+91 98470 55221'}
+  ];
+  var nextVendorId = 3;
+
+  var inclusions = ['Accommodation as per itinerary','Daily breakfast','All transfers by private vehicle','All applicable taxes'];
+  var exclusions = ['Flights or train fares','Lunch and dinner unless mentioned','Personal expenses and tips','Anything not specified under inclusions'];
+  var cancellationPolicy = ['100% refund if cancelled 15+ days before travel','50% refund if cancelled 7\u201314 days before travel','No refund within 7 days of travel'];
+
+  var myPackages = [
+    {id:1, dest:'Munnar', title:'Munnar Classic', nights:2, cat:'4-star', minAdults:2,
+      hotels:'Fragrant Nature Munnar', price:'\u20b942,000', pushed:true,
+      days:[['Day 1','Arrival, tea plantation walk, sunset at Echo Point'],['Day 2','Eravikulam National Park, spice garden'],['Day 3','Mattupetty dam, departure']],
+      inclusions: inclusions.slice(), exclusions: exclusions.slice(), cancellationPolicy: cancellationPolicy.slice(),
+      seasons:[{name:'Off-season (Mar\u2013Sep)', price:'\u20b936,000'},{name:'Peak season (Oct\u2013Feb)', price:'\u20b942,000'}], fileName:null},
+    {id:2, dest:'Alleppey', title:'Backwater Bliss', nights:1, cat:'3-star', minAdults:2,
+      hotels:'Alleppey Backwater Homestay', price:'\u20b918,000', pushed:false,
+      days:[['Day 1','Houseboat check-in, backwater cruise, sunset'],['Day 2','Breakfast on board, check-out']],
+      inclusions: inclusions.slice(), exclusions: exclusions.slice(), cancellationPolicy: cancellationPolicy.slice(),
+      seasons:[{name:'Standard', price:'\u20b918,000'}], fileName:null}
+  ];
+  var nextPkgId = 3;
+
+  var agents = [
+    {id:1, name:'Ebina Paul', agency:'Trekking Miles Travel', email:'ebina@trekkingmiles.com', mobile:'+91 98470 11223', gstin:'32AAECT1234F1Z8', isPumpkino:true},
+    {id:2, name:'Rahul Nair', agency:'Blue Horizon Tours', email:'rahul@bluehorizon.com', mobile:'+91 94950 33112', gstin:null, isPumpkino:false}
+  ];
+  var nextAgentId = 3;
+
+  var users = [
+    {id:1, name:'Suresh Kumar', email:'suresh@keralatourmart.com', role:'DMC Admin'},
+    {id:2, name:'Anjali Varma', email:'anjali@keralatourmart.com', role:'Destination Manager'},
+    {id:3, name:'Manoj Pillai', email:'manoj@keralatourmart.com', role:'Inventory Manager'},
+    {id:4, name:'Divya Krishnan', email:'divya@keralatourmart.com', role:'Accounts'},
+    {id:5, name:'Rekha Menon', email:'rekha@keralatourmart.com', role:'Reservations Manager'}
+  ];
+  var nextUserId = 6;
+  var currentUser = users[0];
+
+  // ---- Roles: who can see what, and what their dashboard focuses on ----
+  var ROLES = {
+    'DMC Admin': {
+      nav:['navDashboard','navQuoteRequests','navLostCancelled','navPackages','navInventory','navAgents','navBookings','navUpcoming','navPayments','navInvoices','navBankDetails','navUsers','navSettings'],
+      dashboard:'all', blurb:'Full access — can create and manage every role below.'
+    },
+    'Destination Manager': {
+      nav:['navDashboard','navQuoteRequests','navLostCancelled','navPackages','navAgents','navBookings','navUpcoming','navSettings'],
+      dashboard:'leads', blurb:'Manages quote requests, the lead pipeline, packages, agents and bookings.'
+    },
+    'Inventory Manager': {
+      nav:['navDashboard','navInventory','navSettings'],
+      dashboard:'inventory', blurb:'Manages hotel, transport and vendor inventory and availability.'
+    },
+    'Accounts': {
+      nav:['navDashboard','navPayments','navInvoices','navBankDetails','navSettings'],
+      dashboard:'finance', blurb:'Monitors agency payments, invoices and bank/business details.'
+    },
+    'Reservations Manager': {
+      nav:['navDashboard','navBookings','navUpcoming','navAgents','navSettings'],
+      dashboard:'reservations', blurb:'Manages confirmed bookings, upcoming trips and traveller documentation.'
+    }
+  };
+  var CREATABLE_ROLES = ['Destination Manager','Inventory Manager','Accounts','Reservations Manager'];
+  var ALL_NAV_IDS = ['navDashboard','navQuoteRequests','navLostCancelled','navPackages','navInventory','navAgents','navBookings','navUpcoming','navPayments','navInvoices','navBankDetails','navUsers','navSettings'];
+
+  var agentPayments = [];
+  var nextPayId = 1;
+
+  var cols = [
+    {key:'new', dot:'dot-new', title:'New request'},
+    {key:'review', dot:'dot-review', title:'Checking availability'},
+    {key:'sent', dot:'dot-sent', title:'Quote sent'},
+    {key:'payment', dot:'dot-paypend', title:'Payment pending'},
+    {key:'done', dot:'dot-done', title:'Confirmed'}
+  ];
+
+  function titleForStage(s){ return {new:'New request', review:'Checking availability', sent:'Quote sent', payment:'Payment pending', done:'Confirmed'}[s]; }
+  function initials(n){ return n.split(' ').map(function(w){return w[0];}).slice(0,2).join('').toUpperCase(); }
+
+  // ---- Lost / cancelled lifecycle (separate from `stage`, which stays pure
+  // funnel position — see Pumpkino_PRD.md "Lost / cancelled outcomes") ----
+  var LOST_REASONS = {
+    agency_declined: {label:'Agency declined the quote', initiatedBy:'agency'},
+    agency_booked_elsewhere: {label:'Agency booked with another DMC', initiatedBy:'agency'},
+    no_response_expired: {label:'No response — quote went stale', initiatedBy:null}
+  };
+  var CANCEL_REASONS = {
+    cancelled_after_advance: {label:'Cancelled after advance payment'},
+    cancelled_after_full_payment: {label:'Cancelled after full payment'}
+  };
+  function isActive(r){ return !r.lifecycleStatus || r.lifecycleStatus==='active'; }
+
+  window.openMarkLost = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    showModal('<h3>Mark as lost</h3><div class="subline">'+r.agentName+' · '+r.dest+' — this request will move out of the active pipeline</div>'+
+      '<div style="margin-bottom:14px;">'+Object.keys(LOST_REASONS).map(function(k,i){
+        return '<label style="display:flex; align-items:flex-start; gap:8px; font-size:12.5px; color:#4A483D; margin-bottom:8px; cursor:pointer;">'+
+          '<input type="radio" name="mlReason" value="'+k+'" '+(i===0?'checked':'')+' style="margin-top:2px;">'+LOST_REASONS[k].label+'</label>';
+      }).join('')+'</div>'+
+      '<div style="margin-bottom:14px;"><label class="field-lbl">Note (optional)</label><textarea id="mlNote" class="field-in" style="min-height:50px;" placeholder="Anything worth remembering for next time"></textarea></div>'+
+      '<button class="btn" style="background:#A3312F;" onclick="submitMarkLost('+id+')">Confirm — mark as lost</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="closeModal()">Back</button>'
+    );
+  };
+
+  window.submitMarkLost = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var sel = document.querySelector('input[name="mlReason"]:checked');
+    var reason = sel ? sel.value : 'no_response_expired';
+    var note = (document.getElementById('mlNote')||{}).value || '';
+    r.lifecycleStatus = 'lost';
+    r.exitedAtStage = r.stage;
+    r.lostReason = reason;
+    r.initiatedBy = LOST_REASONS[reason].initiatedBy;
+    r._lifecycleLog = (r._lifecycleLog||[]).concat([{event:'Marked lost', detail: LOST_REASONS[reason].label + (note?' — '+note:''), at: nowStamp()}]);
+    lastMovedId = r.id;
+    render();
+    document.getElementById('boardTag').textContent = r.agentName+' · '+r.dest+' marked lost — '+LOST_REASONS[reason].label;
+    closeModal();
+  };
+
+  window.openCancelBooking = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var pay = agentPayments.find(function(p){return p.id===r.paymentId;});
+    var paidState = (pay && pay.status==='paid') ? 'fully_paid' : (pay && (pay.status==='partial'||pay.status==='advance due') && pay.advanceAmt && pay.status!=='not requested' ? 'advance_paid' : 'none');
+    var reasonKey = paidState==='fully_paid' ? 'cancelled_after_full_payment' : 'cancelled_after_advance';
+    var moneyLine = paidState==='none' ? 'No payment has been collected yet.' :
+      (paidState==='advance_paid' ? 'An advance of ₹'+(pay.advanceAmt||0).toLocaleString('en-IN')+' has been collected — a refund will need to be worked out per your cancellation policy.' :
+      'The full amount has been collected — a refund will need to be worked out per your cancellation policy.');
+    showModal('<h3>Cancel this booking?</h3><div class="subline">'+r.agentName+' · '+r.dest+' · '+(r.bookingId||r.quoteId||'')+'</div>'+
+      '<div style="font-size:12.5px; color:#4A483D; margin-bottom:10px;">'+moneyLine+'</div>'+
+      '<div style="font-size:11px; font-weight:600; color:#12392A; margin-bottom:4px;">Your cancellation policy</div>'+
+      cancellationPolicy.map(function(x){return '<div style="font-size:11px; color:#4A483D; margin-bottom:3px;">• '+x+'</div>';}).join('')+
+      '<div style="margin:14px 0;"><label class="field-lbl">Note (optional)</label><textarea id="cbNote" class="field-in" style="min-height:50px;" placeholder="e.g. customer had a family emergency"></textarea></div>'+
+      '<button class="btn" style="background:#A3312F;" onclick="confirmCancelBooking('+id+',\''+reasonKey+'\','+'\''+paidState+'\')">Confirm cancellation</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="closeModal()">Back</button>'
+    );
+  };
+
+  window.confirmCancelBooking = function(id, reasonKey, paidState){
+    var r = requests.find(function(x){return x.id===id;});
+    var note = (document.getElementById('cbNote')||{}).value || '';
+    r.lifecycleStatus = 'cancelled';
+    r.exitedAtStage = r.stage;
+    r.cancelReason = reasonKey;
+    r.paymentStateAtExit = paidState;
+    r.refundStatus = paidState==='none' ? 'not_applicable' : 'pending';
+    r.initiatedBy = 'agency';
+    r._lifecycleLog = (r._lifecycleLog||[]).concat([{event:'Cancelled', detail: CANCEL_REASONS[reasonKey].label + (note?' — '+note:''), at: nowStamp()}]);
+    // Money was already involved, so release any blocked inventory as part of
+    // cancelling — the DMC shouldn't have to separately notice and do this.
+    if(r.blockStatus === 'blocked'){
+      var uniqueHotelIds = (r._nightHotels||[]).filter(function(v,i,a){return a.indexOf(v)===i;});
+      uniqueHotelIds.forEach(function(hid){ var h = hotels.find(function(x){return x.id===hid;}); if(h) h.roomsAvailable += 1; });
+      r.blockStatus = 'released';
+      r.blockLog = (r.blockLog||[]).concat([{event:'Inventory released', detail:'Released automatically — booking was cancelled', at: nowStamp()}]);
+    }
+    lastMovedId = r.id;
+    render();
+    document.getElementById('boardTag').textContent = r.agentName+' · '+r.dest+' cancelled — '+(r.refundStatus==='pending' ? 'refund pending' : 'no refund due');
+    closeModal();
+  };
+
+  window.setRefundStatus = function(id, status){
+    var r = requests.find(function(x){return x.id===id;});
+    r.refundStatus = status;
+    document.getElementById('boardTag').textContent = 'refund status for '+r.agentName+' set to '+status.replace('_',' ');
+    openLostCancelledDetail(id);
+  };
+
+  // Reopening is allowed from both 'lost' and 'cancelled' — an agency may
+  // have been marked lost by mistake, or the agency comes back after
+  // cancelling after all. For a cancelled request where a refund was already
+  // processed, that money movement can't be silently undone here, so
+  // confirmReopen() surfaces a warning first instead of reopening outright.
+  window.confirmReopen = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    if(r.lifecycleStatus === 'cancelled' && r.refundStatus === 'processed'){
+      showModal('<h3>Reopen this booking?</h3>'+
+        '<div class="subline">'+r.agentName+' · '+r.dest+'</div>'+
+        '<div style="font-size:12.5px; color:#4A483D; margin-bottom:14px;">A refund has already been processed for this cancellation. Reopening won’t undo that refund automatically — you’ll need to collect payment from the agency again if they want to proceed.</div>'+
+        '<button class="btn" onclick="reopenRequest('+id+')">Reopen anyway</button>'+
+        '<button class="btn ghost" style="margin-top:8px;" onclick="openLostCancelledDetail('+id+')">Cancel</button>'
+      );
+    } else {
+      reopenRequest(id);
+    }
+  };
+
+  window.reopenRequest = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var wasCancelled = r.lifecycleStatus === 'cancelled';
+    var refundNote = wasCancelled ? ' (was cancelled — refund status was “'+(r.refundStatus||'not_applicable').replace('_',' ')+'”)' : '';
+    r._lifecycleLog = (r._lifecycleLog||[]).concat([{event:'Reopened', detail:'Moved back to the active pipeline'+refundNote, at: nowStamp()}]);
+    r.lifecycleStatus = 'active';
+    r.lostReason = null;
+    r.cancelReason = null;
+    r.exitedAtStage = null;
+    r.paymentStateAtExit = null;
+    r.refundStatus = null;
+    lastMovedId = r.id;
+    render();
+    document.getElementById('boardTag').textContent = r.agentName+' · '+r.dest+' reopened — back in the active pipeline'+(wasCancelled ? '. Double-check payment status before proceeding.' : '');
+    closeModal();
+  };
+
+  window.openLostCancelled = function(){
+    showModal('<h3>Lost &amp; cancelled</h3><div class="subline">Requests that fell out of the active pipeline</div>'+
+      '<input id="lcSearchQ" class="field-in" placeholder="Search by agent, agency, or destination" style="margin-bottom:12px;" oninput="renderLostCancelledList()">'+
+      '<div id="lcResults"></div>'+
+      '<button class="btn ghost" style="margin-top:10px;" onclick="closeModal()">Close</button>'
+    , true);
+    renderLostCancelledList();
+  };
+
+  window.renderLostCancelledList = function(){
+    var q = (document.getElementById('lcSearchQ').value||'').toLowerCase();
+    var list = requests.filter(function(r){ return r.lifecycleStatus==='lost' || r.lifecycleStatus==='cancelled'; })
+      .filter(function(r){ return !q || r.agentName.toLowerCase().indexOf(q)>-1 || r.agency.toLowerCase().indexOf(q)>-1 || r.dest.toLowerCase().indexOf(q)>-1; });
+    document.getElementById('lcResults').innerHTML = list.length ? list.map(function(r){
+      var reasonLabel = r.lifecycleStatus==='lost' ? LOST_REASONS[r.lostReason].label : CANCEL_REASONS[r.cancelReason].label;
+      var tag = r.lifecycleStatus==='lost' ? '<span class="badge rev">Lost</span>' : '<span class="badge paypend">Cancelled</span>';
+      return '<div class="lib-card pick" onclick="openLostCancelledDetail('+r.id+')"><div class="t">'+r.agentName+' · '+r.dest+' '+tag+'</div>'+
+        '<div class="s">'+r.agency+' · '+reasonLabel+(r.refundStatus && r.refundStatus!=='not_applicable' ? ' · refund '+r.refundStatus : '')+'</div></div>';
+    }).join('') : '<div style="font-size:12.5px; color:#8B897C;">Nothing lost or cancelled yet.</div>';
+  };
+
+  window.openLostCancelledDetail = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var isLost = r.lifecycleStatus==='lost';
+    var reasonLabel = isLost ? LOST_REASONS[r.lostReason].label : CANCEL_REASONS[r.cancelReason].label;
+    showModal('<h3>'+r.agentName+' — '+r.dest+'</h3>'+
+      '<div class="subline">'+(r.quoteId||'')+' · '+r.agency+' · was at “'+titleForStage(r.exitedAtStage)+'”</div>'+
+      '<div class="inv-row"><span>Outcome</span><span>'+(isLost?'Lost':'Cancelled')+'</span></div>'+
+      '<div class="inv-row"><span>Reason</span><span>'+reasonLabel+'</span></div>'+
+      (!isLost ? '<div class="inv-row"><span>Payment at cancellation</span><span>'+(r.paymentStateAtExit||'none').replace('_',' ')+'</span></div>'+
+        '<div class="inv-row"><span>Refund status</span><span>'+(r.refundStatus||'not_applicable').replace('_',' ')+'</span></div>' : '')+
+      '<div style="font-size:11px; font-weight:600; color:#12392A; margin:12px 0 4px;">History</div>'+
+      (r._lifecycleLog||[]).map(function(l){return '<div style="font-size:11px; color:#4A483D; margin-bottom:3px;">'+l.at+' — '+l.event+(l.detail?': '+l.detail:'')+'</div>';}).join('')+
+      (!isLost && r.refundStatus==='pending' ? '<div style="margin-top:14px;"><button class="btn ghost" style="margin-right:8px; width:auto; display:inline-block;" onclick="setRefundStatus('+id+',\'processed\')">Mark refund processed</button><button class="btn ghost" style="width:auto; display:inline-block;" onclick="setRefundStatus('+id+',\'denied\')">Mark refund denied</button></div>' : '')+
+      '<button class="btn ghost" style="margin-top:14px;" onclick="confirmReopen('+id+')">Reopen — back to active pipeline</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="openLostCancelled()">Back to list</button>'
+    );
+  };
+  var lastMovedId = null;
+  var inventoryTab = 'hotels';
+  var upcomingFilter = 'all';
+  var pendingInventoryReturnId = null;
+
+  function renderKpis(){
+    var el = document.getElementById('kpis');
+    var scope = ((ROLES[currentUser.role]||{}).dashboard) || 'all';
+    var pending = requests.filter(function(r){return (r.stage==='new'||r.stage==='review') && isActive(r);}).length;
+    var sent = requests.filter(function(r){return r.stage==='sent' && isActive(r);}).length;
+    var confirmed = requests.filter(function(r){return r.stage==='done' && isActive(r);}).length;
+    var lostCancelledCount = requests.filter(function(r){return r.lifecycleStatus==='lost'||r.lifecycleStatus==='cancelled';}).length;
+    var invCount = hotels.length + transport.length + vendors.length;
+    var lowStock = hotels.filter(function(h){return h.roomsAvailable<=2;}).length;
+    var duePayments = agentPayments.filter(function(p){return p.dueAmt>0;});
+    var dueTotal = duePayments.reduce(function(s,p){return s+p.dueAmt;},0);
+    var pendingBlocks = requests.filter(function(r){return r.blockStatus==='pending';}).length;
+    var upcomingCount = requests.filter(function(r){return (r.stage==='payment' || r.stage==='done') && isActive(r);}).length;
+    var docsPending = requests.filter(function(r){return (r.stage==='payment'||r.stage==='done') && isActive(r) && r.isInternational && (!r.passportFile || !r.panFile);}).length;
+    var unassigned = requests.filter(function(r){return (r.stage==='payment'||r.stage==='done') && isActive(r) && !r.assignedTo;}).length;
+
+    var kpiSets = {
+      all: [
+        {l:'Pending requests', v:pending},
+        {l:'Quotes sent', v:sent},
+        {l:'Confirmed bookings', v:confirmed},
+        {l:'Lost / cancelled', v:lostCancelledCount},
+        {l:'Inventory items', v:invCount},
+        {l:'Connected agents', v:agents.length}
+      ],
+      leads: [
+        {l:'Pending requests', v:pending},
+        {l:'Quotes sent', v:sent},
+        {l:'Confirmed bookings', v:confirmed},
+        {l:'Lost / cancelled', v:lostCancelledCount},
+        {l:'Connected agents', v:agents.length}
+      ],
+      inventory: [
+        {l:'Hotels', v:hotels.length},
+        {l:'Transport options', v:transport.length},
+        {l:'Vendors', v:vendors.length},
+        {l:'Low availability', v:lowStock}
+      ],
+      finance: [
+        {l:'Payments pending', v:duePayments.length},
+        {l:'Amount due', v:'₹'+dueTotal.toLocaleString('en-IN')},
+        {l:'Invoices raised', v:invoices.length},
+        {l:'Inventory awaiting confirm', v:pendingBlocks}
+      ],
+      reservations: [
+        {l:'Upcoming trips', v:upcomingCount},
+        {l:'Confirmed bookings', v:confirmed},
+        {l:'Docs pending', v:docsPending},
+        {l:'Unassigned bookings', v:unassigned}
+      ]
+    };
+    var set = kpiSets[scope] || kpiSets.all;
+    el.style.gridTemplateColumns = 'repeat('+set.length+',1fr)';
+    el.innerHTML = set.map(function(k){ return '<div class="kpi"><div class="l">'+k.l+'</div><div class="v">'+k.v+'</div></div>'; }).join('');
+  }
+
+  function renderAiAssistant(){
+    var el = document.getElementById('aiCardBody');
+    if(!el) return;
+    var role = currentUser.role;
+    var items = [];
+
+    if(role==='DMC Admin' || role==='Destination Manager'){
+      var newCount = requests.filter(function(r){return r.stage==='new';}).length;
+      if(newCount) items.push({c:'var(--info)', t:newCount+' new quote request'+(newCount>1?'s':'')+' awaiting a response.', a:'openQuoteInbox()'});
+      var reviewing = requests.filter(function(r){return r.stage==='review';}).length;
+      if(reviewing) items.push({c:'var(--warning)', t:reviewing+' request'+(reviewing>1?'s':'')+' still checking availability — keep response time low.', a:'openQuoteInbox()'});
+    }
+
+    if(role==='DMC Admin' || role==='Inventory Manager'){
+      hotels.filter(function(h){return h.roomsAvailable<=0;}).forEach(function(h){
+        items.push({c:'var(--danger)', t:h.name+' is fully booked — no rooms left.', a:'openHotelDetail('+h.id+')'});
+      });
+      hotels.filter(function(h){return h.roomsAvailable>0 && h.roomsAvailable<=2;}).forEach(function(h){
+        items.push({c:'var(--warning)', t:h.name+' has only '+h.roomsAvailable+' room(s) left.', a:'openHotelDetail('+h.id+')'});
+      });
+      requests.filter(function(r){return r.blockStatus==='pending';}).forEach(function(r){
+        items.push({c:'var(--warning)', t:'Inventory check pending for '+r.agentName+' (' +r.dest+') — click to confirm with the hotel/supplier.', a:'openInventoryBlockStatus('+r.id+')'});
+      });
+    }
+
+    if(role==='DMC Admin' || role==='Accounts'){
+      agentPayments.filter(function(p){return p.dueAmt>0 && p.status!=='not requested';}).forEach(function(p){
+        items.push({c:'var(--danger)', t:'₹'+p.dueAmt.toLocaleString('en-IN')+' balance due from '+p.agentName+' by '+p.dueDate+'.', a:'openPaymentTracking('+p.reqId+')'});
+      });
+      agentPayments.filter(function(p){return p.status==='not requested';}).forEach(function(p){
+        items.push({c:'var(--info)', t:'Payment request not yet sent to '+p.agentName+'.', a:'openPaymentTracking('+p.reqId+')'});
+      });
+      requests.filter(function(r){return r.refundStatus==='pending';}).forEach(function(r){
+        items.push({c:'var(--danger)', t:'Refund pending for '+r.agentName+' — '+r.dest+' (cancelled).', a:'openLostCancelledDetail('+r.id+')'});
+      });
+    }
+
+    if(role==='DMC Admin' || role==='Reservations Manager'){
+      requests.filter(function(r){return (r.stage==='payment'||r.stage==='done') && isActive(r) && r.isInternational && (!r.passportFile || !r.panFile);}).forEach(function(r){
+        items.push({c:'var(--danger)', t:'Missing travel docs for '+r.agentName+' ('+r.dest+') — passport/PAN not fully uploaded.', a:'openTripDetail('+r.id+')'});
+      });
+      requests.filter(function(r){return (r.stage==='payment'||r.stage==='done') && isActive(r) && !r.assignedTo;}).forEach(function(r){
+        items.push({c:'var(--info)', t:r.dest+' booking for '+r.agentName+' is unassigned — assign a manager.', a:'openAssignManager('+r.id+')'});
+      });
+    }
+
+    el.innerHTML = items.length ? items.slice(0,6).map(function(i){
+      var clickable = i.a ? ' style="cursor:pointer;" onclick="'+i.a+'"' : '';
+      return '<div class="ai-item"'+clickable+'><span class="ai-dot" style="background:'+i.c+';"></span><span>'+i.t+'</span></div>';
+    }).join('') : '<div class="ai-item" style="border-bottom:none;">All caught up — no alerts right now.</div>';
+  }
+
+  function render(){
+    renderKpis();
+    renderAiAssistant();
+    var scope = ((ROLES[currentUser.role]||{}).dashboard) || 'all';
+
+    var leadsPanel = document.getElementById('leadsPanel');
+    var inventoryPanel = document.getElementById('inventoryPanel');
+    var financePanel = document.getElementById('financePanel');
+    var reservationsPanel = document.getElementById('reservationsPanel');
+    if(leadsPanel) leadsPanel.style.display = (scope==='all'||scope==='leads') ? '' : 'none';
+    if(inventoryPanel) inventoryPanel.style.display = (scope==='inventory') ? '' : 'none';
+    if(financePanel) financePanel.style.display = (scope==='finance') ? '' : 'none';
+    if(reservationsPanel) reservationsPanel.style.display = (scope==='reservations') ? '' : 'none';
+
+    var board = document.getElementById('board');
+    board.innerHTML = '';
+    var handlers = {
+      new: 'openRequest',
+      review: 'openRequest',
+      sent: 'openSentQuote',
+      payment: 'openPaymentTracking',
+      done: 'openConfirmedRequest'
+    };
+    cols.forEach(function(c){
+      var items = requests.filter(function(r){return r.stage===c.key && isActive(r);});
+      var colEl = document.createElement('div');
+      colEl.className = 'col';
+      var head = '<div class="col-head"><span class="col-dot '+c.dot+'"></span><span class="col-title">'+c.title+'</span><span class="col-count">'+items.length+'</span></div>';
+      var cardsHtml = items.map(function(r){
+        var flash = (r.id===lastMovedId) ? ' flash' : '';
+        var priceHtml = r.quotedPrice ? '<span class="amt">'+r.quotedPrice+'</span>' : '';
+        var idBadgeHtml = r.bookingId ? '<div style="font-size:9.5px; color:#7C93A0; margin-top:3px;">'+r.bookingId+'</div>' : (r.quoteId ? '<div style="font-size:9.5px; color:#7C93A0; margin-top:3px;">'+r.quoteId+'</div>' : '');
+        var pkBadge = r.isPumpkino ? '<span class="badge pk">Pumpkino agent \u2014 seamless</span>' : '';
+        var payBadge = r.stage==='payment' ? '<span class="badge paypend">'+(r._payStatus||'advance due')+'</span>' : '';
+        var blockBadgeText = {pending:'\u26a0 Confirm inventory', blocked:'Inventory blocked', released:'Inventory released'};
+        var blockBadgeClass = {pending:'rev', blocked:'done', released:'paypend'};
+        var blockBadge = (r.blockStatus && (c.key==='payment'||c.key==='done')) ? '<span class="badge '+blockBadgeClass[r.blockStatus]+'" style="margin-left:6px;">'+blockBadgeText[r.blockStatus]+'</span>' : '';
+        var assignedHtml = r.assignedTo ? '<div style="font-size:10px; color:#7C93A0; margin-top:4px;">\ud83d\udc64 '+r.assignedTo+'</div>' : '';
+        // A card whose inventory is still "pending" needs the DMC to check with the
+        // hotel/supplier before anything else is meaningful \u2014 route straight there
+        // instead of dropping them into Payment Tracking with no clear next step.
+        var clickHandler = ((c.key==='payment'||c.key==='done') && r.blockStatus==='pending') ? 'openInventoryBlockStatus' : handlers[c.key];
+        return '<div class="card'+flash+'" onclick="'+clickHandler+'('+r.id+')">'+
+          '<div class="nm">'+r.agentName+'</div><div class="dest">'+r.dest+' \u00b7 '+r.nights+'N \u00b7 '+r.pax+'</div>'+
+          '<div class="meta">'+priceHtml+'<span class="avatar">'+initials(r.agentName)+'</span></div>'+
+          pkBadge+payBadge+blockBadge+idBadgeHtml+assignedHtml+'</div>';
+      }).join('');
+      colEl.innerHTML = head + cardsHtml;
+      board.appendChild(colEl);
+    });
+    lastMovedId = null;
+
+    if(scope==='inventory'){ renderInventoryPanel(); }
+    if(scope==='finance'){ renderFinancePanel(); }
+    if(scope==='reservations'){ renderReservationsPanel(); }
+  }
+
+  function renderReservationsPanel(){
+    var el = document.getElementById('reservationsPanelBody');
+    if(!el) return;
+    var upcoming = requests.filter(function(r){return (r.stage==='payment' || r.stage==='done') && isActive(r);})
+      .sort(function(a,b){ return (a.startDate||'').localeCompare(b.startDate||''); });
+    el.innerHTML = upcoming.length ? upcoming.slice(0,6).map(function(r){
+      var docLine = r.isInternational ? ((r.passportFile && r.panFile) ? 'Docs complete' : 'Docs missing') : 'Domestic';
+      return '<div class="inv-row" style="cursor:pointer;" onclick="openTripDetail('+r.id+')"><span>'+r.dest+' · '+r.agentName+'<br><span style="font-size:10.5px; color:#9C9A8C;">travel '+r.startDate+(r.assignedTo?' · '+r.assignedTo:' · unassigned')+'</span></span><span>'+docLine+'</span></div>';
+    }).join('') : '<div style="font-size:12.5px; color:#8B897C;">No upcoming trips yet.</div>';
+  }
+
+  function renderInventoryPanel(){
+    var el = document.getElementById('inventoryPanelBody');
+    if(!el) return;
+    el.innerHTML =
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin-bottom:6px;">Hotels</div>'+
+      hotels.map(function(h){ return '<div class="inv-row" style="cursor:pointer;" onclick="openHotelDetail('+h.id+')"><span>'+h.name+' \u00b7 '+h.dest+' \u00b7 '+h.cat+'</span>'+availTag(h)+'</div>'; }).join('')+
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin:14px 0 6px;">Transport</div>'+
+      transport.map(function(t){ return '<div class="inv-row"><span>'+t.type+' \u00b7 '+t.dest+'</span><span>'+t.count+' units</span></div>'; }).join('')+
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin:14px 0 6px;">Vendors / suppliers</div>'+
+      vendors.map(function(v){ return '<div class="inv-row"><span>'+v.name+' \u00b7 '+v.service+'</span><span>'+v.contact+'</span></div>'; }).join('');
+  }
+
+  function renderFinancePanel(){
+    var el = document.getElementById('financePanelBody');
+    if(!el) return;
+    el.innerHTML = agentPayments.length ? agentPayments.map(function(p){
+      var flag = p.dueAmt>0;
+      return '<div class="inv-row"'+(flag?' style="background:#FDF2DE; border-radius:6px; padding:8px 6px;"':'')+'>'+
+        '<span>'+p.agentName+' \u00b7 '+p.agency+'<br><span style="font-size:10.5px; color:#9C9A8C;">Due '+p.dueDate+' \u00b7 '+p.status+'</span></span>'+
+        '<span style="text-align:right;">Adv: \u20b9'+p.advanceAmt.toLocaleString('en-IN')+'<br>Due: \u20b9'+p.dueAmt.toLocaleString('en-IN')+'</span></div>';
+    }).join('') : '<div style="font-size:12.5px; color:#8B897C;">No payments tracked yet.</div>';
+  }
+
+  window.closeModal = function(){ document.getElementById('overlay').classList.remove('show'); };
+  function showModal(html, wide){
+    var modal = document.getElementById('modal');
+    modal.innerHTML = html;
+    modal.classList.toggle('wide', !!wide);
+    document.getElementById('overlay').classList.add('show');
+  }
+
+  function availTag(h){
+    if(h.roomsAvailable<=0) return '<span class="avail none">Full</span>';
+    if(h.roomsAvailable<=2) return '<span class="avail low">'+h.roomsAvailable+' left</span>';
+    return '<span class="avail ok">'+h.roomsAvailable+' available</span>';
+  }
+
+  window.openRequest = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var matches = hotels.filter(function(h){return h.dest.toLowerCase()===r.dest.toLowerCase();});
+    showModal(
+      '<h3>'+r.agentName+' \u2014 '+r.agency+'</h3>'+
+      '<div class="subline">'+r.dest+' \u00b7 '+r.nights+' nights \u00b7 '+r.pax+' \u00b7 starts '+r.startDate+'</div>'+
+      (r.isPumpkino ? '<div style="font-size:10.5px; color:#2C5FA8; background:#EAF0FB; padding:5px 9px; border-radius:20px; display:inline-block; margin-bottom:12px;">Both on Pumpkino \u2014 request came through automatically, no manual entry needed</div>' : '')+
+      '<div style="font-size:12.5px; color:#4A483D; margin-bottom:14px;">Budget indicated: '+r.budget+'</div>'+
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin-bottom:8px;">Matching hotels in '+r.dest+'</div>'+
+      (matches.length ? matches.map(function(h){
+        return '<div class="inv-row"><span>'+h.name+' \u00b7 '+h.cat+'</span>'+availTag(h)+'</div>';
+      }).join('') : '<div style="font-size:12px; color:#8B897C; margin-bottom:10px;">No hotels loaded for this destination yet.</div>')+
+      '<button class="btn" style="margin-top:14px;" onclick="checkAvailability('+id+')">Check availability &amp; draft quote with AI</button>'+
+      '<button class="btn ghost" style="margin-top:8px; color:#A3312F;" onclick="openMarkLost('+id+')">Mark as lost</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="closeModal()">Close</button>'
+    );
+  };
+
+  window.checkAvailability = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    r.stage = 'review';
+    lastMovedId = r.id;
+    render();
+    var labels = ['Checking hotel availability for '+r.dest,'Comparing market rate benchmarks','AI drafting quote and pricing'];
+    showModal('<h3>AI Quote Assistant</h3><div class="subline">'+r.agentName+' \u00b7 '+r.dest+'</div><div class="steps" id="steps"></div>');
+    document.getElementById('steps').innerHTML = labels.map(function(s,i){return '<div class="step" id="qs'+i+'"><span class="chk"></span>'+s+'</div>';}).join('');
+    var i=0;
+    function tick(){
+      if(i>0){ var p=document.getElementById('qs'+(i-1)); if(p){p.className='step done'; p.querySelector('.chk').innerHTML='&#10003;';} }
+      if(i<labels.length){ var c=document.getElementById('qs'+i); if(c) c.className='step active'; i++; setTimeout(tick,650); }
+      else { buildDraftQuote(id); }
+    }
+    tick();
+  };
+
+  function buildDraftQuote(id){
+    var r = requests.find(function(x){return x.id===id;});
+    if(!r._draftPrice){
+      var matches = hotels.filter(function(h){return h.dest.toLowerCase()===r.dest.toLowerCase() && h.roomsAvailable>0;});
+      var best = matches.sort(function(a,b){return b.roomsAvailable-a.roomsAvailable;})[0];
+      if(!best){
+        // Nothing has rooms in this destination right now — still reference the
+        // closest-matching (sold-out) hotel so the itinerary and inventory-blocking
+        // screens can name it specifically instead of leaving it unassigned.
+        best = hotels.filter(function(h){return h.dest.toLowerCase()===r.dest.toLowerCase();})[0];
+      }
+      var perHead = 9000 + Math.floor(Math.random()*5000);
+      var paxCount = (r.pax.match(/\d+/) || ['2'])[0];
+      r._draftPrice = perHead * Number(paxCount);
+      r._draftPlan = r.parsedPlan && r.parsedPlan.length ? r.parsedPlan : defaultPlanForNights(r.nights);
+      var nights = Math.max(r._draftPlan.length-1, 1);
+      r._nightHotels = [];
+      for(var n=0;n<nights;n++){ r._nightHotels.push(best ? best.id : null); }
+      r._draftInclusions = r.parsedInclusions && r.parsedInclusions.length ? r.parsedInclusions.slice() : inclusions.slice();
+      r._draftExclusions = exclusions.slice();
+    }
+    showDraftQuote(id);
+  }
+
+  function defaultPlanForNights(n){
+    var days = Number(n)+1 || 3, plan = [];
+    for(var i=1;i<=days;i++){
+      if(i===1) plan.push(['Day 1','Arrival and check-in']);
+      else if(i===days) plan.push(['Day '+i,'Check-out and departure']);
+      else plan.push(['Day '+i,'Sightseeing and local experiences']);
+    }
+    return plan;
+  }
+
+  function hotelName(hid){ var h = hotels.find(function(x){return x.id===hid;}); return h ? h.name : 'Not selected'; }
+
+  function showDraftQuote(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var anyFull = r._nightHotels.some(function(hid){ var h=hotels.find(function(x){return x.id===hid;}); return !h || h.roomsAvailable<=0; });
+    var altNote = anyFull ? '<div style="font-size:10.5px; color:#A3312F; background:#FCEBEB; padding:5px 9px; border-radius:20px; display:inline-block; margin-bottom:10px;">One or more selected hotels has no rooms left \u2014 pick an alternate for that night below</div>' : '';
+    var pkNote = r.isPumpkino ? '<div style="font-size:10.5px; color:#2C5FA8; background:#EAF0FB; padding:5px 9px; border-radius:20px; display:inline-block; margin-bottom:10px;">Pumpkino agent \u2014 quote delivers instantly to their portal, email/WhatsApp not required <a href="#" onclick="showPumpkinoDeliveryInfo();return false;" style="color:#2C5FA8; font-weight:700; text-decoration:underline;">How it works?</a></div>' : '';
+    showModal(
+      '<h3>Draft quote ready</h3>'+
+      '<div class="subline">'+r.agentName+' \u00b7 '+r.dest+' \u00b7 generated in 5.1s</div>'+
+      altNote+pkNote+
+      '<div style="font-size:11px; color:#8B897C; margin-bottom:10px;">AI benchmarked against comparable '+r.dest+' packages this season.</div>'+
+      r._draftPlan.map(function(p){return '<div class="inv-row"><span><b>'+p[0]+'</b> \u2014 '+p[1]+'</span></div>';}).join('')+
+      '<div style="font-size:11px; font-weight:600; color:#12392A; margin:10px 0 4px;">Hotels by night</div>'+
+      r._nightHotels.map(function(hid,i){return '<div style="font-size:11.5px; color:#4A483D;">Night '+(i+1)+': <b>'+hotelName(hid)+'</b></div>';}).join('')+
+      '<div style="font-size:11px; font-weight:600; color:#2E6B3E; margin:10px 0 4px;">Inclusions</div>'+
+      r._draftInclusions.map(function(x){return '<div style="font-size:11px; color:#4A483D;">\u2022 '+x+'</div>';}).join('')+
+      '<div class="price-box" style="margin-top:10px;"><span class="l">Quote total</span><span class="v">\u20b9'+r._draftPrice.toLocaleString('en-IN')+'</span></div>'+
+      '<div style="display:flex; gap:8px; margin-bottom:8px;">'+
+        '<button class="btn ghost" style="flex:1;" onclick="shareQuoteEmail('+id+')">Email</button>'+
+        '<button class="btn ghost" style="flex:1;" onclick="shareQuoteWhatsApp('+id+')">WhatsApp</button>'+
+      '</div>'+
+      '<button class="btn ghost" style="width:100%; margin-bottom:8px;" onclick="downloadQuotePdf('+id+')">Download quote</button>'+
+      '<button class="btn" onclick="sendQuote('+id+')">'+(r.isPumpkino?'Deliver instantly via Pumpkino':'Mark quote as sent to agency')+'</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="openEditDraftQuote('+id+')">Edit before sending</button>'
+    );
+  }
+
+  window.shareQuoteEmail = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var body = 'Hi '+r.agentName+',%0D%0A%0D%0APlease find our quote for '+r.dest+': \u20b9'+r._draftPrice.toLocaleString('en-IN')+'.%0D%0AHotels: '+r._nightHotels.map(function(hid,i){return 'Night '+(i+1)+' - '+hotelName(hid);}).join(', ')+'%0D%0A%0D%0ARegards, Kerala Tour Mart';
+    window.open('mailto:?subject=Quote%20for%20'+encodeURIComponent(r.dest)+'&body='+body, '_blank');
+  };
+
+  window.shareQuoteWhatsApp = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var text = 'Hi '+r.agentName+', quote for '+r.dest+': \u20b9'+r._draftPrice.toLocaleString('en-IN')+'. Hotels: '+r._nightHotels.map(function(hid,i){return 'Night '+(i+1)+' - '+hotelName(hid);}).join(', ');
+    window.open('https://wa.me/?text='+encodeURIComponent(text), '_blank');
+  };
+
+  window.downloadQuotePdf = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var w = window.open('', '_blank');
+    w.document.write('<html><head><title>Quote \u2014 '+r.agentName+'</title><style>body{font-family:Arial,sans-serif;padding:30px;}table{width:100%;border-collapse:collapse;margin:16px 0;}td{padding:6px 0;border-bottom:1px solid #eee;}</style></head><body>'+
+      '<h2>Quote \u2014 '+r.dest+'</h2><p>'+r.agentName+' \u00b7 '+r.agency+' \u00b7 '+r.pax+'</p>'+
+      r._draftPlan.map(function(p){return '<p><b>'+p[0]+'</b> \u2014 '+p[1]+'</p>';}).join('')+
+      '<h3>Hotels</h3>'+r._nightHotels.map(function(hid,i){return '<p>Night '+(i+1)+': '+hotelName(hid)+'</p>';}).join('')+
+      '<h3>Inclusions</h3><ul>'+r._draftInclusions.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>'+
+      '<h2>Total: \u20b9'+r._draftPrice.toLocaleString('en-IN')+'</h2>'+
+      '</body></html>');
+    w.document.close();
+    setTimeout(function(){ w.print(); }, 400);
+  };
+
+  window.openEditDraftQuote = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var allHotelsOptions = function(selId){
+      return hotels.map(function(h){return '<option value="'+h.id+'"'+(h.id===selId?' selected':'')+'>'+h.name+' \u2014 '+h.dest+' ('+h.roomsAvailable+' available)</option>';}).join('');
+    };
+    showModal(
+      '<h3>Edit quote</h3><div class="subline">'+r.agentName+' \u00b7 '+r.dest+'</div>'+
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin-bottom:8px;">Hotels by night (a group trip may use different hotels each night)</div>'+
+      r._nightHotels.map(function(hid,i){
+        return '<div style="margin-bottom:8px;"><label class="field-lbl">Night '+(i+1)+'</label>'+
+          '<select id="edqNight'+i+'" class="field-in">'+allHotelsOptions(hid)+'</select></div>';
+      }).join('')+
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin:12px 0 8px;">Day-wise plan</div>'+
+      r._draftPlan.map(function(p,i){
+        return '<div style="margin-bottom:8px;"><label class="field-lbl">'+p[0]+'</label><textarea id="edqDay'+i+'" class="field-in" style="min-height:40px;">'+p[1]+'</textarea></div>';
+      }).join('')+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Inclusions (one per line)</label><textarea id="edqInclusions" class="field-in" style="min-height:70px;">'+r._draftInclusions.join('\n')+'</textarea></div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Exclusions (one per line)</label><textarea id="edqExclusions" class="field-in" style="min-height:60px;">'+r._draftExclusions.join('\n')+'</textarea></div>'+
+      '<div style="margin-bottom:14px;"><label class="field-lbl">Quote total (\u20b9)</label><input id="edqPrice" type="number" class="field-in" value="'+r._draftPrice+'"></div>'+
+      '<button class="btn" onclick="saveDraftQuoteEdit('+id+')">Save and continue</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="showDraftQuote('+id+')">Cancel</button>'
+    );
+  };
+
+  window.saveDraftQuoteEdit = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    r._nightHotels = r._nightHotels.map(function(hid,i){
+      var el = document.getElementById('edqNight'+i);
+      return el ? Number(el.value) : hid;
+    });
+    r._draftPlan = r._draftPlan.map(function(p,i){
+      var el = document.getElementById('edqDay'+i);
+      return [p[0], el ? el.value : p[1]];
+    });
+    r._draftInclusions = document.getElementById('edqInclusions').value.split('\n').filter(function(x){return x.trim();});
+    r._draftExclusions = document.getElementById('edqExclusions').value.split('\n').filter(function(x){return x.trim();});
+    r._draftPrice = Number(document.getElementById('edqPrice').value) || r._draftPrice;
+    showDraftQuote(id);
+  };
+
+  window.sendQuote = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    r.stage = 'sent';
+    r.quotedPrice = '\u20b9'+r._draftPrice.toLocaleString('en-IN');
+    if(!r.quoteId) r.quoteId = formatQuoteId(nextQuoteSeq++);
+    lastMovedId = r.id;
+    render();
+    document.getElementById('boardTag').textContent = (r.isPumpkino ? ('quote delivered instantly to '+r.agentName+' via Pumpkino') : ('quote sent to ' + r.agentName)) + ' \u2014 ' + r.quoteId;
+    closeModal();
+  };
+
+  window.openSentQuote = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    showModal(
+      '<h3>Quote sent \u2014 awaiting agency response</h3>'+
+      '<div class="subline">'+r.quoteId+' \u00b7 '+r.agentName+' \u00b7 '+r.dest+' \u00b7 '+r.quotedPrice+'</div>'+
+      '<div style="font-size:12.5px; color:#4A483D; margin-bottom:6px;">'+r._nightHotels.map(function(hid,i){return 'Night '+(i+1)+': '+hotelName(hid);}).join('<br>')+'</div>'+
+      '<button class="btn" style="margin-top:8px;" onclick="openBookingDetailsCapture('+id+')">Agency confirmed \u2014 capture traveller details</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="openEditDraftQuote('+id+')">Revise quote</button>'+
+      '<button class="btn ghost" style="margin-top:8px; color:#A3312F;" onclick="openMarkLost('+id+')">Mark as lost</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="closeModal()">Close</button>'
+    );
+  };
+
+  var dmcBusiness = {
+    companyName:'Kerala Tour Mart Pvt Ltd', gstin:'32ABCDE1234F1Z5', address:'MG Road, Munnar, Kerala 685612', country:'India',
+    accountName:'Kerala Tour Mart', accountNumber:'XXXX XXXX 7788', ifsc:'SBIN0004521', upiId:'keralatourmart@sbi',
+    swift:'SBININBB123', iban:'IN00 SBIN 0004 5217 7889 001', intlBankName:'State Bank of India, Munnar Branch', intlBankAddress:'MG Road, Munnar, Kerala 685612, India'
+  };
+
+  // Tax slab options by country — smart defaults only, always admin-editable.
+  // Same researched rates (July 2026) used on the Agency dashboard: India GST
+  // for tour operators (5% no-ITC presumptive rate, or 18% with ITC); UAE VAT
+  // 5% standard with the Tour Operator Margin Scheme (TOMS) taxing only the
+  // margin, zero-rated on margin for international packages; Thailand VAT at
+  // its reduced 7% rate. Starting points, not tax advice — confirm with an
+  // accountant before relying on them long-term.
+  var TAX_DEFAULTS = {
+    'India': [
+      {key:'in_5', label:'GST — 5% (no ITC, presumptive tour operator rate)', rate:5, appliesTo:'Total package price'},
+      {key:'in_18', label:'GST — 18% (with ITC)', rate:18, appliesTo:'Total package price'}
+    ],
+    'UAE': [
+      {key:'uae_toms', label:'VAT — 5% on margin (Tour Operator Margin Scheme, domestic)', rate:5, appliesTo:'Margin only (sale price minus cost)'},
+      {key:'uae_zero', label:'VAT — 0% on margin (international packages, zero-rated)', rate:0, appliesTo:'Margin only (sale price minus cost)'}
+    ],
+    'Thailand': [
+      {key:'th_vat', label:'VAT — 7% (reduced rate)', rate:7, appliesTo:'Total package price'}
+    ],
+    'Other': [
+      {key:'custom', label:'Custom / other', rate:0, appliesTo:'Total package price'}
+    ]
+  };
+  function taxOptionsFor(country){ return TAX_DEFAULTS[country] || TAX_DEFAULTS['Other']; }
+
+  var taxProfile = (function(){
+    var opts = taxOptionsFor(dmcBusiness.country);
+    return {schemeKey: opts[0].key, rate: opts[0].rate, appliesTo: opts[0].appliesTo};
+  })();
+
+  window.openTaxSettings = function(){
+    var isAdmin = currentUser.role === 'DMC Admin';
+    showModal('<h3>Settings — Tax</h3><div class="subline">Applied automatically to new invoices and quotes based on your country</div>'+
+      '<div style="font-size:11px; color:#8B897C; margin-bottom:12px;">These are starting points, not tax advice — confirm with your accountant.</div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Country</label><select id="tsCountry" class="field-in" '+(isAdmin?'':'disabled')+' onchange="onTaxCountryChange(this.value)">'+
+        Object.keys(TAX_DEFAULTS).map(function(c){ return '<option value="'+c+'" '+(dmcBusiness.country===c?'selected':'')+'>'+c+'</option>'; }).join('')+
+      '</select></div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl" id="tsSchemeLbl">Tax scheme (based on '+dmcBusiness.country+')</label><select id="tsScheme" class="field-in" '+(isAdmin?'':'disabled')+' onchange="onTaxSchemeChange(this.value)">'+
+        taxOptionsFor(dmcBusiness.country).map(function(o){ return '<option value="'+o.key+'" '+(taxProfile.schemeKey===o.key?'selected':'')+'>'+o.label+'</option>'; }).join('')+
+      '</select></div>'+
+      '<div style="display:flex; gap:8px; margin-bottom:14px;">'+
+        '<div style="flex:1;"><label class="field-lbl">Rate (%)</label><input id="tsRate" type="number" step="0.1" class="field-in" value="'+taxProfile.rate+'" '+(isAdmin?'':'disabled')+'></div>'+
+        '<div style="flex:1;"><label class="field-lbl">Applies to</label><input id="tsAppliesTo" class="field-in" value="'+taxProfile.appliesTo+'" '+(isAdmin?'':'disabled')+'></div>'+
+      '</div>'+
+      (isAdmin ? '<button class="btn ghost" onclick="saveTaxProfile()">Save tax settings</button>' : '<div style="font-size:10.5px; color:#8B897C;">Only your DMC Admin can edit tax settings.</div>')+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="closeModal()">Close</button>'
+    );
+  };
+
+  window.onTaxCountryChange = function(newCountry){
+    var opts = taxOptionsFor(newCountry);
+    document.getElementById('tsSchemeLbl').textContent = 'Tax scheme (based on ' + newCountry + ')';
+    document.getElementById('tsScheme').innerHTML = opts.map(function(o){ return '<option value="'+o.key+'">'+o.label+'</option>'; }).join('');
+    onTaxSchemeChange(opts[0].key, newCountry);
+  };
+
+  window.onTaxSchemeChange = function(key, countryOverride){
+    var opts = taxOptionsFor(countryOverride || dmcBusiness.country);
+    var match = opts.find(function(o){ return o.key===key; }) || opts[0];
+    document.getElementById('tsRate').value = match.rate;
+    document.getElementById('tsAppliesTo').value = match.appliesTo;
+  };
+
+  window.saveTaxProfile = function(){
+    dmcBusiness.country = document.getElementById('tsCountry').value;
+    taxProfile.schemeKey = document.getElementById('tsScheme').value;
+    taxProfile.rate = Number(document.getElementById('tsRate').value) || 0;
+    taxProfile.appliesTo = document.getElementById('tsAppliesTo').value.trim() || taxProfile.appliesTo;
+    document.getElementById('boardTag').textContent = 'Tax settings saved — '+taxProfile.rate+'% will apply to new invoices';
+    closeModal();
+  };
+  var nextInvId = 1;
+  var invoices = [];
+
+  window.openBookingDetailsCapture = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    showModal(
+      '<h3>Confirm booking details</h3>'+
+      '<div class="subline">'+r.quoteId+' \u00b7 '+r.agentName+' \u00b7 '+r.dest+' \u00b7 '+r.quotedPrice+'</div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Lead pax name *</label><input id="bdLeadName" class="field-in" placeholder="e.g. Arjun Menon"></div>'+
+      '<label style="font-size:11.5px; color:#4A483D; display:flex; align-items:center; gap:6px; margin-bottom:10px;"><input type="checkbox" id="bdIntl" onchange="document.getElementById(\'bdIntlFields\').style.display=this.checked?\'block\':\'none\'"> This is an international trip</label>'+
+      '<div id="bdIntlFields" style="display:none;">'+
+        '<div style="margin-bottom:10px;"><label class="field-lbl">Passport copy</label><input id="bdPassport" type="file" accept="image/*,.pdf" class="field-in"></div>'+
+        '<div style="margin-bottom:10px;"><label class="field-lbl">PAN card</label><input id="bdPan" type="file" accept="image/*,.pdf" class="field-in"></div>'+
+      '</div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Remarks (optional)</label><textarea id="bdRemarks" class="field-in" style="min-height:50px;" placeholder="e.g. vegetarian group, needs wheelchair access"></textarea></div>'+
+      '<div style="margin-bottom:14px;"><label class="field-lbl">Full payment due date *</label><input id="bdFullDue" type="date" class="field-in" value="2026-08-15"></div>'+
+      '<button class="btn" onclick="agentConfirmedQuote('+id+')">Confirm booking \u2014 start inventory check &amp; payment</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="openSentQuote('+id+')">Back</button>'
+    );
+  };
+
+  window.agentConfirmedQuote = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var leadName = document.getElementById('bdLeadName').value.trim();
+    if(!leadName){ document.getElementById('bdLeadName').style.borderColor='#C24343'; return; }
+    var isIntl = document.getElementById('bdIntl').checked;
+    var fullDue = document.getElementById('bdFullDue').value || '2026-08-15';
+    var passportInput = document.getElementById('bdPassport');
+    var panInput = document.getElementById('bdPan');
+    r.leadPaxName = leadName;
+    r.isInternational = isIntl;
+    r.passportFile = (isIntl && passportInput.files[0]) ? passportInput.files[0].name : null;
+    r.panFile = (isIntl && panInput.files[0]) ? panInput.files[0].name : null;
+    r.remarks = document.getElementById('bdRemarks').value.trim();
+    r.fullPaymentDueDate = fullDue;
+
+    // Inventory is NOT blocked instantly — the DMC still needs to check back with the
+    // hotels/suppliers before rooms are actually held. This starts a separate tracked
+    // pipeline (see openInventoryBlockStatus / confirmInventoryBlocked).
+    r.blockStatus = 'pending';
+    r.blockLog = [{event:'Booking confirmed by agency', detail:'Inventory not blocked yet — checking availability with hotels/suppliers', at: nowStamp()}];
+
+    var pay = {id:nextPayId++, reqId:id, quoteId:r.quoteId, agentName:r.agentName, agency:r.agency, total:r._draftPrice,
+      advancePct:50, advanceAmt:r._draftPrice*0.5, dueAmt:r._draftPrice*0.5, dueDate:fullDue, status:'not requested'};
+    agentPayments.push(pay);
+    r.paymentId = pay.id;
+    r._payStatus = 'payment not requested yet';
+
+    var agent = agents.find(function(a){return a.name===r.agentName && a.agency===r.agency;});
+    var gstRate = 0.05;
+    var baseAmount = r._draftPrice / (1+gstRate);
+    var gstAmount = r._draftPrice - baseAmount;
+    var inv = {id:nextInvId++, reqId:id, quoteId:r.quoteId, agencyName:r.agency, agentName:r.agentName,
+      agencyGstin: agent ? agent.gstin : null, dmcGstin: dmcBusiness.gstin,
+      baseAmount:baseAmount, gstRate:gstRate*100, gstAmount:gstAmount, total:r._draftPrice, date:'14 Jul 2026'};
+    invoices.push(inv);
+    r.invoiceId = inv.id;
+
+    r.stage = 'payment';
+    lastMovedId = r.id;
+    render();
+    document.getElementById('boardTag').textContent = r.agentName + ' confirmed \u2014 inventory check pending, full payment due ' + fullDue;
+    // Land the DMC directly on the next required action instead of just closing \u2014
+    // there is no reason to make them go hunt for the pending status afterwards.
+    openInventoryBlockStatus(id);
+  };
+
+  window.openPaymentTracking = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var pay = agentPayments.find(function(p){return p.id===r.paymentId;});
+    var inv = invoices.find(function(x){return x.reqId===id;});
+    var blockLabelShort = {pending:'Pending', blocked:'Blocked', released:'Released'};
+    var requestSentHtml = '<div style="font-size:11.5px; color:#2E6B3E; background:#E7F3E4; padding:9px 10px; border-radius:8px; margin-bottom:8px;">\u2713 Payment request sent to '+r.agentName+(r._paymentRequestedAt?' \u2014 '+r._paymentRequestedAt:'')+'</div>';
+    var paymentActionHtml = (!pay || pay.status==='not requested')
+      ? '<button class="btn" onclick="markPaymentRequested('+id+')">Send payment request to agency</button>'
+      : (pay.status==='advance due' ? requestSentHtml : '');
+    showModal(
+      '<h3>Payment from travel agent</h3>'+
+      '<div class="subline">'+r.quoteId+' \u00b7 '+r.agentName+' \u00b7 '+r.agency+' \u00b7 '+r.quotedPrice+' total</div>'+
+      (r.remarks ? '<div style="font-size:11.5px; color:#4A483D; margin-bottom:10px;">Remarks: '+r.remarks+'</div>' : '')+
+      (pay ? '<div class="inv-row"><span>Advance ('+pay.advancePct+'%)</span><span>\u20b9'+pay.advanceAmt.toLocaleString('en-IN')+'</span></div>'+
+             '<div class="inv-row"><span>Balance due '+pay.dueDate+'</span><span>\u20b9'+pay.dueAmt.toLocaleString('en-IN')+'</span></div>'+
+             '<div class="inv-row"><span>Status</span><span>'+pay.status+'</span></div>' : '')+
+      (inv ? '<div class="inv-row"><span>Invoice</span><span><a href="#" onclick="downloadInvoicePdf('+inv.id+');return false;" style="color:#2C5FA8; text-decoration:underline;">#'+inv.id+' \u2014 PDF</a></span></div>' : '')+
+      (r.blockStatus ? '<div class="inv-row"><span>Inventory status</span><span><a href="#" onclick="openInventoryBlockStatus('+id+');return false;" style="color:#2C5FA8; text-decoration:underline;">'+blockLabelShort[r.blockStatus]+' \u2014 view</a></span></div>' : '')+
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin:12px 0 6px;">Domestic payment</div>'+
+      '<div style="font-size:11px; color:#4A483D; margin-bottom:10px;">UPI: '+dmcBusiness.upiId+'<br>'+dmcBusiness.accountName+' \u00b7 A/C '+dmcBusiness.accountNumber+' \u00b7 IFSC '+dmcBusiness.ifsc+'</div>'+
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin:10px 0 6px;">International remittance</div>'+
+      '<div style="font-size:11px; color:#4A483D; margin-bottom:12px;">SWIFT: '+dmcBusiness.swift+'<br>IBAN: '+dmcBusiness.iban+'<br>'+dmcBusiness.intlBankName+'</div>'+
+      '<div style="display:flex; gap:8px; margin-bottom:8px;">'+
+        '<button class="btn ghost" style="flex:1;" onclick="requestPaymentEmail('+id+')">Email</button>'+
+        '<button class="btn ghost" style="flex:1;" onclick="requestPaymentWhatsApp('+id+')">WhatsApp</button>'+
+      '</div>'+
+      paymentActionHtml+
+      '<div style="font-size:12px; color:#4A483D; margin:12px 0 6px;">Once amounts arrive, confirm here:</div>'+
+      '<button class="btn ghost" onclick="markAgentAdvancePaid('+id+')">Confirm advance received (partial)</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="markAgentFullyPaid('+id+')">Confirm full payment received</button>'+
+      '<button class="btn ghost" style="margin-top:8px; color:#A3312F;" onclick="openCancelBooking('+id+')">Cancel booking</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="closeModal()">Close</button>'
+    );
+  };
+
+  window.requestPaymentEmail = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var pay = agentPayments.find(function(p){return p.id===r.paymentId;});
+    var body = 'Hi '+r.agentName+',%0D%0A%0D%0APlease process payment of \u20b9'+pay.total.toLocaleString('en-IN')+' for the '+r.dest+' booking.%0D%0AUPI: '+dmcBusiness.upiId+'%0D%0AA/C: '+dmcBusiness.accountNumber+' IFSC '+dmcBusiness.ifsc+'%0D%0AFull payment due by '+pay.dueDate+'.';
+    window.open('mailto:?subject=Payment%20request%20for%20'+encodeURIComponent(r.dest)+'&body='+body, '_blank');
+  };
+  window.requestPaymentWhatsApp = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var pay = agentPayments.find(function(p){return p.id===r.paymentId;});
+    var text = 'Hi '+r.agentName+', payment of \u20b9'+pay.total.toLocaleString('en-IN')+' due for '+r.dest+' by '+pay.dueDate+'. UPI: '+dmcBusiness.upiId;
+    window.open('https://wa.me/?text='+encodeURIComponent(text), '_blank');
+  };
+  window.markPaymentRequested = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var pay = agentPayments.find(function(p){return p.id===r.paymentId;});
+    if(!pay){
+      // Defensive fallback: some demo bookings can reach the payment stage without
+      // an agentPayments record yet (e.g. seeded data) — create one instead of no-op'ing.
+      var total = Number((r.quotedPrice||'0').replace(/[^\d]/g,'')) || 0;
+      pay = {id:nextPayId++, reqId:id, agentName:r.agentName, agency:r.agency, total:total,
+        advancePct:50, advanceAmt:total*0.5, dueAmt:total*0.5, dueDate:r.fullPaymentDueDate||'2026-08-15', status:'not requested'};
+      agentPayments.push(pay);
+      r.paymentId = pay.id;
+    }
+    pay.status = 'advance due';
+    r._payStatus = 'advance due';
+    r._paymentRequestedAt = nowStamp();
+    lastMovedId = r.id;
+    render();
+    document.getElementById('boardTag').textContent = 'payment request sent to ' + r.agentName;
+    openPaymentTracking(id);
+  };
+
+  window.markAgentAdvancePaid = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var pay = agentPayments.find(function(p){return p.id===r.paymentId;});
+    if(pay) pay.status = 'partial';
+    r._payStatus = 'partial \u2014 balance due';
+    lastMovedId = r.id;
+    closeModal();
+    render();
+    document.getElementById('boardTag').textContent = 'advance received from ' + r.agentName;
+  };
+
+  window.markAgentFullyPaid = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var pay = agentPayments.find(function(p){return p.id===r.paymentId;});
+    if(pay){ pay.status = 'paid'; pay.dueAmt = 0; }
+    r.stage = 'done';
+    // A booking is created against the quote it came from \u2014 bookingId is new, quoteId
+    // (already set back in sendQuote()) is carried forward as the traceable reference.
+    if(!r.bookingId) r.bookingId = formatBookingId(nextBookingSeq++);
+    lastMovedId = r.id;
+    render();
+    document.getElementById('boardTag').textContent = r.agentName + '\u2019s booking fully paid \u2014 ' + r.bookingId + ' confirmed against ' + (r.quoteId||'quote') + ' \u2014 assign it to a manager';
+    openAssignManager(id);
+  };
+
+  window.openAssignManager = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    showModal('<h3>Assign booking</h3><div class="subline">'+r.agentName+' \u00b7 '+r.dest+' \u00b7 fully paid</div>'+
+      '<div style="margin-bottom:14px;"><label class="field-lbl">Assign to</label>'+
+      '<select id="asgUser" class="field-in"><option value="">Unassigned</option>'+
+      users.map(function(u){return '<option value="'+u.name+'"'+(r.assignedTo===u.name?' selected':'')+'>'+u.name+' ('+u.role+')</option>';}).join('')+
+      '</select></div>'+
+      '<button class="btn" onclick="saveManagerAssignment('+id+')">Save assignment</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="closeModal()">Skip for now</button>'
+    );
+  };
+
+  window.saveManagerAssignment = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    r.assignedTo = document.getElementById('asgUser').value || null;
+    lastMovedId = r.id;
+    render();
+    document.getElementById('boardTag').textContent = r.assignedTo ? (r.dest+' booking assigned to '+r.assignedTo) : 'assignment skipped';
+    closeModal();
+  };
+
+  window.openConfirmedRequest = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var pay = agentPayments.find(function(p){return p.id===r.paymentId;});
+    var inv = invoices.find(function(x){return x.reqId===id;});
+    var blockLabelShort = {pending:'Pending', blocked:'Blocked', released:'Released'};
+    showModal(
+      '<h3>Booking confirmed \u2014 '+r.dest+'</h3>'+
+      '<div class="subline">'+(r.bookingId||'')+' \u00b7 against '+(r.quoteId||'\u2014')+' \u00b7 '+r.agentName+' \u00b7 '+r.agency+' \u00b7 '+(r.quotedPrice||'')+'</div>'+
+
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin-bottom:8px;">Traveller</div>'+
+      '<div class="inv-row"><span>Lead pax</span><span>'+(r.leadPaxName||'\u2014')+'</span></div>'+
+      '<div class="inv-row"><span>Party size</span><span>'+r.pax+'</span></div>'+
+      '<div class="inv-row"><span>Travel date</span><span>'+r.startDate+'</span></div>'+
+      (r.isInternational ?
+        '<div class="inv-row"><span>Passport</span><span>'+(r.passportFile||'not uploaded')+'</span></div>'+
+        '<div class="inv-row"><span>PAN</span><span>'+(r.panFile||'not uploaded')+'</span></div>' : '')+
+      (r.remarks ? '<div class="inv-row"><span>Remarks</span><span>'+r.remarks+'</span></div>' : '')+
+
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin:14px 0 8px;">Itinerary</div>'+
+      ((r._nightHotels||[]).length ? (r._nightHotels||[]).map(function(hid,i){return '<div class="inv-row"><span>Night '+(i+1)+'</span><span>'+hotelName(hid)+'</span></div>';}).join('') : '<div style="font-size:12px; color:#8B897C; margin-bottom:8px;">No night-by-night hotel plan on file.</div>')+
+
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin:14px 0 8px;">Payment</div>'+
+      (pay ? '<div class="inv-row"><span>Total</span><span>\u20b9'+pay.total.toLocaleString('en-IN')+'</span></div>'+
+             '<div class="inv-row"><span>Status</span><span><span class="badge done" style="margin-top:0;">Fully paid</span></span></div>' :
+             '<div style="font-size:12px; color:#8B897C; margin-bottom:8px;">No payment record.</div>')+
+      (inv ? '<div class="inv-row"><span>Invoice</span><span><a href="#" onclick="downloadInvoicePdf('+inv.id+');return false;" style="color:#2C5FA8; text-decoration:underline;">#'+inv.id+' \u2014 PDF</a></span></div>' : '')+
+      (r.blockStatus ? '<div class="inv-row"><span>Inventory status</span><span><a href="#" onclick="openInventoryBlockStatus('+id+');return false;" style="color:#2C5FA8; text-decoration:underline;">'+blockLabelShort[r.blockStatus]+' \u2014 view</a></span></div>' : '')+
+
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin:14px 0 8px;">Operations</div>'+
+      '<div class="inv-row"><span>Assigned to</span><span>'+(r.assignedTo||'Unassigned')+' <a href="#" onclick="openAssignManager('+id+');return false;" style="color:#2C5FA8; text-decoration:underline; margin-left:8px;">change</a></span></div>'+
+
+      '<button class="btn ghost" style="margin-top:14px;" onclick="downloadBookingVoucherPdf('+id+')">Download booking voucher</button>'+
+      '<button class="btn ghost" style="margin-top:8px; color:#A3312F;" onclick="openCancelBooking('+id+')">Cancel booking</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="closeModal()">Close</button>',
+      true
+    );
+  };
+
+  window.downloadBookingVoucherPdf = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var pay = agentPayments.find(function(p){return p.id===r.paymentId;});
+    var w = window.open('', '_blank');
+    w.document.write('<html><head><title>Booking Voucher \u2014 '+r.agentName+'</title><style>body{font-family:Arial,sans-serif;padding:30px;}table{width:100%;border-collapse:collapse;margin:16px 0;}td{padding:6px 0;border-bottom:1px solid #eee;}</style></head><body>'+
+      '<h2>Booking Voucher \u2014 '+r.dest+'</h2>'+
+      '<p>'+r.agentName+' \u00b7 '+r.agency+' \u00b7 '+r.pax+'</p>'+
+      '<p>Lead pax: '+(r.leadPaxName||'\u2014')+' \u00b7 Travel date: '+r.startDate+'</p>'+
+      '<h3>Hotels</h3>'+((r._nightHotels||[]).map(function(hid,i){return '<p>Night '+(i+1)+': '+hotelName(hid)+'</p>';}).join('') || '<p>Not specified</p>')+
+      '<h3>Payment</h3><p>Total: \u20b9'+(pay?pay.total.toLocaleString('en-IN'):(r.quotedPrice||'\u2014'))+' \u2014 fully paid</p>'+
+      (r.assignedTo ? '<p>Assigned manager: '+r.assignedTo+'</p>' : '')+
+      '</body></html>');
+    w.document.close();
+    setTimeout(function(){ w.print(); }, 400);
+  };
+
+  function daysToTrip(startDate){
+    var d = new Date(startDate+'T00:00:00');
+    if(isNaN(d.getTime())) return null;
+    return Math.ceil((d - new Date('2026-07-14T00:00:00')) / 86400000);
+  }
+
+  function renderUpcomingFilters(){
+    var el = document.getElementById('utFilters');
+    if(!el) return;
+    el.innerHTML = [
+      {key:'all', label:'All'},
+      {key:'domestic', label:'Domestic'},
+      {key:'intl', label:'International'}
+    ].map(function(f){
+      return '<button type="button" class="btn'+(upcomingFilter===f.key?'':' ghost')+'" style="width:auto; padding:7px 14px; font-size:11.5px; margin-right:6px;" onclick="setUpcomingFilter(\''+f.key+'\')">'+f.label+'</button>';
+    }).join('');
+  }
+
+  window.setUpcomingFilter = function(key){
+    upcomingFilter = key;
+    renderUpcomingFilters();
+    renderUpcomingResults();
+  };
+
+  window.renderUpcomingResults = function(){
+    var qEl = document.getElementById('utSearchQ');
+    var q = (qEl ? qEl.value : '').toLowerCase();
+    var upcoming = requests.filter(function(r){return (r.stage==='payment' || r.stage==='done') && isActive(r);})
+      .filter(function(r){ if(upcomingFilter==='domestic') return !r.isInternational; if(upcomingFilter==='intl') return !!r.isInternational; return true; })
+      .filter(function(r){ return !q || r.agentName.toLowerCase().indexOf(q)>-1 || r.dest.toLowerCase().indexOf(q)>-1; })
+      .sort(function(a,b){ return (a.startDate||'').localeCompare(b.startDate||''); });
+
+    document.getElementById('utResults').innerHTML = upcoming.length ? upcoming.map(function(r){
+      var pay = agentPayments.find(function(p){return p.id===r.paymentId;});
+      var payBadge = pay ? '<span class="badge '+(pay.status==='paid'?'done':(pay.dueAmt>0?'paypend':'rev'))+'">'+pay.status+'</span>' : '<span class="badge rev">no payment record</span>';
+      var docBadge = r.isInternational ? '<span class="badge '+((r.passportFile&&r.panFile)?'done':'paypend')+'">'+((r.passportFile&&r.panFile)?'Docs complete':'Docs missing')+'</span>' : '<span class="badge pk">Domestic</span>';
+      var d = daysToTrip(r.startDate);
+      var countdown = (d===null) ? '' : (d>0 ? d+' day(s) to go' : (d===0?'Travelling today':'In progress / past'));
+      return '<div class="lib-card pick" onclick="openTripDetail('+r.id+')">'+
+        '<div class="t" style="display:flex; justify-content:space-between;"><span>'+r.dest+' \u00b7 '+r.agentName+'</span><span style="font-size:10.5px; color:#8E948E; font-weight:500;">'+countdown+'</span></div>'+
+        '<div class="s">Lead pax: '+(r.leadPaxName||'\u2014')+' \u00b7 '+r.pax+' \u00b7 travel '+r.startDate+'</div>'+
+        '<div style="margin-top:8px;">'+payBadge+' '+docBadge+'</div>'+
+      '</div>';
+    }).join('') : '<div style="font-size:12.5px; color:#8B897C;">No trips match.</div>';
+  };
+
+  window.openUpcomingTrips = function(){
+    showModal(
+      '<h3>Upcoming trips</h3><div class="subline">Search, filter, and track departure countdowns</div>'+
+      '<div id="utFilters" style="margin-bottom:10px;"></div>'+
+      '<input id="utSearchQ" class="field-in" placeholder="Search by agent or destination" style="margin-bottom:12px;" oninput="renderUpcomingResults()">'+
+      '<div id="utResults"></div>'+
+      '<button class="btn ghost" style="margin-top:10px;" onclick="closeModal()">Close</button>',
+      true
+    );
+    renderUpcomingFilters();
+    renderUpcomingResults();
+  };
+
+  window.openTripDetail = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var pay = agentPayments.find(function(p){return p.id===r.paymentId;});
+    var blockLabelShort = {pending:'Pending', blocked:'Blocked', released:'Released'};
+    var dTrip = daysToTrip(r.startDate);
+    var countdownTrip = (dTrip===null) ? '' : (dTrip>0 ? dTrip+' day(s) to go' : (dTrip===0?'Travelling today':'In progress / past'));
+    showModal('<h3>'+r.dest+' \u2014 '+r.agentName+'<span style="float:right; font-size:12.5px; color:#8E948E; font-weight:500;">'+countdownTrip+'</span></h3><div class="subline">'+r.agency+' \u00b7 '+r.pax+' \u00b7 travel date '+r.startDate+'</div>'+
+      '<div style="font-size:12.5px; color:#4A483D; margin-bottom:4px;">Lead pax name: <b>'+(r.leadPaxName||'\u2014')+'</b></div>'+
+      '<div style="font-size:12.5px; color:#4A483D; margin-bottom:4px;">Nights: '+r.nights+' \u00b7 Hotels: '+((r._nightHotels||[]).map(function(hid,i){return 'N'+(i+1)+' '+hotelName(hid);}).join(', ')||'\u2014')+'</div>'+
+      (r.isInternational ? '<div style="font-size:12.5px; color:#4A483D; margin-bottom:4px;">Passport: '+(r.passportFile||'not uploaded')+' \u00b7 PAN: '+(r.panFile||'not uploaded')+'</div>' : '')+
+      (r.remarks ? '<div style="font-size:12.5px; color:#4A483D; margin-bottom:4px;">Remarks: '+r.remarks+'</div>' : '')+
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin:12px 0 6px;">Payment</div>'+
+      (pay ? '<div class="inv-row"><span>Total</span><span>\u20b9'+pay.total.toLocaleString('en-IN')+'</span></div>'+
+             '<div class="inv-row"><span>Advance</span><span>\u20b9'+pay.advanceAmt.toLocaleString('en-IN')+'</span></div>'+
+             '<div class="inv-row"><span>Balance due</span><span>\u20b9'+pay.dueAmt.toLocaleString('en-IN')+'</span></div>'+
+             '<div class="inv-row"><span>Full payment cut-off</span><span>'+pay.dueDate+'</span></div>'+
+             '<div class="inv-row"><span>Status</span><span>'+pay.status+'</span></div>' : '<div style="font-size:12px; color:#8B897C;">No payment record.</div>')+
+      (r.blockStatus ? '<div class="inv-row"><span>Inventory status</span><span><a href="#" onclick="openInventoryBlockStatus('+id+');return false;" style="color:#2C5FA8; text-decoration:underline;">'+blockLabelShort[r.blockStatus]+' — view</a></span></div>' : '')+
+      '<div class="inv-row"><span>Assigned to</span><span>'+(r.assignedTo||'Unassigned')+' <a href="#" onclick="openAssignManager('+id+');return false;" style="color:#2C5FA8; text-decoration:underline; margin-left:8px;">change</a></span></div>'+
+      '<button class="btn ghost" style="margin-top:14px;" onclick="downloadBookingVoucherPdf('+id+')">Download booking voucher</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="openUpcomingTrips()">Back</button>',
+      true
+    );
+  };
+
+  window.openInvoices = function(){
+    showModal('<h3>Invoices</h3><div class="subline">GST-compliant, generated automatically when a booking is confirmed</div>'+
+      (invoices.length ? invoices.map(function(inv){
+        return '<div class="inv-row"><span>#'+inv.id+' \u00b7 '+inv.agencyName+(inv.agencyGstin?'':' (GSTIN not on file)')+'<br><span style="font-size:10.5px; color:#9C9A8C;">'+inv.date+'</span></span>'+
+          '<span style="text-align:right;"><b style="font-family:\'IBM Plex Mono\',monospace;">\u20b9'+inv.total.toLocaleString('en-IN')+'</b> <a href="#" onclick="downloadInvoicePdf('+inv.id+');return false;" style="margin-left:8px; color:#2C5FA8; text-decoration:underline;">PDF</a></span></div>';
+      }).join('') : '<div style="font-size:12.5px; color:#8B897C;">None yet \u2014 generated automatically when an agency confirms a quote.</div>')+
+      '<button class="btn ghost" style="margin-top:14px;" onclick="closeModal()">Close</button>'
+    );
+  };
+
+  window.downloadInvoicePdf = function(invId){
+    var inv = invoices.find(function(x){return x.id===invId;});
+    var w = window.open('', '_blank');
+    w.document.write('<html><head><title>Tax Invoice #'+inv.id+'</title><style>body{font-family:Arial,sans-serif;padding:30px;}table{width:100%;border-collapse:collapse;margin-top:16px;}td{padding:6px 0;border-bottom:1px solid #eee;}</style></head><body>'+
+      '<h2>Tax Invoice #'+inv.id+'</h2>'+
+      '<p><b>'+dmcBusiness.companyName+'</b><br>'+dmcBusiness.address+'<br>GSTIN: '+dmcBusiness.gstin+'</p>'+
+      '<p><b>Billed to:</b> '+inv.agencyName+' ('+inv.agentName+')<br>GSTIN: '+(inv.agencyGstin||'Not provided \u2014 B2C')+'</p>'+
+      '<p>Date: '+inv.date+'</p>'+
+      '<table><tr><td>Taxable value</td><td style="text-align:right;">\u20b9'+inv.baseAmount.toLocaleString('en-IN',{maximumFractionDigits:2})+'</td></tr>'+
+      '<tr><td>GST ('+inv.gstRate+'%)</td><td style="text-align:right;">\u20b9'+inv.gstAmount.toLocaleString('en-IN',{maximumFractionDigits:2})+'</td></tr>'+
+      '<tr><td><b>Total</b></td><td style="text-align:right;"><b>\u20b9'+inv.total.toLocaleString('en-IN')+'</b></td></tr></table>'+
+      '</body></html>');
+    w.document.close();
+    setTimeout(function(){ w.print(); }, 400);
+  };
+
+  window.openBankDetails = function(){
+    showModal('<h3>Bank &amp; business details</h3><div class="subline">Preloaded and used automatically across quotes, payments, and invoices</div>'+
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin-bottom:6px;">Business</div>'+
+      '<div class="inv-row"><span>Company name</span><span>'+dmcBusiness.companyName+'</span></div>'+
+      '<div class="inv-row"><span>GSTIN</span><span>'+dmcBusiness.gstin+'</span></div>'+
+      '<div class="inv-row"><span>Address</span><span>'+dmcBusiness.address+'</span></div>'+
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin:12px 0 6px;">Domestic bank</div>'+
+      '<div class="inv-row"><span>Account name</span><span>'+dmcBusiness.accountName+'</span></div>'+
+      '<div class="inv-row"><span>Account number</span><span>'+dmcBusiness.accountNumber+'</span></div>'+
+      '<div class="inv-row"><span>IFSC</span><span>'+dmcBusiness.ifsc+'</span></div>'+
+      '<div class="inv-row"><span>UPI ID</span><span>'+dmcBusiness.upiId+'</span></div>'+
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin:12px 0 6px;">International remittance</div>'+
+      '<div class="inv-row"><span>SWIFT</span><span>'+dmcBusiness.swift+'</span></div>'+
+      '<div class="inv-row"><span>IBAN</span><span>'+dmcBusiness.iban+'</span></div>'+
+      '<div class="inv-row"><span>Bank</span><span>'+dmcBusiness.intlBankName+'</span></div>'+
+      '<div style="font-size:10.5px; color:#8B897C; margin:10px 0;">Editing requires verification.</div>'+
+      '<button class="btn ghost" onclick="requestBankEdit2FA()">Edit details</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="closeModal()">Close</button>'
+    );
+  };
+
+  window.requestBankEdit2FA = function(){
+    showModal('<h3>Verify access</h3><div class="subline">Two-factor authentication required to edit financial details</div>'+
+      '<div style="font-size:12.5px; color:#4A483D; margin-bottom:12px;">A 6-digit code has been sent to the admin\u2019s registered device. (Demo code: 123456)</div>'+
+      '<div style="margin-bottom:14px;"><label class="field-lbl">Verification code</label><input id="dbOtp" class="field-in" placeholder="6-digit code"></div>'+
+      '<button class="btn" onclick="submitBankEdit2FA()">Verify and continue</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="openBankDetails()">Cancel</button>'
+    );
+  };
+  window.submitBankEdit2FA = function(){
+    if(document.getElementById('dbOtp').value.trim() !== '123456'){
+      document.getElementById('dbOtp').style.borderColor = '#C24343';
+      return;
+    }
+    openEditBankDetails();
+  };
+
+  window.openEditBankDetails = function(){
+    showModal('<h3>Edit bank &amp; business details</h3><div class="subline">Verified</div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Company name</label><input id="dbCompany" class="field-in" value="'+dmcBusiness.companyName+'"></div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">GSTIN</label><input id="dbGstin" class="field-in" value="'+dmcBusiness.gstin+'"></div>'+
+      '<div style="margin-bottom:14px;"><label class="field-lbl">Address</label><input id="dbAddress" class="field-in" value="'+dmcBusiness.address+'"></div>'+
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin-bottom:8px;">Domestic bank</div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Account name</label><input id="dbAccName" class="field-in" value="'+dmcBusiness.accountName+'"></div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Account number</label><input id="dbAccNum" class="field-in" value="'+dmcBusiness.accountNumber+'"></div>'+
+      '<div style="display:flex; gap:8px; margin-bottom:14px;">'+
+        '<div style="flex:1;"><label class="field-lbl">IFSC</label><input id="dbIfsc" class="field-in" value="'+dmcBusiness.ifsc+'"></div>'+
+        '<div style="flex:1;"><label class="field-lbl">UPI ID</label><input id="dbUpi" class="field-in" value="'+dmcBusiness.upiId+'"></div>'+
+      '</div>'+
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin-bottom:8px;">International remittance</div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">SWIFT</label><input id="dbSwift" class="field-in" value="'+dmcBusiness.swift+'"></div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">IBAN</label><input id="dbIban" class="field-in" value="'+dmcBusiness.iban+'"></div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Bank name</label><input id="dbIntlBank" class="field-in" value="'+dmcBusiness.intlBankName+'"></div>'+
+      '<div style="margin-bottom:14px;"><label class="field-lbl">Bank address</label><input id="dbIntlAddr" class="field-in" value="'+dmcBusiness.intlBankAddress+'"></div>'+
+      '<button class="btn" onclick="saveBankDetails()">Save changes</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="openBankDetails()">Cancel</button>'
+    );
+  };
+
+  window.saveBankDetails = function(){
+    dmcBusiness.companyName = document.getElementById('dbCompany').value.trim() || dmcBusiness.companyName;
+    dmcBusiness.gstin = document.getElementById('dbGstin').value.trim() || dmcBusiness.gstin;
+    dmcBusiness.address = document.getElementById('dbAddress').value.trim() || dmcBusiness.address;
+    dmcBusiness.accountName = document.getElementById('dbAccName').value.trim() || dmcBusiness.accountName;
+    dmcBusiness.accountNumber = document.getElementById('dbAccNum').value.trim() || dmcBusiness.accountNumber;
+    dmcBusiness.ifsc = document.getElementById('dbIfsc').value.trim() || dmcBusiness.ifsc;
+    dmcBusiness.upiId = document.getElementById('dbUpi').value.trim() || dmcBusiness.upiId;
+    dmcBusiness.swift = document.getElementById('dbSwift').value.trim() || dmcBusiness.swift;
+    dmcBusiness.iban = document.getElementById('dbIban').value.trim() || dmcBusiness.iban;
+    dmcBusiness.intlBankName = document.getElementById('dbIntlBank').value.trim() || dmcBusiness.intlBankName;
+    dmcBusiness.intlBankAddress = document.getElementById('dbIntlAddr').value.trim() || dmcBusiness.intlBankAddress;
+    document.getElementById('boardTag').textContent = 'Bank & business details updated';
+    openBankDetails();
+  };
+
+  window.openPayments = function(){
+    showModal('<h3>Payments from travel agents</h3><div class="subline">Tracked from the moment a quote is confirmed</div>'+
+      (agentPayments.length ? agentPayments.map(function(p){
+        var flag = p.dueAmt>0;
+        return '<div class="inv-row"'+(flag?' style="background:#FDF2DE; border-radius:6px; padding:8px 6px;"':'')+'>'+
+          '<span>'+p.agentName+' \u00b7 '+p.agency+'<br><span style="font-size:10.5px; color:#9C9A8C;">Due '+p.dueDate+' \u00b7 '+p.status+'</span></span>'+
+          '<span style="text-align:right;">Adv: \u20b9'+p.advanceAmt.toLocaleString('en-IN')+'<br>Due: \u20b9'+p.dueAmt.toLocaleString('en-IN')+'</span></div>';
+      }).join('') : '<div style="font-size:12.5px; color:#8B897C;">No payments tracked yet \u2014 these are created automatically when an agency confirms a quote.</div>')+
+      '<button class="btn ghost" style="margin-top:14px;" onclick="closeModal()">Close</button>'
+    );
+  };
+
+  window.renderConfirmedBookingsResults = function(){
+    var qEl = document.getElementById('cbSearchQ');
+    var q = (qEl ? qEl.value : '').toLowerCase();
+    var confirmed = requests.filter(function(r){return r.stage==='done';})
+      .filter(function(r){ return !q || r.agentName.toLowerCase().indexOf(q)>-1 || r.dest.toLowerCase().indexOf(q)>-1; });
+    document.getElementById('cbResults').innerHTML = confirmed.length ? confirmed.map(function(r){
+      var d = daysToTrip(r.startDate);
+      var travelledLine = (d!==null && d<0) ? 'travelled '+r.startDate : 'travel '+r.startDate;
+      return '<div class="lib-card pick" onclick="openConfirmedRequest('+r.id+')"><div class="t" style="display:flex; justify-content:space-between;"><span>'+r.agentName+' \u00b7 '+r.dest+'</span><span>'+(r.quotedPrice||'')+'</span></div>'+
+        '<div class="s">'+(r.bookingId||'')+' \u00b7 '+travelledLine+' \u00b7 '+(r.assignedTo?'assigned to '+r.assignedTo:'unassigned')+'</div></div>';
+    }).join('') : '<div style="font-size:12.5px; color:#8B897C;">None yet.</div>';
+  };
+
+  window.openBookings = function(){
+    showModal(
+      '<h3>Confirmed bookings</h3><div class="subline">Fully paid and locked in \u2014 click a booking for full details</div>'+
+      '<input id="cbSearchQ" class="field-in" placeholder="Search by agent or destination" style="margin-bottom:12px;" oninput="renderConfirmedBookingsResults()">'+
+      '<div id="cbResults"></div>'+
+      '<button class="btn ghost" style="margin-top:10px;" onclick="closeModal()">Close</button>',
+      true
+    );
+    renderConfirmedBookingsResults();
+  };
+
+  window.openQuoteInbox = function(){
+    showModal('<h3>Quote requests</h3><div class="subline">All requests across every stage</div>'+
+      '<input id="reqSearchQ" class="field-in" placeholder="Search by agent, agency, or destination" style="margin-bottom:12px;" oninput="renderReqSearch()">'+
+      '<div id="reqSearchResults"></div>'+
+      '<button class="btn" style="margin-top:10px;" onclick="openAddQuoteRequest()">+ Add quote request</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="closeModal()">Close</button>'
+    );
+    renderReqSearch();
+  };
+
+  window.renderReqSearch = function(){
+    var q = (document.getElementById('reqSearchQ').value||'').toLowerCase();
+    var handlers = {new:'openRequest', review:'openRequest', sent:'openSentQuote', payment:'openPaymentTracking', done:'openConfirmedRequest'};
+    var list = requests.filter(function(r){
+      return isActive(r) && (!q || r.agentName.toLowerCase().indexOf(q)>-1 || r.agency.toLowerCase().indexOf(q)>-1 || r.dest.toLowerCase().indexOf(q)>-1);
+    });
+    document.getElementById('reqSearchResults').innerHTML = list.length ? list.map(function(r){
+      var idTag = r.bookingId || r.quoteId || '';
+      return '<div class="lib-card pick" onclick="closeModal(); '+handlers[r.stage]+'('+r.id+')"><div class="t">'+r.agentName+' \u00b7 '+r.dest+'</div>'+
+        '<div class="s">'+(idTag?idTag+' \u00b7 ':'')+r.agency+' \u00b7 '+titleForStage(r.stage)+(r.quotedPrice?' \u00b7 '+r.quotedPrice:'')+'</div></div>';
+    }).join('') : '<div style="font-size:12.5px; color:#8B897C;">No matches.</div>';
+  };
+
+  window.openAddQuoteRequest = function(state){
+    state = state || {};
+    showModal('<h3>Add quote request</h3><div class="subline">Log a request that came in by WhatsApp, email, or call</div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Agent / agency</label>'+
+      '<select id="aqAgentSelect" class="field-in" onchange="if(this.value===\'__new__\'){window._aqPending=collectAqFormState(); openAddAgent(true);}">'+
+      '<option value="">Select a saved agent...</option>'+
+      agents.map(function(a){return '<option value="'+a.id+'"'+(state.agentId===a.id?' selected':'')+'>'+a.name+' \u2014 '+a.agency+(a.isPumpkino?' (Pumpkino)':'')+'</option>';}).join('')+
+      '<option value="__new__">+ Add new agency...</option>'+
+      '</select></div>'+
+      '<div style="display:flex; gap:8px; margin-bottom:10px;">'+
+        '<div style="flex:1;"><label class="field-lbl">Destination(s)</label><input id="aqDest" class="field-in" placeholder="e.g. Munnar" value="'+(state.dest||'')+'"></div>'+
+        '<div style="flex:1;"><label class="field-lbl">No. of pax</label><input id="aqPax" type="number" class="field-in" value="'+(state.pax||2)+'"></div>'+
+      '</div>'+
+      '<div style="display:flex; gap:8px; margin-bottom:10px;">'+
+        '<div style="flex:1;"><label class="field-lbl">Travel date</label><input id="aqDate" type="date" class="field-in" value="'+(state.date||'')+'"></div>'+
+        '<div style="flex:1;"><label class="field-lbl">Budget (optional)</label><input id="aqBudget" class="field-in" placeholder="B2B rate, budget travellers" value="'+(state.budget||'')+'"></div>'+
+      '</div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Paste the agency\u2019s message or itinerary</label>'+
+      '<textarea id="aqPaste" class="field-in" style="min-height:140px;" placeholder="Paste the WhatsApp message or itinerary text here...">'+(state.paste||'')+'</textarea></div>'+
+      '<button type="button" class="btn ghost" style="margin-bottom:10px;" onclick="parsePastedItinerary()">Parse itinerary from text</button>'+
+      '<div id="aqParsePreview" style="font-size:11.5px; color:#4A483D; margin-bottom:14px;"></div>'+
+      '<button class="btn" onclick="submitAddQuoteRequest()">Add to pipeline</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="openQuoteInbox()">Cancel</button>'
+    );
+    if(state.agentId){ document.getElementById('aqAgentSelect').value = state.agentId; }
+  };
+
+  window.collectAqFormState = function(){
+    return {
+      dest: document.getElementById('aqDest').value,
+      pax: document.getElementById('aqPax').value,
+      date: document.getElementById('aqDate').value,
+      budget: document.getElementById('aqBudget').value,
+      paste: document.getElementById('aqPaste').value
+    };
+  };
+
+  function parseItineraryText(text){
+    var dayMatches = Array.from(text.matchAll(/DAY\s*(\d+)\s*[\u2014\-:]?\s*([^\n]*)\n([\s\S]*?)(?=DAY\s*\d+|Inclusions:|Exclusions:|$)/gi));
+    var days = dayMatches.map(function(m){
+      var title = 'Day ' + m[1];
+      var desc = (m[2] + ' ' + m[3]).replace(/\s+/g,' ').trim();
+      return [title, desc];
+    });
+    var inclMatch = text.match(/Inclusions:\s*([\s\S]*?)(?=Exclusions:|$)/i);
+    var inclusionsList = inclMatch ? inclMatch[1].split('\n').map(function(l){return l.trim();}).filter(function(l){return l;}) : [];
+    var nightsMatch = text.match(/(\d+)\s*Nights?\s*\/\s*(\d+)\s*Days?/i);
+    var paxMatch = text.match(/(\d+)\s*pax/i);
+    var dateMatch = text.match(/Travel Date:\s*([^\n]+)/i);
+    return {days:days, inclusions:inclusionsList, nights: nightsMatch ? Number(nightsMatch[1]) : (days.length ? days.length-1 : null),
+      pax: paxMatch ? paxMatch[1] : null, dateText: dateMatch ? dateMatch[1].trim() : null};
+  }
+
+  window.parsePastedItinerary = function(){
+    var text = document.getElementById('aqPaste').value;
+    var parsed = parseItineraryText(text);
+    window._lastParsed = parsed;
+    var preview = document.getElementById('aqParsePreview');
+    if(!parsed.days.length && !parsed.inclusions.length){
+      preview.innerHTML = 'Couldn\u2019t detect day-wise structure or inclusions \u2014 you can still save the request and add the itinerary manually later.';
+      return;
+    }
+    preview.innerHTML = '<b>Parsed '+parsed.days.length+' day(s)'+(parsed.inclusions.length?' and '+parsed.inclusions.length+' inclusion(s)':'')+':</b><br>'+
+      parsed.days.slice(0,3).map(function(d){return '\u2022 '+d[0]+': '+d[1].slice(0,70)+(d[1].length>70?'...':'');}).join('<br>')+
+      (parsed.days.length>3 ? '<br>+ '+(parsed.days.length-3)+' more day(s)' : '');
+    if(parsed.nights && !document.getElementById('aqPax').dataset.touched){ /* leave pax as-is, just note */ }
+  };
+
+  window.submitAddQuoteRequest = function(){
+    var agentSelect = document.getElementById('aqAgentSelect');
+    var agentId = Number(agentSelect.value);
+    if(!agentId){ agentSelect.style.borderColor='#C24343'; return; }
+    var agent = agents.find(function(a){return a.id===agentId;});
+    var parsed = window._lastParsed || parseItineraryText(document.getElementById('aqPaste').value);
+    var dest = document.getElementById('aqDest').value.trim() || 'Multiple destinations';
+    var pax = document.getElementById('aqPax').value || parsed.pax || '2';
+    var r = {
+      id: nextReqId++, agentName: agent.name, agency: agent.agency,
+      isPumpkino: agent.isPumpkino, dest: dest, pax: 'Group of '+pax, nights: parsed.nights || 3,
+      startDate: document.getElementById('aqDate').value || '2026-08-26',
+      budget: document.getElementById('aqBudget').value.trim() || 'Not specified',
+      stage: 'new', parsedPlan: parsed.days.length ? parsed.days : null, parsedInclusions: parsed.inclusions.length ? parsed.inclusions : null
+    };
+    requests.push(r);
+    lastMovedId = r.id;
+    render();
+    document.getElementById('boardTag').textContent = 'Added request from ' + r.agentName + (r.parsedPlan ? ' with parsed itinerary' : '');
+    closeModal();
+  };
+
+  window.openPackages = function(){
+    showModal('<h3>Destinations &amp; packages</h3><div class="subline">Click a package to view or edit \u2014 unpushed packages aren\u2019t visible to agents yet</div>'+
+      myPackages.map(function(p){
+        return '<div class="lib-card pick" onclick="openPackageView('+p.id+')"><div class="t">'+p.title+(p.pushed?' <span class="badge pk" style="margin:0 0 0 6px;">Live on Pumpkino</span>':' <span class="badge paypend" style="margin:0 0 0 6px;">Draft \u2014 not pushed</span>')+'</div>'+
+          '<div class="s">'+p.dest+' \u00b7 '+p.nights+'N \u00b7 '+p.cat+' \u00b7 min '+p.minAdults+' adults \u00b7 '+p.price+(p.fileName?' \u00b7 \ud83d\udcce '+p.fileName:'')+'</div></div>';
+      }).join('')+
+      '<button class="btn" style="margin-top:6px;" onclick="openAddPackage()">Add package</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="closeModal()">Close</button>'
+    );
+  };
+
+  window.openPackageView = function(pkgId){
+    var p = myPackages.find(function(x){return x.id===pkgId;});
+    showModal('<h3>'+p.title+'</h3><div class="subline">'+p.dest+' \u00b7 '+p.nights+'N \u00b7 '+p.cat+' \u00b7 min '+p.minAdults+' adults</div>'+
+      '<div style="font-size:12px; color:#4A483D; margin-bottom:10px;">Hotels involved: '+(p.hotels||'Not specified')+(p.fileName?' \u00b7 \ud83d\udcce '+p.fileName:'')+'</div>'+
+      p.days.map(function(d){return '<div class="inv-row"><span><b>'+d[0]+'</b> \u2014 '+d[1]+'</span></div>';}).join('')+
+      '<div style="font-size:11px; font-weight:600; color:#2E6B3E; margin:10px 0 4px;">Inclusions</div>'+
+      p.inclusions.map(function(x){return '<div style="font-size:11px; color:#4A483D;">\u2022 '+x+'</div>';}).join('')+
+      '<div style="font-size:11px; font-weight:600; color:#A3312F; margin:10px 0 4px;">Exclusions</div>'+
+      p.exclusions.map(function(x){return '<div style="font-size:11px; color:#4A483D;">\u2022 '+x+'</div>';}).join('')+
+      '<div style="font-size:11px; font-weight:600; color:#12392A; margin:10px 0 4px;">Cancellation policy</div>'+
+      p.cancellationPolicy.map(function(x){return '<div style="font-size:11px; color:#4A483D;">\u2022 '+x+'</div>';}).join('')+
+      '<div style="font-size:11px; font-weight:600; color:#12392A; margin:10px 0 4px;">Seasonal pricing</div>'+
+      p.seasons.map(function(s){return '<div class="inv-row"><span>'+s.name+'</span><span>'+s.price+'</span></div>';}).join('')+
+      '<button class="btn" style="margin-top:14px;" onclick="openEditPackage('+pkgId+')">Edit package</button>'+
+      (p.pushed ? '' : '<button class="btn" style="margin-top:8px; background:#2C5FA8;" onclick="pushPackageToPumpkino('+pkgId+')">Push to Pumpkino</button>')+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="openPackages()">Back</button>'
+    );
+  };
+
+  window.pushPackageToPumpkino = function(pkgId){
+    var p = myPackages.find(function(x){return x.id===pkgId;});
+    p.pushed = true;
+    document.getElementById('boardTag').textContent = p.title + ' is now live on Pumpkino for agents to see';
+    openPackageView(pkgId);
+  };
+
+  function packageFormFields(p){
+    p = p || {dest:'', title:'', nights:2, cat:'3-star', minAdults:2, hotels:'', price:'',
+      days:[['Day 1','Arrival and check-in'],['Day 2','Sightseeing'],['Day 3','Departure']],
+      inclusions: inclusions.slice(), exclusions: exclusions.slice(), cancellationPolicy: cancellationPolicy.slice(),
+      seasons:[{name:'Standard', price:''}], fileName:null};
+    return '<div style="margin-bottom:10px;"><label class="field-lbl">Destination</label><input id="pkDest" class="field-in" value="'+p.dest+'"></div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Package title</label><input id="pkTitle" class="field-in" value="'+p.title+'"></div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Upload itinerary file (PDF or Word, optional)</label><input id="pkFile" type="file" accept=".pdf,.doc,.docx" class="field-in"></div>'+
+      '<div style="display:flex; gap:8px; margin-bottom:10px;">'+
+        '<div style="flex:1;"><label class="field-lbl">Nights</label><input id="pkNights" type="number" class="field-in" value="'+p.nights+'"></div>'+
+        '<div style="flex:1;"><label class="field-lbl">Category</label><select id="pkCat" class="field-in">'+['3-star','4-star','5-star','Luxury','Premium'].map(function(c){return '<option'+(c===p.cat?' selected':'')+'>'+c+'</option>';}).join('')+'</select></div>'+
+      '</div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Minimum adults</label><input id="pkMinAdults" type="number" class="field-in" value="'+p.minAdults+'"></div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Hotels involved (comma separated)</label><input id="pkHotels" class="field-in" value="'+(p.hotels||'')+'"></div>'+
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin:12px 0 8px;">Day-wise itinerary</div>'+
+      '<div id="pkDaysRows">'+p.days.map(function(d,i){
+        return '<div style="display:flex; gap:6px; margin-bottom:6px;"><input class="pkDayTitle field-in" style="flex:0 0 70px;" value="'+d[0]+'"><input class="pkDayDesc field-in" style="flex:1;" value="'+d[1]+'"></div>';
+      }).join('')+'</div>'+
+      '<button type="button" class="btn ghost" style="padding:6px 10px; font-size:11.5px; width:auto; margin-bottom:14px;" onclick="addPkgDayRow()">+ Add day</button>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Inclusions (one per line)</label><textarea id="pkInclusions" class="field-in" style="min-height:60px;">'+p.inclusions.join('\n')+'</textarea></div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Exclusions (one per line)</label><textarea id="pkExclusions" class="field-in" style="min-height:60px;">'+p.exclusions.join('\n')+'</textarea></div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Cancellation policy (one per line)</label><textarea id="pkCancel" class="field-in" style="min-height:60px;">'+p.cancellationPolicy.join('\n')+'</textarea></div>'+
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin:12px 0 8px;">Seasonal pricing</div>'+
+      '<div id="pkSeasonRows">'+p.seasons.map(function(s){
+        return '<div style="display:flex; gap:6px; margin-bottom:6px;"><input class="pkSeasonName field-in" placeholder="Season" value="'+s.name+'"><input class="pkSeasonPrice field-in" placeholder="\u20b9 price" value="'+(s.price||'').replace('\u20b9','')+'"></div>';
+      }).join('')+'</div>'+
+      '<button type="button" class="btn ghost" style="padding:6px 10px; font-size:11.5px; width:auto; margin-bottom:14px;" onclick="addPkgSeasonRow()">+ Add season</button>'+
+      '<div style="margin-bottom:14px;"><label class="field-lbl">Base price (\u20b9, shown on cards)</label><input id="pkPrice" type="number" class="field-in" value="'+(p.price||'').replace(/[^\d]/g,'')+'"></div>';
+  }
+
+  window.openAddPackage = function(){
+    showModal('<h3>Add package</h3>'+packageFormFields(null)+
+      '<button class="btn" onclick="submitPackage()">Save as draft</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="openPackages()">Back</button>'
+    );
+  };
+
+  window.openEditPackage = function(pkgId){
+    var p = myPackages.find(function(x){return x.id===pkgId;});
+    showModal('<h3>Edit package</h3>'+packageFormFields(p)+
+      '<button class="btn" onclick="submitPackage('+pkgId+')">Save changes</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="openPackageView('+pkgId+')">Cancel</button>'
+    );
+  };
+
+  window.addPkgDayRow = function(){
+    var container = document.getElementById('pkDaysRows');
+    var n = container.querySelectorAll('.pkDayTitle').length + 1;
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex; gap:6px; margin-bottom:6px;';
+    row.innerHTML = '<input class="pkDayTitle field-in" style="flex:0 0 70px;" value="Day '+n+'"><input class="pkDayDesc field-in" style="flex:1;" placeholder="Description">';
+    container.appendChild(row);
+  };
+
+  window.addPkgSeasonRow = function(){
+    var container = document.getElementById('pkSeasonRows');
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex; gap:6px; margin-bottom:6px;';
+    row.innerHTML = '<input class="pkSeasonName field-in" placeholder="Season"><input class="pkSeasonPrice field-in" placeholder="\u20b9 price">';
+    container.appendChild(row);
+  };
+
+  window.submitPackage = function(pkgId){
+    var dest = document.getElementById('pkDest').value.trim() || 'Unspecified';
+    var titles = [].slice.call(document.querySelectorAll('.pkDayTitle')).map(function(i){return i.value.trim();});
+    var descs = [].slice.call(document.querySelectorAll('.pkDayDesc')).map(function(i){return i.value.trim();});
+    var days = titles.map(function(t,i){return [t||('Day '+(i+1)), descs[i]||''];});
+    var seasonNames = [].slice.call(document.querySelectorAll('.pkSeasonName')).map(function(i){return i.value.trim();});
+    var seasonPrices = [].slice.call(document.querySelectorAll('.pkSeasonPrice')).map(function(i){return i.value.trim();});
+    var seasons = seasonNames.map(function(n,i){return {name:n||'Season '+(i+1), price:'\u20b9'+Number(seasonPrices[i]||0).toLocaleString('en-IN')};}).filter(function(s){return s.name;});
+    var fileInput = document.getElementById('pkFile');
+    var fileName = (fileInput && fileInput.files && fileInput.files[0]) ? fileInput.files[0].name : null;
+    var data = {
+      dest: dest,
+      title: document.getElementById('pkTitle').value.trim() || dest+' package',
+      nights: document.getElementById('pkNights').value || 2,
+      cat: document.getElementById('pkCat').value,
+      minAdults: document.getElementById('pkMinAdults').value || 1,
+      hotels: document.getElementById('pkHotels').value.trim(),
+      price: '\u20b9'+Number(document.getElementById('pkPrice').value||0).toLocaleString('en-IN'),
+      days: days.length ? days : [['Day 1','Arrival']],
+      inclusions: document.getElementById('pkInclusions').value.split('\n').filter(function(x){return x.trim();}),
+      exclusions: document.getElementById('pkExclusions').value.split('\n').filter(function(x){return x.trim();}),
+      cancellationPolicy: document.getElementById('pkCancel').value.split('\n').filter(function(x){return x.trim();}),
+      seasons: seasons.length ? seasons : [{name:'Standard', price:'\u20b9'+Number(document.getElementById('pkPrice').value||0).toLocaleString('en-IN')}],
+      fileName: fileName
+    };
+    if(pkgId){
+      var p = myPackages.find(function(x){return x.id===pkgId;});
+      Object.assign(p, data);
+      openPackageView(pkgId);
+    } else {
+      data.id = nextPkgId++;
+      data.pushed = false;
+      myPackages.push(data);
+      openPackageView(data.id);
+    }
+  };
+
+  function renderInventoryTabs(){
+    var el = document.getElementById('invTabs');
+    if(!el) return;
+    el.innerHTML = [
+      {key:'hotels', label:'Hotels ('+hotels.length+')'},
+      {key:'transport', label:'Transport ('+transport.length+')'},
+      {key:'vendors', label:'Vendors ('+vendors.length+')'}
+    ].map(function(t){
+      return '<button type="button" class="btn'+(inventoryTab===t.key?'':' ghost')+'" style="width:auto; padding:7px 14px; font-size:11.5px; margin-right:6px;" onclick="setInventoryTab(\''+t.key+'\')">'+t.label+'</button>';
+    }).join('');
+  }
+
+  window.setInventoryTab = function(key){
+    inventoryTab = key;
+    renderInventoryTabs();
+    renderInventoryResults();
+  };
+
+  window.renderInventoryResults = function(){
+    var qEl = document.getElementById('invSearchQ');
+    var q = (qEl ? qEl.value : '').toLowerCase();
+    var html = '';
+    if(inventoryTab==='hotels'){
+      var list = hotels.filter(function(h){ return !q || h.name.toLowerCase().indexOf(q)>-1 || h.dest.toLowerCase().indexOf(q)>-1; })
+        .slice().sort(function(a,b){ return a.roomsAvailable-b.roomsAvailable; });
+      html = list.length ? list.map(function(h){
+        var pct = h.roomsTotal ? Math.round((h.roomsAvailable/h.roomsTotal)*100) : 0;
+        var barColor = h.roomsAvailable<=0 ? 'var(--danger)' : (h.roomsAvailable<=2 ? 'var(--warning)' : 'var(--success)');
+        return '<div class="lib-card pick" onclick="openHotelDetail('+h.id+')">'+
+          '<div class="t" style="display:flex; justify-content:space-between;"><span>'+h.name+'</span>'+availTag(h)+'</div>'+
+          '<div class="s">'+h.dest+' \u00b7 '+h.cat+' \u00b7 '+h.roomsAvailable+'/'+h.roomsTotal+' rooms available</div>'+
+          '<div style="background:var(--bg); border-radius:999px; height:6px; margin-top:8px; overflow:hidden;"><div style="width:'+pct+'%; height:100%; background:'+barColor+';"></div></div>'+
+        '</div>';
+      }).join('') : '<div style="font-size:12.5px; color:#8B897C;">No hotels match.</div>';
+      html += '<button class="btn ghost" style="margin-top:6px; padding:7px 10px; font-size:11.5px; width:auto;" onclick="openAddHotel()">+ Add hotel</button>';
+    } else if(inventoryTab==='transport'){
+      var listT = transport.filter(function(t){ return !q || t.type.toLowerCase().indexOf(q)>-1 || t.dest.toLowerCase().indexOf(q)>-1; });
+      html = listT.length ? listT.map(function(t){
+        return '<div class="inv-row"><span>'+t.type+' \u00b7 '+t.dest+'</span><span>'+t.count+' units</span></div>';
+      }).join('') : '<div style="font-size:12.5px; color:#8B897C;">No transport options match.</div>';
+      html += '<button class="btn ghost" style="margin-top:8px; padding:7px 10px; font-size:11.5px; width:auto;" onclick="openAddTransport()">+ Add transport</button>';
+    } else {
+      var listV = vendors.filter(function(v){ return !q || v.name.toLowerCase().indexOf(q)>-1 || v.service.toLowerCase().indexOf(q)>-1; });
+      html = listV.length ? listV.map(function(v){
+        return '<div class="inv-row"><span>'+v.name+' \u00b7 '+v.service+'</span><span>'+v.contact+'</span></div>';
+      }).join('') : '<div style="font-size:12.5px; color:#8B897C;">No vendors match.</div>';
+      html += '<button class="btn ghost" style="margin-top:8px; padding:7px 10px; font-size:11.5px; width:auto;" onclick="openAddVendor()">+ Add vendor</button>';
+    }
+    document.getElementById('invResults').innerHTML = html;
+  };
+
+  window.openInventory = function(){
+    showModal(
+      '<h3>Inventory</h3><div class="subline">Search, sort by availability, and manage each category</div>'+
+      '<div id="invTabs" style="margin-bottom:10px;"></div>'+
+      '<input id="invSearchQ" class="field-in" placeholder="Search by name or destination" style="margin-bottom:12px;" oninput="renderInventoryResults()">'+
+      '<div id="invResults"></div>'+
+      '<button class="btn ghost" style="margin-top:10px;" onclick="closeModal()">Close</button>',
+      true
+    );
+    renderInventoryTabs();
+    renderInventoryResults();
+  };
+
+  window.openHotelDetail = function(hid){
+    var h = hotels.find(function(x){return x.id===hid;});
+    showModal('<h3>'+h.name+'</h3><div class="subline">'+h.dest+' \u00b7 '+h.cat+' \u00b7 overall '+h.roomsAvailable+'/'+h.roomsTotal+' rooms available</div>'+
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin-bottom:8px;">Seasonal rates by room category</div>'+
+      (h.rateRows.length ? h.rateRows.map(function(r){
+        return '<div class="inv-row"><span>'+r.roomCategory+' \u00b7 '+r.fromMonth+'\u2013'+r.toMonth+'<br><span style="font-size:10.5px; color:#9C9A8C;">'+r.roomsAvailable+'/'+r.roomsTotal+' rooms</span></span><span>\u20b9'+r.rate.toLocaleString('en-IN')+'/night</span></div>';
+      }).join('') : '<div style="font-size:12px; color:#8B897C; margin-bottom:10px;">No seasonal rates added yet.</div>')+
+      '<button class="btn" style="margin-top:14px;" onclick="openEditHotel('+hid+')">Edit hotel &amp; rates</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="openInventory()">Back</button>'
+    );
+  };
+
+  function hotelFormFields(h){
+    h = h || {name:'', dest:'', cat:'3-star', rateRows:[{roomCategory:'Standard', fromMonth:'Jan', toMonth:'Dec', roomsTotal:10, roomsAvailable:10, rate:3000}]};
+    return '<div style="margin-bottom:10px;"><label class="field-lbl">Hotel name</label><input id="hName" class="field-in" value="'+h.name+'"></div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Destination</label><input id="hDest" class="field-in" value="'+h.dest+'"></div>'+
+      '<div style="margin-bottom:14px;"><label class="field-lbl">Overall category</label><select id="hCat" class="field-in">'+['3-star','4-star','5-star','Luxury','Premium'].map(function(c){return '<option'+(c===h.cat?' selected':'')+'>'+c+'</option>';}).join('')+'</select></div>'+
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin-bottom:8px;">Seasonal rates by room category</div>'+
+      '<div id="hRateRows">'+h.rateRows.map(function(r){
+        return '<div class="rateRow" style="border:1px solid #E9E6DA; border-radius:8px; padding:10px; margin-bottom:8px;">'+
+          '<input class="rrCat field-in" placeholder="Room category (e.g. Deluxe)" value="'+r.roomCategory+'" style="margin-bottom:6px;">'+
+          '<div style="display:flex; gap:6px; margin-bottom:6px;">'+
+            '<select class="rrFrom field-in">'+months.map(function(m){return '<option'+(m===r.fromMonth?' selected':'')+'>'+m+'</option>';}).join('')+'</select>'+
+            '<select class="rrTo field-in">'+months.map(function(m){return '<option'+(m===r.toMonth?' selected':'')+'>'+m+'</option>';}).join('')+'</select>'+
+          '</div>'+
+          '<div style="display:flex; gap:6px;">'+
+            '<input class="rrTotal field-in" type="number" placeholder="Total rooms" value="'+r.roomsTotal+'">'+
+            '<input class="rrAvail field-in" type="number" placeholder="Available" value="'+r.roomsAvailable+'">'+
+            '<input class="rrRate field-in" type="number" placeholder="Rate/night" value="'+r.rate+'">'+
+          '</div>'+
+        '</div>';
+      }).join('')+'</div>'+
+      '<button type="button" class="btn ghost" style="padding:6px 10px; font-size:11.5px; width:auto; margin-bottom:14px;" onclick="addRateRow()">+ Add season / category</button>';
+  }
+
+  window.addRateRow = function(){
+    var container = document.getElementById('hRateRows');
+    var row = document.createElement('div');
+    row.className = 'rateRow';
+    row.style.cssText = 'border:1px solid #E9E6DA; border-radius:8px; padding:10px; margin-bottom:8px;';
+    row.innerHTML = '<input class="rrCat field-in" placeholder="Room category" style="margin-bottom:6px;">'+
+      '<div style="display:flex; gap:6px; margin-bottom:6px;">'+
+        '<select class="rrFrom field-in">'+months.map(function(m){return '<option>'+m+'</option>';}).join('')+'</select>'+
+        '<select class="rrTo field-in">'+months.map(function(m){return '<option>'+m+'</option>';}).join('')+'</select>'+
+      '</div>'+
+      '<div style="display:flex; gap:6px;">'+
+        '<input class="rrTotal field-in" type="number" placeholder="Total rooms">'+
+        '<input class="rrAvail field-in" type="number" placeholder="Available">'+
+        '<input class="rrRate field-in" type="number" placeholder="Rate/night">'+
+      '</div>';
+    container.appendChild(row);
+  };
+
+  window.openAddHotel = function(){
+    showModal('<h3>Add hotel</h3>'+hotelFormFields(null)+
+      '<button class="btn" onclick="submitHotel()">Save hotel</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="openInventory()">Back</button>'
+    );
+  };
+
+  window.openAddHotelFor = function(dest, reqId){
+    pendingInventoryReturnId = reqId;
+    showModal('<h3>Add hotel</h3><div class="subline">New inventory for '+dest+' — will be offered for this booking as soon as it’s saved</div>'+
+      hotelFormFields({name:'', dest:dest, cat:'3-star', rateRows:[{roomCategory:'Standard', fromMonth:'Jan', toMonth:'Dec', roomsTotal:10, roomsAvailable:10, rate:3000}]})+
+      '<button class="btn" onclick="submitHotel()">Save hotel &amp; use for this booking</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="pendingInventoryReturnId=null; openInventoryShortfall('+reqId+')">Cancel</button>'
+    );
+  };
+
+  window.openEditHotel = function(hid){
+    var h = hotels.find(function(x){return x.id===hid;});
+    showModal('<h3>Edit hotel</h3>'+hotelFormFields(h)+
+      '<button class="btn" onclick="submitHotel('+hid+')">Save changes</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="openHotelDetail('+hid+')">Cancel</button>'
+    );
+  };
+
+  window.submitHotel = function(hid){
+    var rows = [].slice.call(document.querySelectorAll('.rateRow')).map(function(rowEl, i){
+      return {
+        id: i+1,
+        roomCategory: rowEl.querySelector('.rrCat').value.trim() || 'Standard',
+        fromMonth: rowEl.querySelector('.rrFrom').value,
+        toMonth: rowEl.querySelector('.rrTo').value,
+        roomsTotal: Number(rowEl.querySelector('.rrTotal').value) || 0,
+        roomsAvailable: Number(rowEl.querySelector('.rrAvail').value) || 0,
+        rate: Number(rowEl.querySelector('.rrRate').value) || 0
+      };
+    });
+    var totalAvail = rows.reduce(function(s,r){return s+r.roomsAvailable;}, 0);
+    var totalRooms = rows.reduce(function(s,r){return s+r.roomsTotal;}, 0);
+    var data = {
+      name: document.getElementById('hName').value.trim() || 'Unnamed hotel',
+      dest: document.getElementById('hDest').value.trim() || 'Unspecified',
+      cat: document.getElementById('hCat').value,
+      rateRows: rows.length ? rows : [{id:1, roomCategory:'Standard', fromMonth:'Jan', toMonth:'Dec', roomsTotal:10, roomsAvailable:10, rate:3000}],
+      roomsTotal: totalRooms || 10,
+      roomsAvailable: totalAvail
+    };
+    if(hid){
+      var h = hotels.find(function(x){return x.id===hid;});
+      Object.assign(h, data);
+      if(pendingInventoryReturnId){ var rid=pendingInventoryReturnId; pendingInventoryReturnId=null; swapSoldOutHotel(rid, hid); return; }
+      openHotelDetail(hid);
+    } else {
+      data.id = nextHotelId++;
+      hotels.push(data);
+      if(pendingInventoryReturnId){ var rid2=pendingInventoryReturnId; pendingInventoryReturnId=null; swapSoldOutHotel(rid2, data.id); return; }
+      openHotelDetail(data.id);
+    }
+  };
+
+  window.openAddTransport = function(){
+    showModal('<h3>Add transport</h3>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Vehicle type</label><input id="tType" class="field-in" placeholder="e.g. Sedan (4-seater)"></div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Destination / base</label><input id="tDest" class="field-in"></div>'+
+      '<div style="margin-bottom:14px;"><label class="field-lbl">Units available</label><input id="tCount" type="number" class="field-in" value="1"></div>'+
+      '<button class="btn" onclick="submitTransport()">Save transport</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="openInventory()">Back</button>'
+    );
+  };
+  window.submitTransport = function(){
+    transport.push({id:nextTransportId++, type:document.getElementById('tType').value.trim()||'Vehicle',
+      dest:document.getElementById('tDest').value.trim()||'Unspecified', count:Number(document.getElementById('tCount').value)||1});
+    openInventory();
+  };
+
+  window.openAddVendor = function(){
+    showModal('<h3>Add vendor / supplier</h3>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Name</label><input id="vName" class="field-in"></div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Service type</label><input id="vService" class="field-in" placeholder="e.g. Sightseeing guide"></div>'+
+      '<div style="margin-bottom:14px;"><label class="field-lbl">Contact</label><input id="vContact" class="field-in"></div>'+
+      '<button class="btn" onclick="submitVendor()">Save vendor</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="openInventory()">Back</button>'
+    );
+  };
+  window.submitVendor = function(){
+    vendors.push({id:nextVendorId++, name:document.getElementById('vName').value.trim()||'Unnamed vendor',
+      service:document.getElementById('vService').value.trim()||'General', contact:document.getElementById('vContact').value.trim()||'Not provided'});
+    openInventory();
+  };
+
+  window.openAgents = function(){
+    showModal('<h3>Travel agents</h3><div class="subline">Agents you work with \u2014 Pumpkino agents send requests automatically</div>'+
+      agents.map(function(a){
+        return '<div class="lib-card"><div class="t">'+a.name+' \u00b7 '+a.agency+(a.isPumpkino?' <span class="badge pk" style="margin:0 0 0 6px;">Pumpkino</span>':'')+'</div><div class="s">'+a.email+' \u00b7 '+a.mobile+'</div><div class="s">GSTIN: '+(a.gstin||'Not provided')+'</div></div>';
+      }).join('')+
+      '<button class="btn" style="margin-top:6px;" onclick="openAddAgent()">Add travel agent</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="closeModal()">Close</button>'
+    );
+  };
+
+  window.openAddAgent = function(fromQuoteReq){
+    showModal('<h3>Add travel agent</h3>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Name</label><input id="agName" class="field-in"></div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Agency</label><input id="agAgency" class="field-in"></div>'+
+      '<div style="display:flex; gap:8px; margin-bottom:10px;">'+
+        '<div style="flex:1;"><label class="field-lbl">Email</label><input id="agEmail" class="field-in"></div>'+
+        '<div style="flex:1;"><label class="field-lbl">Mobile</label><input id="agMobile" class="field-in"></div>'+
+      '</div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">GSTIN / Tax ID (optional)</label><input id="agGstin" class="field-in" placeholder="e.g. 32ABCDE1234F1Z5"></div>'+
+      '<label style="font-size:11.5px; color:#4A483D; display:flex; align-items:center; gap:6px; margin-bottom:14px;"><input type="checkbox" id="agPumpkino"> This agency also uses Pumpkino</label>'+
+      '<button class="btn" onclick="submitAgent('+(fromQuoteReq?'true':'false')+')">Save agent</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="'+(fromQuoteReq?'openAddQuoteRequest(window._aqPending)':'openAgents()')+'">Back</button>'
+    );
+  };
+  window.submitAgent = function(fromQuoteReq){
+    var newAgent = {id:nextAgentId++, name:document.getElementById('agName').value.trim()||'Unnamed agent',
+      agency:document.getElementById('agAgency').value.trim()||'Unspecified agency',
+      email:document.getElementById('agEmail').value.trim()||'', mobile:document.getElementById('agMobile').value.trim()||'',
+      gstin: document.getElementById('agGstin').value.trim()||null,
+      isPumpkino:document.getElementById('agPumpkino').checked};
+    agents.push(newAgent);
+    render();
+    if(fromQuoteReq){
+      var st = window._aqPending || {};
+      st.agentId = newAgent.id;
+      openAddQuoteRequest(st);
+    } else {
+      openAgents();
+    }
+  };
+
+
+  var userRoleBadgeClass = {'DMC Admin':'pk', 'Destination Manager':'done', 'Inventory Manager':'rev', 'Accounts':'paypend', 'Reservations Manager':'ai'};
+
+  window.openUsers = function(){
+    showModal('<h3>Users</h3><div class="subline">Your team on Pumpkino — roles control what each person can see and do</div>'+
+      users.map(function(u){
+        return '<div class="inv-row"><span>'+u.name+(u.id===currentUser.id?' <span class="badge done" style="margin:0 0 0 4px;">You</span>':'')+'<br><span style="font-size:10.5px; color:#9C9A8C;">'+u.email+'</span></span>'+
+          '<span class="badge '+(userRoleBadgeClass[u.role]||'pk')+'" style="margin-top:0;">'+u.role+'</span></div>';
+      }).join('')+
+      '<button class="btn" style="margin-top:14px;" onclick="openAddUser()">Add user</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="closeModal()">Close</button>'
+    );
+  };
+  window.openAddUser = function(){
+    showModal('<h3>Add user</h3><div class="subline">Only DMC Admins can create these roles</div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Name</label><input id="usName" class="field-in"></div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Email</label><input id="usEmail" class="field-in"></div>'+
+      '<div style="margin-bottom:10px;"><label class="field-lbl">Role</label><select id="usRole" class="field-in">'+
+        CREATABLE_ROLES.map(function(r){return '<option>'+r+'</option>';}).join('')+
+      '</select></div>'+
+      '<div style="font-size:11px; color:#8B897C; margin-bottom:14px; line-height:1.7;">'+
+        '<b>Destination Manager</b> — '+ROLES['Destination Manager'].blurb+'<br>'+
+        '<b>Inventory Manager</b> — '+ROLES['Inventory Manager'].blurb+'<br>'+
+        '<b>Accounts</b> — '+ROLES['Accounts'].blurb+'<br>'+
+        '<b>Reservations Manager</b> — '+ROLES['Reservations Manager'].blurb+
+      '</div>'+
+      '<button class="btn" onclick="submitUser()">Add user</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="openUsers()">Back</button>'
+    );
+  };
+  window.submitUser = function(){
+    users.push({id:nextUserId++, name:document.getElementById('usName').value.trim()||'Unnamed', email:document.getElementById('usEmail').value.trim()||'', role:document.getElementById('usRole').value});
+    openUsers();
+  };
+
+  window.openSwitchUser = function(){
+    showModal('<h3>Switch user</h3><div class="subline">Preview the portal as a different team member</div>'+
+      users.map(function(u){
+        return '<div class="lib-card pick" onclick="switchToUser('+u.id+')"><div class="t">'+u.name+(u.id===currentUser.id?' <span class="badge done" style="margin:0 0 0 6px;">Current</span>':'')+'</div>'+
+          '<div class="s">'+u.role+' · '+u.email+'</div></div>';
+      }).join('')+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="closeModal()">Close</button>'
+    );
+  };
+
+  window.switchToUser = function(uid){
+    var u = users.find(function(x){return x.id===uid;});
+    if(u) currentUser = u;
+    applyRolePermissions();
+    renderIdentity();
+    render();
+    closeModal();
+  };
+
+  function applyRolePermissions(){
+    var allowed = (ROLES[currentUser.role] && ROLES[currentUser.role].nav) || ROLES['DMC Admin'].nav;
+    ALL_NAV_IDS.forEach(function(navId){
+      var el = document.getElementById(navId);
+      if(el) el.style.display = allowed.indexOf(navId)>-1 ? '' : 'none';
+    });
+  }
+
+  function renderIdentity(){
+    var initialsStr = currentUser.name.split(' ').map(function(w){return w[0];}).slice(0,2).join('').toUpperCase();
+    var av = document.getElementById('sfAvatar');
+    var nm = document.getElementById('sfName');
+    var rl = document.getElementById('sfRole');
+    if(av) av.textContent = initialsStr;
+    if(nm) nm.textContent = currentUser.name;
+    if(rl) rl.textContent = currentUser.role;
+
+    var welcome = document.getElementById('welcomeMsg');
+    var sub = document.getElementById('topbarSub');
+    var firstName = currentUser.name.split(' ')[0];
+    if(welcome) welcome.textContent = 'Welcome, ' + firstName + '!';
+
+    if(sub){
+      var scope = ((ROLES[currentUser.role]||{}).dashboard) || 'all';
+      if(scope==='inventory'){
+        var lowCount = hotels.filter(function(h){return h.roomsAvailable<=2;}).length;
+        sub.textContent = '14 July 2026 · ' + lowCount + ' hotel(s) need availability attention';
+      } else if(scope==='finance'){
+        var dueCount = agentPayments.filter(function(p){return p.dueAmt>0;}).length;
+        sub.textContent = '14 July 2026 · ' + dueCount + ' payment(s) pending action';
+      } else if(scope==='reservations'){
+        var upcomingCount = requests.filter(function(r){return (r.stage==='payment'||r.stage==='done') && isActive(r);}).length;
+        sub.textContent = '14 July 2026 · ' + upcomingCount + ' upcoming trip(s) to manage';
+      } else {
+        var openCount = requests.filter(function(r){return r.stage==='new'||r.stage==='review';}).length;
+        sub.textContent = '14 July 2026 · ' + openCount + ' quote request(s) awaiting response';
+      }
+    }
+  }
+
+  function nowStamp(){ return '14 Jul 2026, ' + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
+
+  window.showPumpkinoDeliveryInfo = function(){
+    showModal(
+      '<h3>How instant delivery works</h3>'+
+      '<div class="subline">Both sides are on Pumpkino</div>'+
+      '<div style="font-size:12.5px; color:#4A483D; margin-bottom:10px;">When the travel agency is also on Pumpkino, there’s no manual hand-off:</div>'+
+      '<div class="inv-row"><span>1. Request arrives</span><span>Synced automatically — no email/WhatsApp needed</span></div>'+
+      '<div class="inv-row"><span>2. You draft a quote</span><span>Built here in the DMC portal, same as any request</span></div>'+
+      '<div class="inv-row"><span>3. You click “Deliver instantly”</span><span>Quote appears in the agency’s Pumpkino dashboard immediately</span></div>'+
+      '<div class="inv-row"><span>4. Agency confirms</span><span>Booking, payment &amp; invoice flow start the same way as any other request</span></div>'+
+      '<div style="font-size:11px; color:#8B897C; margin-top:10px;">For non-Pumpkino agencies, the same quote is sent manually via Email or WhatsApp instead.</div>'+
+      '<button class="btn ghost" style="margin-top:14px;" onclick="closeModal()">Got it</button>'
+    );
+  };
+
+  var blockStatusLabel = {pending:'Pending — checking with hotels/suppliers', blocked:'Blocked — rooms held', released:'Released — booking cancelled'};
+  var blockStatusBadgeClass = {pending:'rev', blocked:'done', released:'paypend'};
+
+  function soldOutHotelsFor(r){
+    var uniqueHotelIds = (r._nightHotels||[]).filter(function(v,i,a){return a.indexOf(v)===i;});
+    return uniqueHotelIds.map(function(hid){ return hotels.find(function(x){return x.id===hid;}); })
+      .filter(function(h){ return !h || h.roomsAvailable<=0; });
+  }
+
+  window.openInventoryBlockStatus = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var log = r.blockLog || [];
+    var status = r.blockStatus || 'pending';
+    var soldOut = status==='pending' ? soldOutHotelsFor(r) : [];
+    showModal(
+      '<h3>Inventory blocking status</h3>'+
+      '<div class="subline">'+r.agentName+' · '+r.dest+'</div>'+
+      '<div style="margin-bottom:12px;"><span class="badge '+blockStatusBadgeClass[status]+'">'+blockStatusLabel[status]+'</span></div>'+
+      (log.length ? log.map(function(l){
+        return '<div class="inv-row"><span><b>'+l.event+'</b><br><span style="font-size:10.5px; color:#9C9A8C;">'+l.detail+'</span></span><span style="font-size:10.5px; color:#9C9A8C; white-space:nowrap;">'+l.at+'</span></div>';
+      }).join('') : '<div style="font-size:12px; color:#8B897C; margin-bottom:10px;">No tracking history yet.</div>')+
+      (soldOut.length ? '<div style="font-size:11.5px; color:#A3312F; background:#FCEBEB; padding:9px 11px; border-radius:8px; margin:10px 0;">⚠ '+soldOut.map(function(h){return h?h.name:'A selected hotel';}).join(', ')+' currently shows 0 rooms available — you\'ll need to resolve this before confirming.</div>' : '')+
+      (status==='pending' ?
+        '<div style="font-size:11px; color:#8B897C; margin:10px 0;">Check availability directly with the hotel(s)/supplier(s) for this itinerary, then confirm here once rooms are actually held. Payment can still be requested from the agency in parallel — it does not have to wait.</div>'+
+        '<button class="btn" style="margin-top:6px;" onclick="confirmInventoryBlocked('+id+')">Confirm — inventory blocked with hotel/supplier</button>' :
+       status==='blocked' ?
+        '<div style="font-size:11px; color:#8B897C; margin:10px 0;">Inventory is secured. You can continue on to collect payment from the agency.</div>'+
+        '<button class="btn" style="margin-top:6px;" onclick="openPaymentTracking('+id+')">Continue to payment tracking</button>'+
+        '<button class="btn ghost" style="margin-top:8px;" onclick="markInventoryReleased('+id+')">Mark inventory released (booking cancelled)</button>' :
+        '<button class="btn ghost" style="margin-top:14px;" onclick="requestInventoryReblock('+id+')">Check again &amp; re-block inventory</button>'
+      )+
+      (status==='pending' ? '<button class="btn ghost" style="margin-top:8px;" onclick="openPaymentTracking('+id+')">View payment tracking anyway</button>' : '')+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="closeModal()">Close</button>'
+    );
+  };
+
+  window.confirmInventoryBlocked = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var soldOut = soldOutHotelsFor(r);
+    if(soldOut.length){
+      openInventoryShortfall(id);
+      return;
+    }
+    var uniqueHotelIds = (r._nightHotels||[]).filter(function(v,i,a){return a.indexOf(v)===i;});
+    uniqueHotelIds.forEach(function(hid){
+      var h = hotels.find(function(x){return x.id===hid;});
+      if(h && h.roomsAvailable>0) h.roomsAvailable -= 1;
+    });
+    r.blockStatus = 'blocked';
+    r.blockLog = (r.blockLog||[]).concat([{event:'Inventory blocked', detail: uniqueHotelIds.length ? (uniqueHotelIds.map(function(hid){return hotelName(hid);}).join(', ')+' — confirmed with hotel/supplier, 1 room held per hotel') : 'Confirmed with hotel/supplier', at: nowStamp()}]);
+    lastMovedId = r.id;
+    render();
+    document.getElementById('boardTag').textContent = 'inventory confirmed & blocked for ' + r.agentName;
+    openInventoryBlockStatus(id);
+  };
+
+  window.markInventoryReleased = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var uniqueHotelIds = (r._nightHotels||[]).filter(function(v,i,a){return a.indexOf(v)===i;});
+    uniqueHotelIds.forEach(function(hid){
+      var h = hotels.find(function(x){return x.id===hid;});
+      if(h) h.roomsAvailable += 1;
+    });
+    r.blockStatus = 'released';
+    r.blockLog = (r.blockLog||[]).concat([{event:'Inventory released', detail:'Rooms returned to the available pool', at: nowStamp()}]);
+    lastMovedId = r.id;
+    render();
+    document.getElementById('boardTag').textContent = 'inventory released for ' + r.agentName;
+    openInventoryBlockStatus(id);
+  };
+
+  window.requestInventoryReblock = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    r.blockStatus = 'pending';
+    r.blockLog = (r.blockLog||[]).concat([{event:'Re-block requested', detail:'Checking availability with hotels/suppliers again', at: nowStamp()}]);
+    lastMovedId = r.id;
+    render();
+    document.getElementById('boardTag').textContent = 'checking inventory again for ' + r.agentName;
+    openInventoryBlockStatus(id);
+  };
+
+  // ---- What happens when the hotel is actually sold out at confirmation time ----
+  window.openInventoryShortfall = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    var soldOut = soldOutHotelsFor(r);
+    var soldOutNames = soldOut.map(function(h){return h?h.name:'A selected hotel';}).join(', ');
+    var alternates = hotels.filter(function(h){
+      return h.dest.toLowerCase()===r.dest.toLowerCase() && h.roomsAvailable>0 && soldOut.indexOf(h)===-1;
+    });
+    showModal(
+      '<h3>Inventory shortfall</h3>'+
+      '<div class="subline">'+r.agentName+' · '+r.dest+'</div>'+
+      '<div style="font-size:12px; color:#A3312F; background:#FCEBEB; padding:10px 12px; border-radius:8px; margin-bottom:14px;">'+soldOutNames+' — sold out (0 rooms). Choose how to proceed before confirming inventory.</div>'+
+      (alternates.length ?
+        '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin-bottom:8px;">Swap to an available alternate in '+r.dest+'</div>'+
+        alternates.map(function(h){
+          return '<div class="inv-row"><span>'+h.name+' · '+h.cat+' '+availTag(h)+'</span><button class="btn ghost" style="width:auto; padding:6px 12px; font-size:11px;" onclick="swapSoldOutHotel('+id+','+h.id+')">Use this</button></div>';
+        }).join('') :
+        '<div style="font-size:12px; color:#8B897C; margin-bottom:10px;">No other hotels with availability in '+r.dest+' yet.</div>'
+      )+
+      '<div style="font-size:11.5px; font-weight:600; color:#12392A; margin:16px 0 8px;">Or bring in new inventory</div>'+
+      '<button class="btn" onclick="openAddHotelFor(\''+r.dest.replace(/'/g,"\\'")+'\','+id+')">+ Add a new hotel in '+r.dest+'</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="openQuickTopUp('+id+')">Top up rooms at the sold-out hotel</button>'+
+      '<div style="font-size:11px; color:#8B897C; margin:16px 0 6px;">Already arranged extra rooms directly with the hotel/supplier, outside the system?</div>'+
+      '<button class="btn ghost" onclick="forceConfirmInventoryBlocked('+id+')">Force confirm anyway (manual arrangement)</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="openInventoryBlockStatus('+id+')">Back</button>'
+    );
+  };
+
+  window.swapSoldOutHotel = function(reqId, newHotelId){
+    var r = requests.find(function(x){return x.id===reqId;});
+    var soldOut = soldOutHotelsFor(r);
+    var soldOutIds = soldOut.map(function(h){return h ? h.id : null;});
+    var oldNames = soldOut.map(function(h){return h?h.name:'a sold-out hotel';}).join(', ');
+    r._nightHotels = (r._nightHotels||[]).map(function(hid){ return soldOutIds.indexOf(hid)>-1 ? newHotelId : hid; });
+    r.blockLog = (r.blockLog||[]).concat([{event:'Hotel swapped', detail:oldNames+' was sold out — switched to '+hotelName(newHotelId), at: nowStamp()}]);
+    confirmInventoryBlocked(reqId);
+  };
+
+  window.openQuickTopUp = function(reqId){
+    var r = requests.find(function(x){return x.id===reqId;});
+    var soldOut = soldOutHotelsFor(r);
+    showModal(
+      '<h3>Top up rooms</h3><div class="subline">Record rooms the hotel/supplier has released since you last checked</div>'+
+      soldOut.map(function(h){
+        return h ? '<div style="margin-bottom:12px;"><label class="field-lbl">'+h.name+' — rooms to add</label><input type="number" class="field-in topupInput" data-hid="'+h.id+'" value="1" min="1"></div>' : '';
+      }).join('')+
+      '<button class="btn" onclick="submitTopUp('+reqId+')">Add rooms &amp; confirm booking</button>'+
+      '<button class="btn ghost" style="margin-top:8px;" onclick="openInventoryShortfall('+reqId+')">Cancel</button>'
+    );
+  };
+
+  window.submitTopUp = function(reqId){
+    [].slice.call(document.querySelectorAll('.topupInput')).forEach(function(inp){
+      var hid = Number(inp.getAttribute('data-hid'));
+      var addCount = Number(inp.value) || 0;
+      var h = hotels.find(function(x){return x.id===hid;});
+      if(h && addCount>0){ h.roomsTotal += addCount; h.roomsAvailable += addCount; }
+    });
+    var r = requests.find(function(x){return x.id===reqId;});
+    r.blockLog = (r.blockLog||[]).concat([{event:'Inventory topped up', detail:'Additional rooms added after following up with the hotel/supplier', at: nowStamp()}]);
+    confirmInventoryBlocked(reqId);
+  };
+
+  window.forceConfirmInventoryBlocked = function(id){
+    var r = requests.find(function(x){return x.id===id;});
+    r.blockStatus = 'blocked';
+    r.blockLog = (r.blockLog||[]).concat([{event:'Inventory confirmed manually', detail:'Marked blocked without reducing system inventory — arranged directly with the hotel/supplier outside Pumpkino', at: nowStamp()}]);
+    lastMovedId = r.id;
+    render();
+    document.getElementById('boardTag').textContent = 'inventory manually confirmed for ' + r.agentName;
+    openInventoryBlockStatus(id);
+  };
+
+  // Backfill payment/invoice/inventory-status records for demo requests that were
+  // seeded directly into the "payment"/"done" stage (i.e. never passed through
+  // agentConfirmedQuote), so their tracking screens aren't empty/inert.
+  requests.forEach(function(r){
+    if((r.stage==='payment' || r.stage==='done') && !r.paymentId){
+      var total = Number((r.quotedPrice||'0').replace(/[^\d]/g,'')) || 0;
+      var isPaid = r.stage==='done';
+      var pay = {id:nextPayId++, reqId:r.id, agentName:r.agentName, agency:r.agency, total:total,
+        advancePct:50, advanceAmt:total*0.5, dueAmt: isPaid?0:total*0.5,
+        dueDate:r.fullPaymentDueDate || '2026-08-15', status: isPaid?'paid':'not requested'};
+      agentPayments.push(pay);
+      r.paymentId = pay.id;
+      r._payStatus = isPaid ? 'paid' : 'payment not requested yet';
+
+      var agent = agents.find(function(a){return a.name===r.agentName && a.agency===r.agency;});
+      var gstRate = 0.05;
+      var baseAmount = total/(1+gstRate);
+      var inv = {id:nextInvId++, reqId:r.id, agencyName:r.agency, agentName:r.agentName,
+        agencyGstin: agent ? agent.gstin : null, dmcGstin: dmcBusiness.gstin,
+        baseAmount:baseAmount, gstRate:gstRate*100, gstAmount:total-baseAmount, total:total, date:'14 Jul 2026'};
+      invoices.push(inv);
+      r.invoiceId = inv.id;
+
+      if(!r.blockStatus){
+        r.blockStatus = 'blocked';
+        r.blockLog = [{event:'Inventory blocked', detail:'Rooms held automatically when this booking was confirmed', at:'14 Jul 2026, 09:15 AM'}];
+      }
+    }
+  });
+
+  applyRolePermissions();
+  renderIdentity();
+  render();
+})();
+</script>
+</body>
+</html>

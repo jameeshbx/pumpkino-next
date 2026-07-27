@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pumpkino — Profile & Business Verification</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root{
+    --primary:#0D3B2F; --primary-deep:#0A3026; --secondary:#D8A43B;
+    --bg:#F8F7F3; --card:#FFFFFF; --border:#E9E5DD;
+    --heading:#16221D; --body:#5E625F; --muted:#8E948E;
+    --success:#2F8F5B; --success-bg:#E7F3EA;
+    --warning:#E39A22; --warning-bg:#FCF0DC;
+    --danger:#D9534F; --danger-bg:#FBEAE9;
+    --ai:#7B5CFA; --ai-bg:#EFEAFE;
+    --info:#3B82F6; --info-bg:#E8F1FE;
+    --r-btn:12px; --r-card:18px; --r-input:12px; --r-badge:999px;
+    --shadow-sm:0 4px 12px rgba(0,0,0,.04);
+    --shadow-md:0 8px 24px rgba(0,0,0,.06);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); font-family:'Inter',sans-serif; color:var(--body); font-size:14.5px; line-height:1.5; -webkit-font-smoothing:antialiased;}
+
+  .topbar{display:flex; align-items:center; justify-content:space-between; padding:16px 32px; background:var(--card); border-bottom:1px solid var(--border);}
+  .logo{display:flex; align-items:center; gap:10px;}
+  .logo .mark{width:32px;height:32px;border-radius:9px;background:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--secondary);font-size:14px;}
+  .logo .word{font-weight:700;font-size:16.5px;color:var(--heading);}
+  .identity{display:flex; align-items:center; gap:10px; font-size:13px;}
+  .identity .av{width:30px;height:30px;border-radius:50%;background:var(--secondary);color:#3A2A05;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;}
+  .identity .nm{font-weight:600; color:var(--heading);}
+  .identity .co{color:var(--muted); font-size:12px;}
+  .identity a{color:var(--primary); font-weight:600; text-decoration:none; margin-left:14px; font-size:12.5px;}
+
+  .wrap{max-width:760px; margin:0 auto; padding:28px 24px 70px;}
+  .page-head h1{font-size:24px; font-weight:800; color:var(--heading); margin:0 0 4px;}
+  .page-head .sub{font-size:13px; color:var(--muted); margin-bottom:22px;}
+
+  .demo-bar{display:flex; align-items:center; gap:10px; background:var(--ai-bg); border:1px dashed var(--ai); border-radius:var(--r-input); padding:10px 16px; margin-bottom:22px; font-size:12.5px; color:#4B3A9E; flex-wrap:wrap;}
+  .demo-bar button{background:var(--ai); color:#fff; border:none; border-radius:8px; padding:7px 12px; font-size:12px; font-weight:700; cursor:pointer;}
+  .demo-bar button.ghost{background:transparent; color:var(--ai); border:1px solid var(--ai);}
+
+  .section-title{font-size:15px; font-weight:800; color:var(--heading); margin:30px 0 14px;}
+  .section-title:first-of-type{margin-top:0;}
+
+  .panel{background:var(--card); border:1px solid var(--border); border-radius:var(--r-card); padding:22px 24px;}
+
+  .status-strip{display:flex; align-items:center; justify-content:space-between; gap:14px; border-radius:var(--r-card); padding:16px 20px; margin-bottom:18px; border:1px solid; flex-wrap:wrap;}
+  .status-strip.not_submitted{background:var(--bg); border-color:var(--border);}
+  .status-strip.submitted{background:var(--warning-bg); border-color:rgba(227,154,34,.35);}
+  .status-strip.approved{background:var(--success-bg); border-color:rgba(47,143,91,.3);}
+  .status-strip.rejected{background:var(--danger-bg); border-color:rgba(217,83,79,.35);}
+  .status-strip .ss-icon{font-size:20px;}
+  .status-strip .ss-title{font-weight:700; font-size:13.5px; color:var(--heading);}
+  .status-strip .ss-sub{font-size:12px; color:var(--body); margin-top:2px;}
+  .status-left{display:flex; align-items:center; gap:12px;}
+
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:0 14px;}
+  .field-wrap{margin-bottom:14px;}
+  .field-lbl{font-size:12.5px; font-weight:600; color:var(--body); display:block; margin-bottom:6px;}
+  .field-lbl .opt{font-weight:400; color:var(--muted); font-size:11px;}
+  .field-in{width:100%; padding:10px 13px; border:1px solid var(--border); border-radius:var(--r-input); font-size:13.5px; font-family:inherit; background:var(--card); color:var(--heading);}
+  .field-in:disabled{background:var(--bg); color:var(--muted);}
+  .field-msg{font-size:11px; color:var(--danger); min-height:14px; margin-top:3px;}
+
+  .file-drop{border:1.5px dashed var(--border); border-radius:var(--r-input); padding:16px; text-align:center; font-size:12.5px; color:var(--muted); cursor:pointer; margin-bottom:6px; background:var(--bg);}
+  .file-drop.has-file{border-color:var(--success); background:var(--success-bg); color:var(--success); font-weight:600;}
+  .file-drop:hover{border-color:var(--secondary);}
+
+  .btn{background:var(--primary); color:#fff; border:none; border-radius:var(--r-btn); padding:12px 18px; font-size:13.5px; font-weight:700; cursor:pointer;}
+  .btn:hover{background:var(--primary-deep);}
+  .btn:disabled{background:var(--border); color:var(--muted); cursor:not-allowed;}
+  .btn.outline{background:transparent; border:1px solid var(--primary); color:var(--primary);}
+
+  .why-note{background:var(--info-bg); border:1px solid rgba(59,130,246,.25); border-radius:var(--r-input); padding:12px 14px; font-size:12px; color:#1E4A8C; margin-top:16px;}
+
+  .rejected-note{background:var(--danger-bg); border:1px solid rgba(217,83,79,.3); border-radius:var(--r-input); padding:12px 14px; font-size:12.5px; color:var(--danger); margin-bottom:16px;}
+  .rejected-note b{display:block; margin-bottom:3px;}
+
+  @media (max-width:640px){
+    .grid2{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo"><div class="mark">P</div><div class="word">pumpkino</div></div>
+  <div class="identity">
+    <div class="av">ET</div>
+    <div><div class="nm">Ebina Thomas</div><div class="co">Trekking Miles Holidays</div></div>
+    <a href="pumpkino-marketplace.html">Marketplace</a>
+    <a href="pumpkino-subscription.html">Subscription & Billing</a>
+    <a href="pumpkino-login.html">← Back to login</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="page-head">
+    <h1>Profile & Business Verification</h1>
+    <div class="sub">Your trial and account are already active — verification is optional and never blocks you from using Pumpkino.</div>
+  </div>
+
+  <div class="demo-bar">
+    <span>🧪 <b>Demo controls</b> — simulate the Ops team reviewing your documents:</span>
+    <button onclick="simulateApprove()">✓ Simulate admin approval</button>
+    <button onclick="simulateReject()">✕ Simulate admin rejection</button>
+    <button class="ghost" onclick="resetDemo()">↺ Reset demo</button>
+  </div>
+
+  <div class="section-title">Profile</div>
+  <div class="panel">
+    <div class="grid2">
+      <div class="field-wrap"><label class="field-lbl">Full name</label><input class="field-in" id="pName" value="Ebina Thomas"></div>
+      <div class="field-wrap"><label class="field-lbl">Work email</label><input class="field-in" id="pEmail" value="ebina@trekkingmiles.com"></div>
+    </div>
+    <div class="grid2">
+      <div class="field-wrap"><label class="field-lbl">Phone</label><input class="field-in" id="pPhone" value="9847011111"></div>
+      <div class="field-wrap"><label class="field-lbl">Agency name</label><input class="field-in" id="pCompany" value="Trekking Miles Holidays"></div>
+    </div>
+    <div class="grid2">
+      <div class="field-wrap"><label class="field-lbl">City</label><input class="field-in" id="pCity" value="Kochi"></div>
+      <div class="field-wrap"><label class="field-lbl">State</label><input class="field-in" id="pState" value="Kerala"></div>
+    </div>
+  </div>
+
+  <div class="section-title">Business verification</div>
+  <div id="statusStripWrap"></div>
+
+  <div class="panel" id="verifyFormPanel">
+    <div class="grid2">
+      <div class="field-wrap">
+        <label class="field-lbl">GSTIN <span class="opt">(optional)</span></label>
+        <input class="field-in" id="vGstin" placeholder="15-character GSTIN" oninput="validateGstin()">
+        <div class="field-msg" id="mGstin"></div>
+      </div>
+      <div class="field-wrap">
+        <label class="field-lbl">IATA / TAAI / TAFI no. <span class="opt">(optional)</span></label>
+        <input class="field-in" id="vIata" placeholder="e.g. TIDS 98765432">
+      </div>
+    </div>
+    <div class="field-wrap">
+      <label class="field-lbl">Business registration number <span class="opt">(optional)</span></label>
+      <input class="field-in" id="vBizReg" placeholder="e.g. U63040KL2015PTC012345">
+    </div>
+    <div class="field-wrap">
+      <label class="field-lbl">Upload supporting document <span class="opt">(optional, PDF/JPG)</span></label>
+      <div class="file-drop" id="fileDrop" onclick="mockFileUpload()">📎 Click to attach a file (demo — no real upload)</div>
+    </div>
+    <button class="btn" id="submitVerifyBtn" onclick="submitVerification()">Submit for verification</button>
+    <div class="why-note">Why verify? A verified badge shows DMCs you connect with that your business is confirmed — it doesn't affect your trial, subscription, or any product feature.</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var state = {
+    status: 'not_submitted',   // not_submitted | submitted | approved | rejected
+    rejectReason: null,
+    fields: { gstin:'', iata:'', bizReg:'', fileAttached:false }
+  };
+
+  function renderStatusStrip(){
+    var el = document.getElementById('statusStripWrap');
+    var map = {
+      not_submitted: {icon:'ℹ️', title:'Not submitted yet', sub:'Add your details below whenever it suits you — there is no deadline.'},
+      submitted:     {icon:'⏳', title:'Submitted — pending review', sub:'Our team typically reviews within 24 hours. You will keep full access while you wait.'},
+      approved:      {icon:'✅', title:'Verified', sub:'Your business details have been confirmed.'},
+      rejected:      {icon:'⚠️', title:'Changes needed', sub:'See the note below and resubmit whenever you are ready.'}
+    };
+    var m = map[state.status];
+    el.innerHTML = '<div class="status-strip '+state.status+'"><div class="status-left"><div class="ss-icon">'+m.icon+'</div><div><div class="ss-title">'+m.title+'</div><div class="ss-sub">'+m.sub+'</div></div></div></div>';
+  }
+
+  function renderForm(){
+    var disabled = state.status === 'submitted' || state.status === 'approved';
+    document.getElementById('vGstin').disabled = disabled;
+    document.getElementById('vIata').disabled = disabled;
+    document.getElementById('vBizReg').disabled = disabled;
+    var btn = document.getElementById('submitVerifyBtn');
+    if(state.status === 'submitted'){ btn.textContent = 'Submitted — awaiting review'; btn.disabled = true; }
+    else if(state.status === 'approved'){ btn.textContent = 'Verified ✓'; btn.disabled = true; }
+    else if(state.status === 'rejected'){ btn.textContent = 'Resubmit for verification'; btn.disabled = false; }
+    else { btn.textContent = 'Submit for verification'; btn.disabled = false; }
+
+    var panel = document.getElementById('verifyFormPanel');
+    var existingNote = panel.querySelector('.rejected-note');
+    if(existingNote) existingNote.remove();
+    if(state.status === 'rejected' && state.rejectReason){
+      var note = document.createElement('div');
+      note.className = 'rejected-note';
+      note.innerHTML = '<b>Ops team feedback:</b>' + state.rejectReason;
+      panel.insertBefore(note, panel.firstChild);
+    }
+  }
+
+  function renderAll(){ renderStatusStrip(); renderForm(); }
+
+  window.validateGstin = function(){
+    var el = document.getElementById('vGstin');
+    var msg = document.getElementById('mGstin');
+    var val = el.value.trim().toUpperCase();
+    el.value = val;
+    if(!val){ el.classList.remove('err'); msg.textContent=''; return; }
+    var ok = /^\d{2}[A-Z]{5}\d{4}[A-Z]\d[A-Z0-9]Z[A-Z0-9]$/.test(val);
+    msg.textContent = ok ? '✓ Valid GSTIN format' : 'Should be 15 characters, e.g. 32ABCDE1234F1Z5';
+    msg.style.color = ok ? 'var(--success)' : 'var(--danger)';
+  };
+
+  window.mockFileUpload = function(){
+    state.fields.fileAttached = true;
+    var drop = document.getElementById('fileDrop');
+    drop.textContent = '✓ business_registration.pdf attached';
+    drop.classList.add('has-file');
+  };
+
+  window.submitVerification = function(){
+    state.fields.gstin = document.getElementById('vGstin').value.trim();
+    state.fields.iata = document.getElementById('vIata').value.trim();
+    state.fields.bizReg = document.getElementById('vBizReg').value.trim();
+    if(!state.fields.gstin && !state.fields.bizReg && !state.fields.fileAttached){
+      alert('Add at least a GSTIN, business registration number, or a document before submitting.');
+      return;
+    }
+    state.status = 'submitted';
+    state.rejectReason = null;
+    renderAll();
+  };
+
+  // ---- demo-only simulation of the Ops review outcome ----
+  window.simulateApprove = function(){
+    if(state.status !== 'submitted'){ alert('Submit your details first, then simulate the review.'); return; }
+    state.status = 'approved';
+    renderAll();
+  };
+  window.simulateReject = function(){
+    if(state.status !== 'submitted'){ alert('Submit your details first, then simulate the review.'); return; }
+    state.status = 'rejected';
+    state.rejectReason = ' GSTIN does not match your registered business name — please re-check and resubmit.';
+    renderAll();
+  };
+  window.resetDemo = function(){
+    state = { status:'not_submitted', rejectReason:null, fields:{gstin:'',iata:'',bizReg:'',fileAttached:false} };
+    document.getElementById('vGstin').value = '';
+    document.getElementById('vIata').value = '';
+    document.getElementById('vBizReg').value = '';
+    var drop = document.getElementById('fileDrop');
+    drop.textContent = '📎 Click to attach a file (demo — no real upload)';
+    drop.classList.remove('has-file');
+    renderAll();
+  };
+
+  renderAll();
+})();
+</script>
+</body>
+</html>

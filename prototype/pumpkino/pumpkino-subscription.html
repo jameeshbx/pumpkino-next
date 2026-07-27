@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pumpkino — Subscription & Billing</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root{
+    --primary:#0D3B2F;
+    --primary-deep:#0A3026;
+    --secondary:#D8A43B;
+    --bg:#F8F7F3;
+    --card:#FFFFFF;
+    --border:#E9E5DD;
+    --heading:#16221D;
+    --body:#5E625F;
+    --muted:#8E948E;
+    --success:#2F8F5B;
+    --success-bg:#E7F3EA;
+    --warning:#E39A22;
+    --warning-bg:#FCF0DC;
+    --danger:#D9534F;
+    --danger-bg:#FBEAE9;
+    --ai:#7B5CFA;
+    --ai-bg:#EFEAFE;
+    --info:#3B82F6;
+    --info-bg:#E8F1FE;
+    --r-btn:12px; --r-card:18px; --r-dialog:20px; --r-input:12px; --r-badge:999px;
+    --shadow-sm:0 4px 12px rgba(0,0,0,.04);
+    --shadow-md:0 8px 24px rgba(0,0,0,.06);
+    --shadow-lg:0 24px 60px rgba(0,0,0,.14);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); font-family:'Inter',sans-serif; color:var(--body); font-size:14.5px; line-height:1.5; -webkit-font-smoothing:antialiased;}
+
+  .topbar{display:flex; align-items:center; justify-content:space-between; padding:16px 32px; background:var(--card); border-bottom:1px solid var(--border);}
+  .logo{display:flex; align-items:center; gap:10px;}
+  .logo .mark{width:32px;height:32px;border-radius:9px;background:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--secondary);font-size:14px;}
+  .logo .word{font-weight:700;font-size:16.5px;color:var(--heading);}
+  .identity{display:flex; align-items:center; gap:10px; font-size:13px;}
+  .identity .av{width:30px;height:30px;border-radius:50%;background:var(--secondary);color:#3A2A05;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;}
+  .identity .nm{font-weight:600; color:var(--heading);}
+  .identity .co{color:var(--muted); font-size:12px;}
+  .identity a{color:var(--primary); font-weight:600; text-decoration:none; margin-left:14px; font-size:12.5px;}
+
+  .wrap{max-width:980px; margin:0 auto; padding:28px 24px 70px;}
+  .page-head h1{font-size:24px; font-weight:800; color:var(--heading); margin:0 0 4px;}
+  .page-head .sub{font-size:13px; color:var(--muted); margin-bottom:22px;}
+
+  .demo-bar{display:flex; align-items:center; gap:10px; background:var(--ai-bg); border:1px dashed var(--ai); border-radius:var(--r-input); padding:10px 16px; margin-bottom:22px; font-size:12.5px; color:#4B3A9E; flex-wrap:wrap;}
+  .demo-bar b{color:var(--ai);}
+  .demo-bar button{background:var(--ai); color:#fff; border:none; border-radius:8px; padding:7px 12px; font-size:12px; font-weight:700; cursor:pointer;}
+  .demo-bar button.ghost{background:transparent; color:var(--ai); border:1px solid var(--ai);}
+
+  .status-banner{display:flex; align-items:center; justify-content:space-between; gap:16px; border-radius:var(--r-card); padding:18px 22px; margin-bottom:24px; border:1px solid; flex-wrap:wrap;}
+  .status-banner.trial-ok{background:var(--success-bg); border-color:rgba(47,143,91,.3);}
+  .status-banner.trial-warn{background:var(--warning-bg); border-color:rgba(227,154,34,.35);}
+  .status-banner.trial-urgent{background:var(--danger-bg); border-color:rgba(217,83,79,.35);}
+  .status-banner.on-plan{background:var(--info-bg); border-color:rgba(59,130,246,.3);}
+  .status-banner .st-left{display:flex; align-items:center; gap:12px;}
+  .status-banner .st-icon{font-size:22px;}
+  .status-banner .st-title{font-weight:700; font-size:14.5px; color:var(--heading);}
+  .status-banner .st-sub{font-size:12.5px; color:var(--body); margin-top:2px;}
+  .status-banner .st-btn{background:var(--primary); color:#fff; border:none; border-radius:var(--r-btn); padding:10px 16px; font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap;}
+  .status-banner .st-btn:hover{background:var(--primary-deep);}
+
+  .section-title{font-size:16px; font-weight:800; color:var(--heading); margin:34px 0 14px;}
+
+  .usage-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  .usage-card{background:var(--card); border:1px solid var(--border); border-radius:var(--r-card); padding:18px 20px;}
+  .usage-card .u-top{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;}
+  .usage-card .u-label{font-size:12.5px; font-weight:700; color:var(--heading);}
+  .usage-card .u-count{font-size:12.5px; color:var(--muted);}
+  .u-bar-bg{height:8px; border-radius:999px; background:var(--bg); overflow:hidden; margin-bottom:10px;}
+  .u-bar-fill{height:100%; border-radius:999px; background:var(--success); transition:width .3s ease-out;}
+  .u-bar-fill.warn{background:var(--warning);}
+  .u-bar-fill.full{background:var(--danger);}
+  .u-action{font-size:12px; font-weight:700; color:var(--primary); cursor:pointer; background:none; border:none; padding:0;}
+  .u-action:hover{text-decoration:underline;}
+  .u-action.locked{color:var(--muted); cursor:pointer;}
+  .u-unlimited{font-size:12px; color:var(--success); font-weight:700;}
+
+  .plans-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  .plan-card{background:var(--card); border:1px solid var(--border); border-radius:var(--r-card); padding:22px 20px; position:relative; display:flex; flex-direction:column;}
+  .plan-card.current{border:2px solid var(--primary);}
+  .plan-card .cur-badge{position:absolute; top:-12px; left:20px; background:var(--primary); color:#fff; font-size:10.5px; font-weight:800; padding:4px 11px; border-radius:var(--r-badge);}
+  .plan-card .p-name{font-size:16px; font-weight:800; color:var(--heading); margin-bottom:2px;}
+  .plan-card .p-price{font-size:20px; font-weight:800; color:var(--heading); margin:8px 0 2px;}
+  .plan-card .p-price span{font-size:12px; font-weight:400; color:var(--muted);}
+  .plan-card .p-desc{font-size:12px; color:var(--muted); margin-bottom:14px; min-height:30px;}
+  .plan-card ul{list-style:none; margin:0 0 16px; padding:0; flex:1;}
+  .plan-card li{font-size:12.5px; padding:5px 0; display:flex; gap:7px; color:var(--body);}
+  .plan-card li .ck{color:var(--success); font-weight:700;}
+  .plan-btn{border:none; border-radius:var(--r-btn); padding:10px 14px; font-size:13px; font-weight:700; cursor:pointer; width:100%;}
+  .plan-btn.primary{background:var(--primary); color:#fff;}
+  .plan-btn.primary:hover{background:var(--primary-deep);}
+  .plan-btn.current-btn{background:var(--bg); color:var(--muted); cursor:default;}
+  .plan-btn.outline{background:transparent; border:1px solid var(--primary); color:var(--primary);}
+
+  table.billing{width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--border); border-radius:var(--r-card); overflow:hidden;}
+  table.billing th, table.billing td{padding:11px 16px; font-size:12.5px; text-align:left; border-bottom:1px solid var(--border);}
+  table.billing th{background:var(--bg); color:var(--muted); font-weight:700; text-transform:uppercase; font-size:11px; letter-spacing:.04em;}
+  table.billing tr:last-child td{border-bottom:none;}
+  .empty-billing{background:var(--card); border:1px dashed var(--border); border-radius:var(--r-card); padding:26px; text-align:center; color:var(--muted); font-size:13px;}
+
+  .badge{display:inline-block; padding:3px 9px; border-radius:var(--r-badge); font-size:11px; font-weight:700;}
+  .badge.paid{background:var(--success-bg); color:var(--success);}
+
+  /* modal */
+  .overlay{position:fixed; inset:0; background:rgba(13,59,47,.35); display:none; align-items:center; justify-content:center; z-index:50; padding:20px;}
+  .overlay.show{display:flex;}
+  .modal{background:var(--card); border-radius:var(--r-dialog); padding:28px; width:420px; max-width:100%; box-shadow:var(--shadow-lg); max-height:88vh; overflow-y:auto;}
+  .modal h2{font-size:18px; font-weight:800; color:var(--heading); margin:0 0 6px;}
+  .modal .m-sub{font-size:12.5px; color:var(--muted); margin-bottom:18px;}
+  .modal .close{position:absolute; top:0; right:0;}
+  .field-lbl{font-size:12.5px; font-weight:600; color:var(--body); display:block; margin-bottom:5px;}
+  .field-in{width:100%; padding:10px 13px; border:1px solid var(--border); border-radius:var(--r-input); font-size:13.5px; margin-bottom:12px; font-family:inherit;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:0 12px;}
+  .modal-actions{display:flex; gap:10px; margin-top:8px;}
+  .modal-actions button{flex:1; border:none; border-radius:var(--r-btn); padding:11px; font-size:13.5px; font-weight:700; cursor:pointer;}
+  .modal-actions .cancel{background:var(--bg); color:var(--body);}
+  .modal-actions .confirm{background:var(--primary); color:#fff;}
+  .lock-note{background:var(--bg); border:1px solid var(--border); border-radius:var(--r-input); padding:12px 14px; font-size:12px; color:var(--body); margin-bottom:14px;}
+  .lock-note ul{margin:6px 0 0; padding-left:18px;}
+
+  @media (max-width:820px){
+    .usage-grid, .plans-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo"><div class="mark">P</div><div class="word">pumpkino</div></div>
+  <div class="identity">
+    <div class="av">ET</div>
+    <div><div class="nm">Ebina Thomas</div><div class="co">Trekking Miles Holidays</div></div>
+    <a href="pumpkino-marketplace.html">Marketplace</a>
+    <a href="pumpkino-profile.html">Profile & Verification</a>
+    <a href="pumpkino-login.html">← Back to login</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="page-head">
+    <h1>Subscription & Billing</h1>
+    <div class="sub">Manage your plan, usage and payment details.</div>
+  </div>
+
+  <div class="demo-bar">
+    <span>🧪 <b>Demo controls</b> — click through the trial-to-paid flow described in the subscription strategy doc:</span>
+    <button onclick="advanceDay()">⏩ Simulate next day</button>
+    <button class="ghost" onclick="resetDemo()">↺ Reset demo</button>
+  </div>
+
+  <div id="statusBanner"></div>
+
+  <div class="section-title">This month's usage</div>
+  <div class="usage-grid" id="usageGrid"></div>
+
+  <div class="section-title">Plans</div>
+  <div class="plans-grid" id="plansGrid"></div>
+
+  <div class="section-title">Billing history</div>
+  <div id="billingWrap"></div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modalBody"></div>
+</div>
+
+<script>
+(function(){
+  var PLAN_DEFS = {
+    starter: { name:'Starter', price:1499, desc:'Solo agents & very small agencies.',
+      maxUsers:3, maxLeads:50, maxDmcs:5, branding:false, analytics:false,
+      features:['Up to 3 team members','50 active leads / month','Connect with up to 5 DMCs','Standard templates','Email support (48h)'] },
+    growth: { name:'Growth', price:4999, desc:'Growing agencies removing day-to-day limits.',
+      maxUsers:10, maxLeads:Infinity, maxDmcs:Infinity, branding:true, analytics:true,
+      features:['Up to 10 team members','Unlimited leads','Unlimited DMC connections','Custom branding','WhatsApp + email delivery','Analytics dashboard','Priority support (12h)'] },
+    scale: { name:'Scale', price:14999, desc:'Multi-branch agencies expanding globally.',
+      maxUsers:Infinity, maxLeads:Infinity, maxDmcs:Infinity, branding:true, analytics:true,
+      features:['Unlimited team members','Multi-branch / multi-currency','White-label option','API access','Dedicated account manager','4h SLA support'] }
+  };
+
+  var state = {
+    mode: 'trial',           // 'trial' | 'subscribed'
+    trialPlan: 'growth',     // features shown during trial
+    trialDaysLeft: 7,
+    activePlan: null,        // set once subscribed
+    usage: { users:2, leads:32, dmcs:4 },
+    invoices: []
+  };
+
+  function fmtINR(n){ return '₹' + n.toLocaleString('en-IN'); }
+
+  function effectivePlanKey(){
+    if(state.mode === 'subscribed') return state.activePlan;
+    return state.trialDaysLeft > 0 ? state.trialPlan : 'starter'; // soft downgrade after trial
+  }
+
+  function renderStatusBanner(){
+    var el = document.getElementById('statusBanner');
+    var html = '';
+    if(state.mode === 'trial' && state.trialDaysLeft > 0){
+      var cls = state.trialDaysLeft <= 1 ? 'trial-urgent' : (state.trialDaysLeft <= 2 ? 'trial-warn' : 'trial-ok');
+      var icon = state.trialDaysLeft <=1 ? '⏰' : '🎉';
+      html = '<div class="status-banner '+cls+'">' +
+        '<div class="st-left"><div class="st-icon">'+icon+'</div><div>' +
+          '<div class="st-title">Free trial · '+state.trialDaysLeft+' day'+(state.trialDaysLeft===1?'':'s')+' left</div>' +
+          '<div class="st-sub">You have full Growth-plan access. Choose a plan below to keep these features after your trial ends.</div>' +
+        '</div></div>' +
+        '<button class="st-btn" onclick="scrollToPlans()">Choose a plan</button>' +
+      '</div>';
+    } else if(state.mode === 'trial' && state.trialDaysLeft <= 0){
+      html = '<div class="status-banner on-plan">' +
+        '<div class="st-left"><div class="st-icon">📋</div><div>' +
+          '<div class="st-title">You are on the Starter plan</div>' +
+          '<div class="st-sub">Your trial ended — we moved you to Starter automatically. Your data is safe. Upgrade anytime to unlock Growth features again.</div>' +
+        '</div></div>' +
+        '<button class="st-btn" onclick="scrollToPlans()">Upgrade</button>' +
+      '</div>';
+    } else {
+      var p = PLAN_DEFS[state.activePlan];
+      html = '<div class="status-banner on-plan">' +
+        '<div class="st-left"><div class="st-icon">✅</div><div>' +
+          '<div class="st-title">You are subscribed to '+p.name+'</div>' +
+          '<div class="st-sub">'+fmtINR(p.price)+'/mo · Next billing date in 30 days</div>' +
+        '</div></div>' +
+        '<button class="st-btn" onclick="scrollToPlans()">Change plan</button>' +
+      '</div>';
+    }
+    el.innerHTML = html;
+  }
+
+  function renderUsage(){
+    var planKey = effectivePlanKey();
+    var plan = PLAN_DEFS[planKey];
+    var items = [
+      {key:'users', label:'Team members', val:state.usage.users, max:plan.maxUsers, addLabel:'+ Invite team member'},
+      {key:'leads', label:'Active leads this month', val:state.usage.leads, max:plan.maxLeads, addLabel:'+ New lead'},
+      {key:'dmcs', label:'DMC connections', val:state.usage.dmcs, max:plan.maxDmcs, addLabel:'+ Add DMC'}
+    ];
+    var html = items.map(function(it){
+      var unlimited = !isFinite(it.max);
+      var pct = unlimited ? Math.min(100, (it.val/50)*100) : Math.min(100, (it.val/it.max)*100);
+      var barClass = unlimited ? '' : (pct>=100 ? 'full' : (pct>=75 ? 'warn' : ''));
+      var atCap = !unlimited && it.val >= it.max;
+      return '<div class="usage-card">' +
+        '<div class="u-top"><span class="u-label">'+it.label+'</span><span class="u-count">'+it.val+(unlimited?'':' / '+it.max)+'</span></div>' +
+        '<div class="u-bar-bg"><div class="u-bar-fill '+barClass+'" style="width:'+pct+'%"></div></div>' +
+        (unlimited ? '<span class="u-unlimited">✓ Unlimited on your plan</span>' :
+          (atCap ? '<button class="u-action locked" onclick="openGateModal(\''+it.key+'\')">🔒 Limit reached — upgrade to add more</button>'
+                 : '<button class="u-action" onclick="bumpUsage(\''+it.key+'\')">'+it.addLabel+'</button>')) +
+      '</div>';
+    }).join('');
+    document.getElementById('usageGrid').innerHTML = html;
+  }
+
+  window.bumpUsage = function(key){
+    state.usage[key] += 1;
+    renderUsage();
+  };
+
+  window.openGateModal = function(key){
+    var labels = {users:'team members', leads:'active leads', dmcs:'DMC connections'};
+    var nextPlan = effectivePlanKey()==='starter' ? 'growth' : 'scale';
+    var np = PLAN_DEFS[nextPlan];
+    showModal(
+      '<h2>You have reached your plan limit</h2>' +
+      '<div class="m-sub">Your current plan caps '+labels[key]+'. Upgrade to '+np.name+' to remove this limit.</div>' +
+      '<div class="lock-note">Upgrading to <b>'+np.name+'</b> ('+fmtINR(np.price)+'/mo) includes:<ul>' +
+        np.features.slice(0,4).map(function(f){return '<li>'+f+'</li>';}).join('') +
+      '</ul></div>' +
+      '<div class="modal-actions">' +
+        '<button class="cancel" onclick="closeModal()">Not now</button>' +
+        '<button class="confirm" onclick="closeModal(); openCheckout(\''+nextPlan+'\')">Upgrade to '+np.name+'</button>' +
+      '</div>'
+    );
+  };
+
+  function renderPlans(){
+    var current = effectivePlanKey();
+    var order = ['starter','growth','scale'];
+    var html = order.map(function(key){
+      var p = PLAN_DEFS[key];
+      var isCurrent = key === current;
+      var btn;
+      if(isCurrent){
+        btn = '<button class="plan-btn current-btn">Current plan</button>';
+      } else {
+        var isUpgrade = order.indexOf(key) > order.indexOf(current);
+        btn = '<button class="plan-btn '+(isUpgrade?'primary':'outline')+'" onclick="openCheckout(\''+key+'\')">'+(isUpgrade?'Upgrade to '+p.name:'Switch to '+p.name)+'</button>';
+      }
+      return '<div class="plan-card'+(isCurrent?' current':'')+'">' +
+        (isCurrent ? '<div class="cur-badge">CURRENT PLAN</div>' : '') +
+        '<div class="p-name">'+p.name+'</div>' +
+        '<div class="p-price">'+fmtINR(p.price)+' <span>/mo</span></div>' +
+        '<div class="p-desc">'+p.desc+'</div>' +
+        '<ul>'+p.features.map(function(f){return '<li><span class="ck">✓</span>'+f+'</li>';}).join('')+'</ul>' +
+        btn +
+      '</div>';
+    }).join('');
+    document.getElementById('plansGrid').innerHTML = html;
+  }
+
+  function csvEscape(v){
+    v = (v===null||v===undefined) ? '' : String(v);
+    if(/[",\n]/.test(v)) return '"' + v.replace(/"/g,'""') + '"';
+    return v;
+  }
+
+  window.exportBillingCsv = function(){
+    var headers = ['Date','Description','Amount (INR)','Status'];
+    var lines = [headers.join(',')];
+    state.invoices.forEach(function(inv){
+      lines.push([csvEscape(inv.date), csvEscape(inv.desc), inv.amount, 'Paid'].join(','));
+    });
+    var csv = lines.join('\r\n');
+    var blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'pumpkino-billing-history.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  };
+
+  function renderBilling(){
+    var wrap = document.getElementById('billingWrap');
+    if(!state.invoices.length){
+      wrap.innerHTML = '<div class="empty-billing">'+(state.mode==='trial' && state.trialDaysLeft>0 ? 'No invoices yet — you are on a free trial.' : 'No invoices yet.')+'</div>';
+      return;
+    }
+    var rows = state.invoices.map(function(inv){
+      return '<tr><td>'+inv.date+'</td><td>'+inv.desc+'</td><td>'+fmtINR(inv.amount)+'</td><td><span class="badge paid">Paid</span></td></tr>';
+    }).join('');
+    wrap.innerHTML = '<div style="display:flex; justify-content:flex-end; margin-bottom:10px;"><button onclick="exportBillingCsv()" style="background:var(--card); border:1px solid var(--border); border-radius:8px; padding:8px 14px; font-size:12.5px; font-weight:700; color:var(--primary); cursor:pointer;">⬇ Export CSV</button></div><table class="billing"><tr><th>Date</th><th>Description</th><th>Amount</th><th>Status</th></tr>'+rows+'</table>';
+  }
+
+  function renderAll(){
+    renderStatusBanner();
+    renderUsage();
+    renderPlans();
+    renderBilling();
+  }
+
+  window.scrollToPlans = function(){
+    document.getElementById('plansGrid').scrollIntoView({behavior:'smooth', block:'center'});
+  };
+
+  var COUNTRY_GATEWAY = {
+    'IN': 'razorpay', 'AE': 'paypal', 'SA': 'paypal', 'QA': 'paypal',
+    'US': 'paypal', 'GB': 'paypal', 'TH': 'paypal', 'VN': 'paypal', 'ID': 'paypal', 'OTHER': 'paypal'
+  };
+  var GATEWAY_INFO = {
+    razorpay: { label:'Razorpay', currency:'INR', sub:'Cards, UPI & net banking · ~2% + GST domestic', symbol:'₹', rate:1 },
+    paypal:   { label:'PayPal', currency:'USD', sub:'Card or PayPal balance · 2.99% + $0.35 (+1.5% cross-border)', symbol:'$', rate: 1/83 }
+  };
+
+  function convert(inr, gatewayKey){
+    var g = GATEWAY_INFO[gatewayKey];
+    var amt = inr * g.rate;
+    return g.symbol + (gatewayKey==='paypal' ? amt.toFixed(2) : Math.round(amt).toLocaleString('en-IN'));
+  }
+
+  window.openCheckout = function(planKey){
+    renderCheckoutModal(planKey, 'IN', 'razorpay');
+  };
+
+  function renderCheckoutModal(planKey, country, gateway){
+    var p = PLAN_DEFS[planKey];
+    var g = GATEWAY_INFO[gateway];
+    var payFields = gateway === 'razorpay' ?
+      ('<label class="field-lbl">UPI ID or card number</label>' +
+       '<input class="field-in" id="ckPay" placeholder="name@upi or 4242 4242 4242 4242" value="ebina@okhdfcbank">' +
+       '<div class="grid2">' +
+         '<div><label class="field-lbl">Expiry (if card)</label><input class="field-in" id="ckExp" placeholder="MM/YY" value="12/28"></div>' +
+         '<div><label class="field-lbl">CVV (if card)</label><input class="field-in" id="ckCvv" placeholder="123" value="123"></div>' +
+       '</div>')
+      :
+      ('<label class="field-lbl">PayPal email</label>' +
+       '<input class="field-in" id="ckPay" placeholder="you@paypal.com" value="ebina@trekkingmiles.com">' +
+       '<div class="lock-note">You will be redirected to PayPal to approve this subscription. No card details are entered here.</div>');
+
+    showModal(
+      '<h2>Subscribe to '+p.name+'</h2>' +
+      '<div class="m-sub">'+convert(p.price, gateway)+'/mo · Demo checkout — no real charge is made.</div>' +
+      '<label class="field-lbl">Billing country</label>' +
+      '<select class="field-in" id="ckCountry" onchange="onCountryChange(\''+planKey+'\')">' +
+        '<option value="IN"'+(country==='IN'?' selected':'')+'>India</option>' +
+        '<option value="AE"'+(country==='AE'?' selected':'')+'>United Arab Emirates</option>' +
+        '<option value="US"'+(country==='US'?' selected':'')+'>United States</option>' +
+        '<option value="GB"'+(country==='GB'?' selected':'')+'>United Kingdom</option>' +
+        '<option value="OTHER"'+(country==='OTHER'?' selected':'')+'>Other</option>' +
+      '</select>' +
+      '<label class="field-lbl">Payment provider</label>' +
+      '<div class="grid2" style="margin-bottom:12px;">' +
+        '<button type="button" class="plan-btn '+(gateway==='razorpay'?'primary':'outline')+'" onclick="switchGateway(\''+planKey+'\',\''+country+'\',\'razorpay\')" style="padding:9px;">Razorpay</button>' +
+        '<button type="button" class="plan-btn '+(gateway==='paypal'?'primary':'outline')+'" onclick="switchGateway(\''+planKey+'\',\''+country+'\',\'paypal\')" style="padding:9px;">PayPal</button>' +
+      '</div>' +
+      '<div class="lock-note" style="margin-bottom:14px;">'+g.label+' · '+g.sub+'</div>' +
+      payFields +
+      '<div class="modal-actions">' +
+        '<button class="cancel" onclick="closeModal()">Cancel</button>' +
+        '<button class="confirm" onclick="confirmSubscribe(\''+planKey+'\',\''+gateway+'\')">Subscribe — '+convert(p.price, gateway)+'/mo</button>' +
+      '</div>'
+    );
+  }
+
+  window.onCountryChange = function(planKey){
+    var country = document.getElementById('ckCountry').value;
+    var gateway = COUNTRY_GATEWAY[country] || 'paypal';
+    renderCheckoutModal(planKey, country, gateway);
+  };
+
+  window.switchGateway = function(planKey, country, gateway){
+    renderCheckoutModal(planKey, country, gateway);
+  };
+
+  window.confirmSubscribe = function(planKey, gateway){
+    gateway = gateway || 'razorpay';
+    var p = PLAN_DEFS[planKey];
+    var g = GATEWAY_INFO[gateway];
+    state.mode = 'subscribed';
+    state.activePlan = planKey;
+    state.invoices.unshift({ date: todayLabel(), desc: p.name+' plan — monthly ('+g.label+')', amount: p.price, gateway: gateway });
+    closeModal();
+    renderAll();
+  };
+
+  function todayLabel(){
+    var d = new Date();
+    var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
+  }
+
+  window.advanceDay = function(){
+    if(state.mode !== 'trial' || state.trialDaysLeft <= 0) return;
+    state.trialDaysLeft -= 1;
+    if(state.trialDaysLeft === 0){
+      renderAll();
+      showModal(
+        '<h2>Welcome back to Starter</h2>' +
+        '<div class="m-sub">Your 7-day Growth trial has ended. We moved your account to the Starter plan automatically — nothing was deleted.</div>' +
+        '<div class="lock-note">What changes on Starter:<ul>' +
+          '<li>Team members capped at 3</li>' +
+          '<li>Leads capped at 50 / month</li>' +
+          '<li>DMC connections capped at 5</li>' +
+          '<li>Custom branding & analytics are locked</li>' +
+        '</ul></div>' +
+        '<div class="modal-actions">' +
+          '<button class="cancel" onclick="closeModal()">Continue on Starter</button>' +
+          '<button class="confirm" onclick="closeModal(); openCheckout(\'growth\')">Keep my Growth features</button>' +
+        '</div>'
+      );
+      return;
+    }
+    renderAll();
+  };
+
+  window.resetDemo = function(){
+    state = { mode:'trial', trialPlan:'growth', trialDaysLeft:7, activePlan:null, usage:{users:2, leads:32, dmcs:4}, invoices:[] };
+    closeModal();
+    renderAll();
+  };
+
+  function showModal(html){
+    document.getElementById('modalBody').innerHTML = html;
+    document.getElementById('overlay').classList.add('show');
+  }
+  window.closeModal = function(){
+    document.getElementById('overlay').classList.remove('show');
+  };
+  document.getElementById('overlay').addEventListener('click', function(e){
+    if(e.target.id === 'overlay') window.closeModal();
+  });
+
+  renderAll();
+})();
+</script>
+</body>
+</html>
