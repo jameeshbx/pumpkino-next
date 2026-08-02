@@ -30,7 +30,12 @@ export default async function SubscriptionPage({
 
   const account = await prisma.account.findUniqueOrThrow({
     where: { id: ctx.accountId! },
-    select: { plan: true, country: true, trialEndsAt: true },
+    select: {
+      plan: true,
+      country: true,
+      trialEndsAt: true,
+      subscriptions: { where: { status: "ACTIVE" }, take: 1, select: { billingCycle: true } },
+    },
   });
   const invoices = await prisma.invoice.findMany({
     where: { accountId: ctx.accountId! },
@@ -58,6 +63,7 @@ export default async function SubscriptionPage({
 
       <PlanPicker
         currentPlan={account.plan}
+        currentBillingCycle={account.subscriptions[0]?.billingCycle ?? "MONTHLY"}
         defaultGateway={defaultGatewayForCountry(account.country).gateway}
         preselect={preselect}
       />

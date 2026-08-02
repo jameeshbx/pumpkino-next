@@ -32,10 +32,16 @@ export default function PricingPage() {
                 <p className="text-sm text-muted-foreground">{plan.blurb}</p>
               </CardHeader>
               <CardContent>
-                <p className="mb-4">
+                <p className="mb-1">
                   <span className="text-3xl font-bold">{formatCurrency(plan.priceInr)}</span>
                   <span className="text-sm text-muted-foreground">/month</span>
                 </p>
+                {plan.paid && (
+                  <p className="mb-4 text-xs text-muted-foreground">
+                    or save ~17% billed annually — pick your cycle at checkout
+                  </p>
+                )}
+                {!plan.paid && <div className="mb-4" />}
                 <ul className="mb-6 space-y-2 text-sm">
                   {plan.features.map((f) => (
                     <li key={f} className="flex items-start gap-2">

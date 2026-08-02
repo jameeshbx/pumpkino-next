@@ -2,6 +2,7 @@ import Link from "next/link";
 import { auth } from "@/infrastructure/auth/auth";
 import { Button } from "@/shared/components/ui/button";
 import { ThemeToggle } from "@/shared/components/theme-toggle";
+import { PumpkinoWordmark } from "@/shared/components/logo";
 
 export default async function MarketingLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -10,8 +11,8 @@ export default async function MarketingLayout({ children }: { children: React.Re
     <div className="flex min-h-dvh flex-col">
       <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <Link href="/" className="text-lg font-bold tracking-tight">
-            🎃 Pumpkino
+          <Link href="/">
+            <PumpkinoWordmark className="text-lg" />
           </Link>
           <nav aria-label="Marketing" className="hidden items-center gap-6 text-sm font-medium sm:flex">
             <Link href="/pricing" className="text-muted-foreground hover:text-foreground">

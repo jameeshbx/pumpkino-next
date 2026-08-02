@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 import { ThemeToggle } from "@/shared/components/theme-toggle";
+import { PumpkinoBadge } from "@/shared/components/logo";
 
 export interface NavItem {
   href: string;
@@ -80,9 +81,8 @@ export function AppShell({
 
   const sidebarHeader = (
     <div className="flex items-center gap-2 px-6 py-5">
-      <span className="text-lg font-bold tracking-tight text-white">
-        🎃 {brand}
-      </span>
+      <PumpkinoBadge className="h-8 w-8" />
+      <span className="text-lg font-bold tracking-tight text-white">{brand}</span>
       <span className="rounded bg-white/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white/90">
         {surfaceLabel}
       </span>

@@ -20,6 +20,7 @@ export async function subscribeAction(
       accountId: ctx.accountId,
       actorUserId: ctx.userId,
       plan: parsed.plan,
+      billingCycle: parsed.billingCycle,
       gatewayOverride: parsed.gateway,
     });
 
@@ -31,16 +32,16 @@ export async function subscribeAction(
   }
 }
 
-export async function cancelSubscriptionAction(): Promise<ActionResult<undefined>> {
+export async function cancelSubscriptionAction(): Promise<ActionResult<{ refunded: boolean }>> {
   try {
     const ctx = await requirePermission("billing:manage");
     if (!ctx.accountId) throw new ValidationError("No business account attached to this user.");
 
-    await cancelSubscription({ accountId: ctx.accountId, actorUserId: ctx.userId });
+    const result = await cancelSubscription({ accountId: ctx.accountId, actorUserId: ctx.userId });
 
     revalidatePath("/dashboard/subscription");
     revalidatePath("/dashboard", "layout");
-    return actionOk(undefined);
+    return actionOk(result);
   } catch (error) {
     return toActionError(error, (e) =>
       logger.error("cancel_subscription_failed", { error: String(e) }),

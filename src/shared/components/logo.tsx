@@ -1,0 +1,62 @@
+import { cn } from "@/shared/lib/utils";
+
+/**
+ * Pumpkino's actual brand mark — ported from the prototype's inline SVG
+ * (`pumpkino-admin.html`'s sidebar `.logo .mark` and favicon), not a
+ * placeholder. Two-tone: dark green body (#1E3A2B) + lime accent (#8BC53F).
+ */
+export function PumpkinoMark({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 104.7197 137.3736"
+      xmlns="http://www.w3.org/2000/svg"
+      className={cn("shrink-0", className)}
+      aria-hidden
+    >
+      <path
+        d="M104.7197,52.3586c0-7.9667-1.7802-15.5194-4.9649-22.2798h-46.7537c11.9487,0,21.6372,9.6885,21.6372,21.6398s-9.6885,21.6372-21.6372,21.6372c-6.4404,0-12.2256-2.8138-16.1848-7.281-.7796-.8736-1.4831-1.8082-2.1078-2.7986-2.1206-3.3446-3.3472-7.3089-3.3472-11.5576v60.2541l19.1307,25.4009,20.8525-25.4542-6.5445-8.6879c22.9121-5.5845,39.9197-26.2415,39.9197-50.8729Z"
+        fill="#1E3A2B"
+      />
+      <path
+        d="M52.3586,0C32.9054,0,15.9283,10.6104,6.9026,26.3609c-.6958,1.2088-1.3409,2.4507-1.9377,3.718C1.7802,36.8392,0,44.3919,0,52.3586c0,10.4961,3.0881,20.2735,8.406,28.4636,1.2241,1.8844,2.5625,3.6849,4.0126,5.3915l18.9427,25.4542v-59.9494c0-11.9513,9.6885-21.6398,21.6398-21.6398h46.7537C91.3843,12.3043,73.3076,0,52.3586,0Z"
+        fill="#8BC53F"
+      />
+    </svg>
+  );
+}
+
+/**
+ * White rounded-square badge behind the mark — matches the prototype's
+ * sidebar treatment (`.logo .mark { background:#FFFFFF; border-radius:9px }`),
+ * for use on dark backgrounds (the app-shell sidebar).
+ */
+export function PumpkinoBadge({ className }: { className?: string }) {
+  return (
+    <span
+      className={cn(
+        "flex shrink-0 items-center justify-center rounded-[9px] bg-white p-[5px] shadow-sm",
+        className,
+      )}
+    >
+      <PumpkinoMark className="h-full w-full" />
+    </span>
+  );
+}
+
+/** Wordmark lockup (badge/mark + "Pumpkino" text) for headers/nav bars. */
+export function PumpkinoWordmark({
+  className,
+  markClassName,
+  onDark = false,
+}: {
+  className?: string;
+  markClassName?: string;
+  onDark?: boolean;
+}) {
+  return (
+    <span className={cn("inline-flex items-center gap-2", className)}>
+      <PumpkinoMark className={cn("h-6 w-6", markClassName)} />
+      <span className={cn("font-bold tracking-tight", onDark && "text-white")}>Pumpkino</span>
+    </span>
+  );
+}

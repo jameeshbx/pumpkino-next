@@ -46,6 +46,11 @@ enum SubscriptionStatus {
   EXPIRED
 }
 
+enum BillingCycle {
+  MONTHLY
+  ANNUAL
+}
+
 enum InvoiceStatus {
   PAID
   PENDING
@@ -354,12 +359,14 @@ model Subscription {
   account          Account            @relation(fields: [accountId], references: [id], onDelete: Cascade)
   plan             Plan
   status           SubscriptionStatus @default(ACTIVE)
+  billingCycle     BillingCycle       @default(MONTHLY)
   gateway          GatewayKind
   currency         String // "INR" | "USD"
-  amount           Int // per month, in whole currency units (matches prototype)
+  amount           Int // total charged for the cycle (monthly amount, or discounted annual total)
   startedAt        DateTime           @default(now())
   currentPeriodEnd DateTime
   cancelledAt      DateTime?
+  refundedAt       DateTime?
 
   invoices Invoice[]
 

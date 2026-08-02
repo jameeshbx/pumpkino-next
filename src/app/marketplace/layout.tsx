@@ -4,6 +4,7 @@ import { requireAuth } from "@/application/auth/session";
 import { isPlatformStaff } from "@/application/auth/session";
 import { ThemeToggle } from "@/shared/components/theme-toggle";
 import { Button } from "@/shared/components/ui/button";
+import { PumpkinoWordmark } from "@/shared/components/logo";
 
 /**
  * Marketplace is a shared surface (agency, DMC, ops can all browse), so it
@@ -19,8 +20,8 @@ export default async function MarketplaceLayout({ children }: { children: React.
       <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-4">
-            <Link href="/" className="font-bold tracking-tight">
-              🎃 Pumpkino
+            <Link href="/">
+              <PumpkinoWordmark />
             </Link>
             <span className="text-sm text-muted-foreground">DMC Marketplace</span>
           </div>

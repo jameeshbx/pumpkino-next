@@ -6,6 +6,7 @@ import { isPaidPlan } from "@/domain/billing/plans";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { Badge } from "@/shared/components/ui/badge";
+import { PumpkinoMark } from "@/shared/components/logo";
 import { cn } from "@/shared/lib/utils";
 
 export const metadata: Metadata = { title: "Getting started" };
@@ -74,7 +75,7 @@ export default async function OnboardingPage() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6">
       <div className="mb-8 text-center">
-        <p className="text-4xl">🎃</p>
+        <PumpkinoMark className="mx-auto h-12 w-12" />
         <h1 className="mt-3 text-2xl font-bold tracking-tight">
           Welcome to Pumpkino, {ctx.name.split(" ")[0]}!
         </h1>
