@@ -5,7 +5,8 @@ import { prisma } from "@/infrastructure/db/prisma";
 import { requirePermission } from "@/application/auth/session";
 import { marketplaceAccess } from "@/application/marketplace/gate";
 import { AUDIT_ACTIONS, recordAudit } from "@/infrastructure/audit/audit-log";
-import { ForbiddenError, NotFoundError } from "@/domain/errors";
+import { ForbiddenError, NotFoundError, ValidationError } from "@/domain/errors";
+import { planCaps } from "@/domain/billing/plans";
 import { quoteRequestSchema, type QuoteRequestInput } from "@/features/marketplace/schemas";
 import { actionOk, toActionError, type ActionResult } from "@/shared/lib/action-result";
 import { logger } from "@/shared/lib/logger";
@@ -32,6 +33,21 @@ export async function sendQuoteRequestAction(
       select: { id: true, status: true, accountId: true, name: true },
     });
     if (!listing || listing.status !== "PUBLISHED") throw new NotFoundError("DMC listing");
+
+    const dmcCap = planCaps(ctx.account?.plan ?? "FREE").dmcConnections;
+    if (dmcCap !== null && listing.accountId) {
+      const connectedDmcIds = await prisma.quoteRequest.findMany({
+        where: { agencyAccountId: ctx.accountId! },
+        distinct: ["dmcAccountId"],
+        select: { dmcAccountId: true },
+      });
+      const alreadyConnected = connectedDmcIds.some((r) => r.dmcAccountId === listing.accountId);
+      if (!alreadyConnected && connectedDmcIds.length >= dmcCap) {
+        throw new ValidationError(
+          `Your plan allows connecting with ${dmcCap} DMCs. Upgrade to reach more.`,
+        );
+      }
+    }
 
     await prisma.quoteRequest.create({
       data: {

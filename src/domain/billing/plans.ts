@@ -4,6 +4,13 @@ import type { Plan, GatewayKind, BillingCycle } from "@prisma/client";
  * Subscription plan catalogue (PRD Section 3). Agency-only; DMCs are always
  * on the FREE plan.
  */
+/** Per-plan usage caps (pricing page). `null` = unlimited. */
+export interface PlanCaps {
+  teamMembers: number | null;
+  leadsPerMonth: number | null;
+  dmcConnections: number | null;
+}
+
 export interface PlanDefinition {
   plan: Plan;
   name: string;
@@ -12,7 +19,14 @@ export interface PlanDefinition {
   blurb: string;
   features: string[];
   paid: boolean;
+  caps: PlanCaps;
 }
+
+const UNLIMITED: PlanCaps = { teamMembers: null, leadsPerMonth: null, dmcConnections: null };
+// Trial grants full Growth-tier access (pricing/support/refund pages), so it
+// mirrors Growth's caps — the one deliberate exception is marketplace
+// identity/quote-requests, which stay paid-only (see marketplace/gate.ts).
+const GROWTH_CAPS: PlanCaps = { teamMembers: 10, leadsPerMonth: null, dmcConnections: null };
 
 export const PLAN_CATALOGUE: PlanDefinition[] = [
   {
@@ -23,6 +37,7 @@ export const PLAN_CATALOGUE: PlanDefinition[] = [
     blurb: "7 days, auto-granted on signup, no card required",
     features: ["Full CRM access", "Marketplace browsing (masked identity)", "3 directory results"],
     paid: false,
+    caps: GROWTH_CAPS,
   },
   {
     plan: "STARTER",
@@ -32,6 +47,7 @@ export const PLAN_CATALOGUE: PlanDefinition[] = [
     blurb: "Solo agents / very small agencies",
     features: ["Everything in trial", "Full DMC identity", "Quote requests", "Uncapped search"],
     paid: true,
+    caps: { teamMembers: 3, leadsPerMonth: 50, dmcConnections: 5 },
   },
   {
     plan: "GROWTH",
@@ -41,6 +57,7 @@ export const PLAN_CATALOGUE: PlanDefinition[] = [
     blurb: "Growing agencies — unlocks marketplace + automation",
     features: ["Everything in Starter", "Team roles", "Reports & exports", "Priority support"],
     paid: true,
+    caps: GROWTH_CAPS,
   },
   {
     plan: "SCALE",
@@ -50,8 +67,13 @@ export const PLAN_CATALOGUE: PlanDefinition[] = [
     blurb: "Multi-branch agencies",
     features: ["Everything in Growth", "Multi-branch", "Dedicated manager"],
     paid: true,
+    caps: UNLIMITED,
   },
 ];
+
+export function planCaps(plan: Plan): PlanCaps {
+  return planDefinition(plan)?.caps ?? UNLIMITED;
+}
 
 export const PAID_PLANS: Plan[] = ["STARTER", "GROWTH", "SCALE"];
 

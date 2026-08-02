@@ -3,6 +3,7 @@ import type { InitiatedBy, Lead, LostReason, RefundStatus } from "@prisma/client
 import { prisma } from "@/infrastructure/db/prisma";
 import { AUDIT_ACTIONS, recordAudit } from "@/infrastructure/audit/audit-log";
 import { NotFoundError, ValidationError } from "@/domain/errors";
+import { planCaps } from "@/domain/billing/plans";
 import {
   LEAD_CANCELLABLE_STAGES,
   LEAD_LOSABLE_STAGES,
@@ -40,6 +41,19 @@ export async function createLead(
       where: { id: input.assignedToId, accountId: ctx.accountId!, status: "ACTIVE" },
     });
     if (!assignee) throw new ValidationError("Pick an active teammate to assign this lead to.");
+  }
+
+  const leadCap = planCaps(ctx.account?.plan ?? "FREE").leadsPerMonth;
+  if (leadCap !== null) {
+    const startOfMonth = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), 1));
+    const countThisMonth = await prisma.lead.count({
+      where: { accountId: ctx.accountId!, createdAt: { gte: startOfMonth } },
+    });
+    if (countThisMonth >= leadCap) {
+      throw new ValidationError(
+        `Your plan allows ${leadCap} new leads per month. Upgrade to add more.`,
+      );
+    }
   }
 
   const lead = await prisma.lead.create({

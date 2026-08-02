@@ -5,6 +5,7 @@ import { hashPassword } from "@/infrastructure/auth/password";
 import { AUDIT_ACTIONS, recordAudit } from "@/infrastructure/audit/audit-log";
 import { ConflictError, ForbiddenError, NotFoundError, ValidationError } from "@/domain/errors";
 import { canCreateRole, roleExtraField } from "@/domain/rbac/roles";
+import { planCaps } from "@/domain/billing/plans";
 import type { AuthContext } from "@/application/auth/session";
 
 /**
@@ -83,6 +84,18 @@ export async function createAccountUser(
   const actorRole = actorManagementRole(ctx);
   if (!canCreateRole(actorRole, input.roleKey)) {
     throw new ForbiddenError(`You don't have permission to add a ${input.roleKey} user.`);
+  }
+
+  const teamCap = planCaps(ctx.account?.plan ?? "FREE").teamMembers;
+  if (teamCap !== null) {
+    const activeCount = await prisma.user.count({
+      where: { accountId: ctx.accountId!, status: { not: "REMOVED" } },
+    });
+    if (activeCount >= teamCap) {
+      throw new ValidationError(
+        `Your plan allows up to ${teamCap} team members. Upgrade to add more.`,
+      );
+    }
   }
 
   const existing = await prisma.user.findUnique({ where: { email: input.email } });
