@@ -9,10 +9,13 @@ import {
   accountSuspensionSchema,
   disputeUpdateSchema,
   listingStatusSchema,
+  logVerificationDocumentSchema,
   reviewVerificationSchema,
+  OPS_DOCUMENT_TYPES,
   type AccountSuspensionInput,
   type DisputeUpdateInput,
   type ListingStatusInput,
+  type LogVerificationDocumentInput,
   type ReviewVerificationInput,
 } from "@/features/admin/schemas";
 import { actionOk, toActionError, type ActionResult } from "@/shared/lib/action-result";
@@ -79,6 +82,72 @@ export async function reviewVerificationAction(
   } catch (error) {
     return toActionError(error, (e) =>
       logger.error("review_verification_failed", { error: String(e) }),
+    );
+  }
+}
+
+/**
+ * Ops logs a document that arrived outside the app (email, courier, etc.) —
+ * the prototype's "log a document received separately" flow. Logging a
+ * document against a NOT_SUBMITTED account moves it into the actionable
+ * queue (a lightweight submission is created so it surfaces there), the
+ * same real-world case the prototype's Golden Route Holidays example shows:
+ * an account that never used the self-serve Profile flow, but Ops still has
+ * documents on file for it.
+ */
+export async function logVerificationDocumentAction(
+  input: LogVerificationDocumentInput,
+): Promise<ActionResult<undefined>> {
+  try {
+    const ctx = await requirePermission("platform:verification:review");
+    const parsed = logVerificationDocumentSchema.parse(input);
+
+    const account = await prisma.account.findUnique({
+      where: { id: parsed.accountId },
+      select: { id: true, verificationStatus: true },
+    });
+    if (!account) throw new NotFoundError("Account");
+
+    const typeLabel = OPS_DOCUMENT_TYPES.find((t) => t.key === parsed.documentType)!.label;
+
+    await prisma.$transaction(async (tx) => {
+      await tx.verificationDocument.create({
+        data: {
+          accountId: account.id,
+          name: typeLabel,
+          uploadedBy: "OPS",
+          note: parsed.note || null,
+        },
+      });
+
+      if (account.verificationStatus === "NOT_SUBMITTED") {
+        await tx.verificationSubmission.create({
+          data: {
+            accountId: account.id,
+            extra: `Document received outside the app and logged by Ops (${typeLabel}).`,
+            fileAttached: true,
+            status: "SUBMITTED",
+          },
+        });
+        await tx.account.update({
+          where: { id: account.id },
+          data: { verificationStatus: "SUBMITTED" },
+        });
+      }
+    });
+
+    await recordAudit({
+      action: AUDIT_ACTIONS.VERIFICATION_SUBMITTED,
+      actorUserId: ctx.userId,
+      accountId: account.id,
+      metadata: { documentType: parsed.documentType, loggedByOps: true },
+    });
+
+    revalidatePath("/admin/verification");
+    return actionOk(undefined);
+  } catch (error) {
+    return toActionError(error, (e) =>
+      logger.error("log_verification_document_failed", { error: String(e) }),
     );
   }
 }

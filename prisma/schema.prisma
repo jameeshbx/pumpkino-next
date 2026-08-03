@@ -177,6 +177,7 @@ model Account {
   subscriptions             Subscription[]
   invoices                  Invoice[]
   verificationSubmissions   VerificationSubmission[]
+  verificationDocuments     VerificationDocument[]
   dmcListing                DmcListing?
   leads                     Lead[]
   agencyQuoteRequests       QuoteRequest[]           @relation("AgencyRequests")
@@ -346,6 +347,30 @@ model VerificationSubmission {
   reviewedAt   DateTime?
 
   @@index([status, submittedAt])
+  @@index([accountId])
+}
+
+enum DocumentUploader {
+  AGENCY
+  DMC
+  OPS
+}
+
+/**
+ * Document-level provenance for verification (who actually attached what,
+ * and when) — an account-level record, not tied to one submission, so Ops
+ * can log a document that arrived outside the app (email/courier) even
+ * before the account has ever self-submitted.
+ */
+model VerificationDocument {
+  id         String            @id @default(cuid())
+  accountId  String
+  account    Account           @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  name       String
+  uploadedBy DocumentUploader
+  note       String?
+  createdAt  DateTime          @default(now())
+
   @@index([accountId])
 }
 

@@ -16,17 +16,23 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/shared/components/ui/dialog";
+import { DocumentList, type VerificationDocumentView } from "@/features/admin/components/document-list";
+import { LogDocumentForm } from "@/features/admin/components/log-document-form";
 
 interface VerificationReviewDialogProps {
   submissionId: string;
+  accountId: string;
   accountName: string;
   details: { label: string; value: string }[];
+  documents: VerificationDocumentView[];
 }
 
 export function VerificationReviewDialog({
   submissionId,
+  accountId,
   accountName,
   details,
+  documents,
 }: VerificationReviewDialogProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -72,6 +78,15 @@ export function VerificationReviewDialog({
             </div>
           ))}
         </dl>
+
+        <div className="space-y-1.5">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Documents
+          </p>
+          <DocumentList documents={documents} />
+        </div>
+        <LogDocumentForm accountId={accountId} />
+
         <div>
           <label htmlFor="review-note" className="mb-1.5 block text-sm font-medium">
             Reviewer note{" "}

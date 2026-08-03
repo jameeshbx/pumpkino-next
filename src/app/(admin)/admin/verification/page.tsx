@@ -3,6 +3,7 @@ import { ShieldCheck } from "lucide-react";
 import { requirePermissionPage } from "@/application/auth/session";
 import { prisma } from "@/infrastructure/db/prisma";
 import { VerificationReviewDialog } from "@/features/admin/components/verification-review-dialog";
+import { LogDocumentDialog } from "@/features/admin/components/log-document-dialog";
 import { PageHeader } from "@/shared/components/page-header";
 import { EmptyState } from "@/shared/components/empty-state";
 import { Badge } from "@/shared/components/ui/badge";
@@ -30,12 +31,29 @@ export default async function VerificationQueuePage() {
     prisma.verificationSubmission.findMany({
       where: { status: "SUBMITTED" },
       orderBy: { submittedAt: "asc" },
-      include: { account: { select: { name: true, type: true, country: true, email: true } } },
+      include: {
+        account: {
+          select: {
+            name: true,
+            type: true,
+            country: true,
+            email: true,
+            verificationDocuments: { orderBy: { createdAt: "desc" } },
+          },
+        },
+      },
     }),
     prisma.account.findMany({
       where: { verificationStatus: "NOT_SUBMITTED" },
       orderBy: { createdAt: "desc" },
-      select: { id: true, name: true, type: true, country: true, createdAt: true },
+      select: {
+        id: true,
+        name: true,
+        type: true,
+        country: true,
+        createdAt: true,
+        verificationDocuments: { orderBy: { createdAt: "desc" } },
+      },
       take: 20,
     }),
   ]);
@@ -85,6 +103,7 @@ export default async function VerificationQueuePage() {
                 <TableCell className="text-right">
                   <VerificationReviewDialog
                     submissionId={s.id}
+                    accountId={s.accountId}
                     accountName={s.account.name}
                     details={[
                       { label: "GSTIN", value: s.gstin ?? "" },
@@ -92,6 +111,7 @@ export default async function VerificationQueuePage() {
                       { label: "Business registration", value: s.bizReg ?? "" },
                       { label: "Extra", value: s.extra ?? "" },
                     ]}
+                    documents={s.account.verificationDocuments}
                   />
                 </TableCell>
               </TableRow>
@@ -110,14 +130,21 @@ export default async function VerificationQueuePage() {
           ) : (
             <ul className="divide-y">
               {notSubmitted.map((a) => (
-                <li key={a.id} className="flex items-center justify-between py-2 text-sm">
+                <li key={a.id} className="flex items-center justify-between gap-4 py-2 text-sm">
                   <span>
                     {a.name}
                     <span className="ml-2 text-xs uppercase text-muted-foreground">{a.type}</span>
                   </span>
-                  <span className="text-xs text-muted-foreground">
-                    {a.country} · joined {formatDate(a.createdAt)}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-muted-foreground">
+                      {a.country} · joined {formatDate(a.createdAt)}
+                    </span>
+                    <LogDocumentDialog
+                      accountId={a.id}
+                      accountName={a.name}
+                      documents={a.verificationDocuments}
+                    />
+                  </div>
                 </li>
               ))}
             </ul>

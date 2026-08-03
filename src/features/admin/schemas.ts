@@ -7,6 +7,21 @@ export const reviewVerificationSchema = z.object({
 });
 export type ReviewVerificationInput = z.infer<typeof reviewVerificationSchema>;
 
+export const OPS_DOCUMENT_TYPES = [
+  { key: "gst", label: "GST certificate" },
+  { key: "iata", label: "IATA certificate" },
+  { key: "bizreg", label: "Business registration" },
+  { key: "bank", label: "Bank account proof" },
+  { key: "other", label: "Other document" },
+] as const;
+
+export const logVerificationDocumentSchema = z.object({
+  accountId: z.string().min(1),
+  documentType: z.enum(["gst", "iata", "bizreg", "bank", "other"]),
+  note: z.string().trim().max(300).optional().or(z.literal("")),
+});
+export type LogVerificationDocumentInput = z.infer<typeof logVerificationDocumentSchema>;
+
 export const accountSuspensionSchema = z.object({
   accountId: z.string().min(1),
   suspend: z.boolean(),

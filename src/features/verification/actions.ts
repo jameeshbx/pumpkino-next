@@ -33,6 +33,8 @@ export async function submitVerificationAction(
       throw new ConflictError("Your business is already verified.");
     }
 
+    const uploader = ctx.accountType === "DMC" ? "DMC" : "AGENCY";
+
     await prisma.$transaction([
       prisma.verificationSubmission.create({
         data: {
@@ -49,6 +51,17 @@ export async function submitVerificationAction(
         where: { id: ctx.accountId },
         data: { verificationStatus: "SUBMITTED" },
       }),
+      ...(parsed.fileAttached
+        ? [
+            prisma.verificationDocument.create({
+              data: {
+                accountId: ctx.accountId,
+                name: "Supporting document",
+                uploadedBy: uploader,
+              },
+            }),
+          ]
+        : []),
     ]);
 
     await recordAudit({
