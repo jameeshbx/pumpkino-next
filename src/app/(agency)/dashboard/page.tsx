@@ -3,10 +3,12 @@ import type { Metadata } from "next";
 import { CalendarClock, ClipboardList, Hourglass, Wallet } from "lucide-react";
 import { requireAuth } from "@/application/auth/session";
 import { leadScopeWhere } from "@/application/leads/lead-scope";
+import { getAgencyReminders } from "@/application/reminders/reminder-service";
 import { prisma } from "@/infrastructure/db/prisma";
 import { LEAD_STAGES, LEAD_STAGE_LABELS } from "@/domain/pipeline/lifecycle";
 import { PageHeader } from "@/shared/components/page-header";
 import { StatCard } from "@/shared/components/stat-card";
+import { TodaysBriefing } from "@/shared/components/todays-briefing";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
@@ -18,7 +20,8 @@ export default async function AgencyDashboardPage() {
   const ctx = await requireAuth();
   const where = await leadScopeWhere(ctx);
 
-  const [activeLeads, awaitingQuote, upcoming, bookedValue, byStage] = await Promise.all([
+  const [reminders, activeLeads, awaitingQuote, upcoming, bookedValue, byStage] = await Promise.all([
+    getAgencyReminders(ctx),
     prisma.lead.count({ where: { ...where, lifecycleStatus: "ACTIVE" } }),
     prisma.lead.count({ where: { ...where, lifecycleStatus: "ACTIVE", stage: "SENT" } }),
     prisma.lead.count({
@@ -51,6 +54,8 @@ export default async function AgencyDashboardPage() {
           </Button>
         }
       />
+
+      <TodaysBriefing reminders={reminders} />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Active leads" value={activeLeads} icon={ClipboardList} />

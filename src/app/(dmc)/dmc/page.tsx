@@ -2,10 +2,12 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { CheckCircle2, Inbox, Send, Wallet } from "lucide-react";
 import { requireAuth } from "@/application/auth/session";
+import { getDmcReminders } from "@/application/reminders/reminder-service";
 import { prisma } from "@/infrastructure/db/prisma";
 import { REQUEST_STAGES, REQUEST_STAGE_LABELS } from "@/domain/pipeline/lifecycle";
 import { PageHeader } from "@/shared/components/page-header";
 import { StatCard } from "@/shared/components/stat-card";
+import { TodaysBriefing } from "@/shared/components/todays-briefing";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
@@ -17,7 +19,8 @@ export default async function DmcDashboardPage() {
   const ctx = await requireAuth();
   const accountId = ctx.accountId!;
 
-  const [newRequests, quotesSent, booked, bookedValue, byStage] = await Promise.all([
+  const [reminders, newRequests, quotesSent, booked, bookedValue, byStage] = await Promise.all([
+    getDmcReminders(ctx),
     prisma.quoteRequest.count({
       where: { dmcAccountId: accountId, lifecycleStatus: "ACTIVE", stage: "NEW" },
     }),
@@ -49,6 +52,8 @@ export default async function DmcDashboardPage() {
           </Button>
         }
       />
+
+      <TodaysBriefing reminders={reminders} />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="New requests" value={newRequests} icon={Inbox} hint="awaiting first response" />
