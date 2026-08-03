@@ -6,6 +6,7 @@ import { prisma } from "@/infrastructure/db/prisma";
 import { LEAD_STAGES, LEAD_STAGE_LABELS } from "@/domain/pipeline/lifecycle";
 import { AddLeadDialog } from "@/features/leads/components/add-lead-dialog";
 import { LeadCardActions } from "@/features/leads/components/lead-card-actions";
+import { ItineraryDialog, type ItineraryInitial } from "@/features/itineraries/components/itinerary-dialog";
 import { ROLE_DISPLAY_NAMES, type RoleKey } from "@/domain/rbac/roles";
 import { PageHeader } from "@/shared/components/page-header";
 import { EmptyState } from "@/shared/components/empty-state";
@@ -28,7 +29,7 @@ export default async function LeadsPage() {
     prisma.lead.findMany({
       where: { ...where, lifecycleStatus: "ACTIVE" },
       orderBy: { updatedAt: "desc" },
-      include: { assignedTo: { select: { name: true } } },
+      include: { assignedTo: { select: { name: true } }, itinerary: true },
     }),
     prisma.user.findMany({
       where: {
@@ -97,6 +98,25 @@ export default async function LeadsPage() {
                             />
                           )}
                         </div>
+                        {canManage && (
+                          <div className="mt-2">
+                            <ItineraryDialog
+                              leadId={lead.id}
+                              leadName={lead.name}
+                              initial={
+                                lead.itinerary
+                                  ? ({
+                                      overview: lead.itinerary.overview ?? "",
+                                      hotelName: lead.itinerary.hotelName ?? "",
+                                      hotelCategory: lead.itinerary.hotelCategory ?? "",
+                                      days: lead.itinerary.days as unknown as ItineraryInitial["days"],
+                                      source: lead.itinerary.source,
+                                    } satisfies ItineraryInitial)
+                                  : null
+                              }
+                            />
+                          </div>
+                        )}
                         <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
                           {lead.startDate && <span>🗓 {formatDate(lead.startDate)}</span>}
                           {(lead.finalPrice ?? lead.quotedPrice) && (

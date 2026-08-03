@@ -561,9 +561,35 @@ model Lead {
   updatedAt DateTime @updatedAt
 
   activities LeadActivity[]
+  itinerary  Itinerary?
 
   @@index([accountId, lifecycleStatus, stage])
   @@index([assignedToId])
+}
+
+/**
+ * Day-by-day itinerary content for a lead (PRD's "AI Itinerary Builder" —
+ * currently absent from the app entirely; this is the foundation for it).
+ * `days` is JSON — [{title, description}] — matching the AI Assistant
+ * Plan's target output shape exactly, so a future AI draft needs zero
+ * schema change to slot in, just a different `source` value.
+ */
+model Itinerary {
+  id            String          @id @default(cuid())
+  leadId        String          @unique
+  lead          Lead            @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  overview      String?
+  hotelName     String?
+  hotelCategory String?
+  days          Json            @default("[]")
+  source        ItinerarySource @default(MANUAL)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+enum ItinerarySource {
+  MANUAL
+  AI_DRAFT
 }
 
 // Timeline of everything that happened to a lead (incl. lifecycle log).
