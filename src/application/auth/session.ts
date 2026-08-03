@@ -5,6 +5,7 @@ import type { AccountType, Plan } from "@prisma/client";
 import { auth } from "@/infrastructure/auth/auth";
 import { prisma } from "@/infrastructure/db/prisma";
 import { ForbiddenError } from "@/domain/errors";
+import { downgradeIfTrialExpired } from "@/application/billing/trial-expiry";
 
 /**
  * Session + authorization context, loaded once per request (React cache).
@@ -69,6 +70,9 @@ export const getAuthContext = cache(async (): Promise<AuthContext | null> => {
 
   if (!user || user.status !== "ACTIVE" || user.account?.suspended) return null;
 
+  // Lazy trial-expiry downgrade — see trial-expiry.ts for why this runs here.
+  const currentPlan = user.account ? await downgradeIfTrialExpired(user.account) : null;
+
   const permissions = new Set<string>();
   const roles: string[] = [];
   for (const ur of user.roles) {
@@ -88,7 +92,7 @@ export const getAuthContext = cache(async (): Promise<AuthContext | null> => {
       ? {
           id: user.account.id,
           name: user.account.name,
-          plan: user.account.plan,
+          plan: currentPlan!,
           trialEndsAt: user.account.trialEndsAt,
           country: user.account.country,
           verificationStatus: user.account.verificationStatus,
