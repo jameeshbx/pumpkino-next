@@ -62,11 +62,18 @@ export const DMC_NAV: GuardedNavItem[] = [
     permission: "quotes:read",
   },
   {
+    href: "/dmc/upcoming",
+    label: "Upcoming trips",
+    icon: "upcoming",
+    permission: "quotes:read",
+  },
+  {
     href: "/dmc/packages",
     label: "Destinations & packages",
     icon: "packages",
     permission: "packages:manage",
   },
+  { href: "/dmc/users", label: "Users & roles", icon: "users", permission: "users:manage" },
   {
     href: "/dmc/profile",
     label: "Profile & verification",
