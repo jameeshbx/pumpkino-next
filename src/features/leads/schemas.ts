@@ -45,6 +45,47 @@ export const reopenLeadSchema = z.object({
 });
 export type ReopenLeadInput = z.infer<typeof reopenLeadSchema>;
 
+const columnMappingSchema = z.object({
+  name: z.string().optional(),
+  mobile: z.string().optional(),
+  email: z.string().optional(),
+  destination: z.string().optional(),
+  pax: z.string().optional(),
+  startDate: z.string().optional(),
+  stage: z.string().optional(),
+});
+
+const leadStageEnum = z.enum(["NEW", "SENT", "CONFIRMED", "DMC", "MARKUP", "PAYMENT", "DONE"]);
+
+export const previewImportSchema = z.object({
+  headers: z.array(z.string()),
+  rawRows: z.array(z.array(z.string())).max(2000, "Import up to 2,000 rows at a time"),
+  mapping: columnMappingSchema,
+  stageMapping: z.record(z.string(), leadStageEnum),
+});
+export type PreviewImportInput = z.infer<typeof previewImportSchema>;
+
+const importPreviewRowSchema = z.object({
+  name: z.string(),
+  mobile: z.string().nullable(),
+  email: z.string().nullable(),
+  destination: z.string(),
+  pax: z.string().nullable(),
+  startDate: z.string().nullable(),
+  stage: leadStageEnum,
+  importedNotes: z.string().nullable(),
+  isDuplicate: z.boolean(),
+});
+
+export const commitImportSchema = z.object({
+  rows: z.array(importPreviewRowSchema).max(2000),
+  includeDuplicates: z.boolean(),
+});
+export type CommitImportInput = z.infer<typeof commitImportSchema>;
+
+export const undoImportSchema = z.object({ batchId: z.string().min(1) });
+export type UndoImportInput = z.infer<typeof undoImportSchema>;
+
 export const refundStatusSchema = z.object({
   leadId: z.string().min(1),
   refundStatus: z.enum(["PENDING", "PROCESSED", "DENIED"]),

@@ -11,17 +11,30 @@ import {
   setLeadRefundStatus,
 } from "@/application/leads/lead-service";
 import {
+  commitImport,
+  getLastImportBatch,
+  previewImport,
+  undoImport,
+} from "@/application/leads/import-service";
+import {
   cancelBookingSchema,
+  commitImportSchema,
   createLeadSchema,
   markLostSchema,
+  previewImportSchema,
   refundStatusSchema,
   reopenLeadSchema,
+  undoImportSchema,
   type CancelBookingInput,
+  type CommitImportInput,
   type CreateLeadInput,
   type MarkLostInput,
+  type PreviewImportInput,
   type RefundStatusInput,
   type ReopenLeadInput,
+  type UndoImportInput,
 } from "@/features/leads/schemas";
+import type { ImportPreview } from "@/application/leads/import-service";
 import { actionOk, toActionError, type ActionResult } from "@/shared/lib/action-result";
 import { logger } from "@/shared/lib/logger";
 
@@ -111,5 +124,58 @@ export async function setRefundStatusAction(
     return toActionError(error, (e) =>
       logger.error("set_refund_status_failed", { error: String(e) }),
     );
+  }
+}
+
+export async function previewImportAction(
+  input: PreviewImportInput,
+): Promise<ActionResult<ImportPreview>> {
+  try {
+    const ctx = await requirePermission("leads:manage");
+    const parsed = previewImportSchema.parse(input);
+    const result = await previewImport(ctx, parsed);
+    return actionOk(result);
+  } catch (error) {
+    return toActionError(error, (e) => logger.error("preview_import_failed", { error: String(e) }));
+  }
+}
+
+export async function commitImportAction(
+  input: CommitImportInput,
+): Promise<ActionResult<{ batchId: string; createdCount: number }>> {
+  try {
+    const ctx = await requirePermission("leads:manage");
+    const parsed = commitImportSchema.parse(input);
+    const result = await commitImport(ctx, parsed);
+    revalidateLeadViews();
+    return actionOk(result);
+  } catch (error) {
+    return toActionError(error, (e) => logger.error("commit_import_failed", { error: String(e) }));
+  }
+}
+
+export async function undoImportAction(
+  input: UndoImportInput,
+): Promise<ActionResult<{ deletedCount: number }>> {
+  try {
+    const ctx = await requirePermission("leads:manage");
+    const parsed = undoImportSchema.parse(input);
+    const result = await undoImport(ctx, parsed.batchId);
+    revalidateLeadViews();
+    return actionOk(result);
+  } catch (error) {
+    return toActionError(error, (e) => logger.error("undo_import_failed", { error: String(e) }));
+  }
+}
+
+export async function getLastImportBatchAction(): Promise<
+  ActionResult<{ batchId: string; count: number; importedAt: Date } | null>
+> {
+  try {
+    const ctx = await requirePermission("leads:manage");
+    const result = await getLastImportBatch(ctx);
+    return actionOk(result);
+  } catch (error) {
+    return toActionError(error, (e) => logger.error("get_last_import_batch_failed", { error: String(e) }));
   }
 }

@@ -6,6 +6,8 @@ import { prisma } from "@/infrastructure/db/prisma";
 import { LEAD_STAGES, LEAD_STAGE_LABELS } from "@/domain/pipeline/lifecycle";
 import { AddLeadDialog } from "@/features/leads/components/add-lead-dialog";
 import { LeadCardActions } from "@/features/leads/components/lead-card-actions";
+import { ImportLeadsDialog } from "@/features/leads/components/import-leads-dialog";
+import { UndoImportButton } from "@/features/leads/components/undo-import-button";
 import { ItineraryDialog, type ItineraryInitial } from "@/features/itineraries/components/itinerary-dialog";
 import { ROLE_DISPLAY_NAMES, type RoleKey } from "@/domain/rbac/roles";
 import { PageHeader } from "@/shared/components/page-header";
@@ -53,8 +55,21 @@ export default async function LeadsPage() {
       <PageHeader
         title="Leads & pipeline"
         description={`${leads.length} active lead${leads.length === 1 ? "" : "s"} in your scope.`}
-        actions={canManage ? <AddLeadDialog assignableUsers={assignableUsers} /> : undefined}
+        actions={
+          canManage ? (
+            <div className="flex items-center gap-2">
+              <ImportLeadsDialog />
+              <AddLeadDialog assignableUsers={assignableUsers} />
+            </div>
+          ) : undefined
+        }
       />
+
+      {canManage && (
+        <div className="mb-4">
+          <UndoImportButton />
+        </div>
+      )}
 
       {leads.length === 0 ? (
         <EmptyState

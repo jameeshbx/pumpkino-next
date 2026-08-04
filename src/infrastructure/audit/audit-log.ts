@@ -35,6 +35,8 @@ export const AUDIT_ACTIONS = {
   LEAD_LOST: "leads.marked_lost",
   LEAD_CANCELLED: "leads.cancelled",
   LEAD_REOPENED: "leads.reopened",
+  LEADS_IMPORTED: "leads.imported",
+  LEADS_IMPORT_UNDONE: "leads.import_undone",
   LISTING_UPDATED: "listings.updated",
   DISPUTE_UPDATED: "disputes.updated",
 } as const;
