@@ -22,6 +22,7 @@ export const RATE_LIMITS = {
   login: { name: "login", limit: 10, windowSeconds: 15 * 60 },
   signup: { name: "signup", limit: 5, windowSeconds: 60 * 60 },
   passwordReset: { name: "pwreset", limit: 5, windowSeconds: 60 * 60 },
+  supportContact: { name: "support", limit: 5, windowSeconds: 60 * 60 },
   publicApi: { name: "api", limit: 100, windowSeconds: 60 },
 } satisfies Record<string, RateLimitRule>;
 

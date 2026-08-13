@@ -649,3 +649,18 @@ model DocumentSequence {
 
   @@id([kind, year])
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Public support contact form (pumpkino-support.html) — unauthenticated
+// ─────────────────────────────────────────────────────────────────────────────
+
+model SupportMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  topic     String
+  message   String
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
