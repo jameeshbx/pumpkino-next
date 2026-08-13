@@ -15,11 +15,23 @@ export default async function MarketingLayout({ children }: { children: React.Re
             <PumpkinoWordmark className="text-lg" />
           </Link>
           <nav aria-label="Marketing" className="hidden items-center gap-6 text-sm font-medium sm:flex">
+            <Link href="/#platform" className="text-muted-foreground hover:text-foreground">
+              Platform
+            </Link>
+            <Link href="/marketplace" className="text-muted-foreground hover:text-foreground">
+              Find a DMC
+            </Link>
+            <Link href="/#dmc-portal" className="text-muted-foreground hover:text-foreground">
+              For DMCs
+            </Link>
             <Link href="/pricing" className="text-muted-foreground hover:text-foreground">
               Pricing
             </Link>
             <Link href="/support" className="text-muted-foreground hover:text-foreground">
               Support
+            </Link>
+            <Link href="/#faq" className="text-muted-foreground hover:text-foreground">
+              FAQ
             </Link>
           </nav>
           <div className="flex items-center gap-2">
@@ -46,6 +58,15 @@ export default async function MarketingLayout({ children }: { children: React.Re
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 text-sm text-muted-foreground sm:flex-row sm:px-6">
           <p>© {new Date().getFullYear()} Pumpkino. All rights reserved.</p>
           <nav aria-label="Legal" className="flex flex-wrap gap-4">
+            <Link href="/marketplace" className="hover:text-foreground">
+              Marketplace
+            </Link>
+            <Link href="/pricing" className="hover:text-foreground">
+              Pricing
+            </Link>
+            <Link href="/support" className="hover:text-foreground">
+              Support
+            </Link>
             <Link href="/terms" className="hover:text-foreground">
               Terms
             </Link>
@@ -54,9 +75,6 @@ export default async function MarketingLayout({ children }: { children: React.Re
             </Link>
             <Link href="/refund-policy" className="hover:text-foreground">
               Refund policy
-            </Link>
-            <Link href="/support" className="hover:text-foreground">
-              Support
             </Link>
           </nav>
         </div>
