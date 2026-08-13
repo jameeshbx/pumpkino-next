@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import type { Prisma } from "@prisma/client";
 import { BadgeCheck, Clock, Lock, MapPin, Store } from "lucide-react";
-import { requireAuth } from "@/application/auth/session";
+import { getAuthContext } from "@/application/auth/session";
 import { marketplaceAccess, maskedListingName } from "@/application/marketplace/gate";
 import { FREE_TIER_RESULT_CAP } from "@/domain/billing/plans";
 import { prisma } from "@/infrastructure/db/prisma";
@@ -26,7 +26,7 @@ export default async function MarketplacePage({
 }: {
   searchParams: Promise<SearchParams>;
 }) {
-  const ctx = await requireAuth();
+  const ctx = await getAuthContext();
   const access = marketplaceAccess(ctx);
   const { q, country, service, sort } = await searchParams;
 
@@ -142,11 +142,15 @@ export default async function MarketplacePage({
           <p className="mt-1 text-sm text-muted-foreground">
             Paid plans unlock every result with full identity and quote requests.
           </p>
-          {ctx.accountType === "AGENCY" && (
+          {ctx?.accountType === "AGENCY" ? (
             <Button asChild className="mt-4">
               <Link href="/dashboard/subscription">Upgrade to unlock</Link>
             </Button>
-          )}
+          ) : !ctx ? (
+            <Button asChild className="mt-4" variant="secondary">
+              <Link href="/signup?role=agency">Sign up to unlock</Link>
+            </Button>
+          ) : null}
         </div>
       )}
     </>

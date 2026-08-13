@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { BadgeCheck, Clock, Lock, MapPin, Star } from "lucide-react";
-import { requireAuth } from "@/application/auth/session";
+import { getAuthContext } from "@/application/auth/session";
 import { marketplaceAccess, maskedListingName } from "@/application/marketplace/gate";
 import { prisma } from "@/infrastructure/db/prisma";
 import { QuoteRequestDialog } from "@/features/marketplace/components/quote-request-dialog";
@@ -14,7 +14,7 @@ import { formatCurrency, formatDate } from "@/shared/lib/utils";
 export const metadata: Metadata = { title: "DMC profile" };
 
 export default async function DmcDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const ctx = await requireAuth();
+  const ctx = await getAuthContext();
   const access = marketplaceAccess(ctx);
   const { id } = await params;
 
@@ -80,10 +80,16 @@ export default async function DmcDetailPage({ params }: { params: Promise<{ id: 
             dmcName={displayName}
             defaultDestination={listing.destinations[0] ?? ""}
           />
-        ) : ctx.accountType === "AGENCY" ? (
+        ) : ctx?.accountType === "AGENCY" ? (
           <Button asChild variant="outline">
             <Link href="/dashboard/subscription">
               <Lock className="mr-1 h-4 w-4" /> Upgrade to send quote requests
+            </Link>
+          </Button>
+        ) : !ctx ? (
+          <Button asChild variant="secondary">
+            <Link href="/signup?role=agency">
+              <Lock className="mr-1 h-4 w-4" /> Sign up to send quote requests
             </Link>
           </Button>
         ) : null}

@@ -13,7 +13,8 @@ export interface MarketplaceAccess {
   canSendQuoteRequests: boolean;
 }
 
-export function marketplaceAccess(ctx: AuthContext): MarketplaceAccess {
+export function marketplaceAccess(ctx: AuthContext | null): MarketplaceAccess {
+  if (!ctx) return { unlocked: false, canSendQuoteRequests: false };
   if (isPlatformStaff(ctx)) return { unlocked: true, canSendQuoteRequests: false };
   const isPaidAgency = ctx.accountType === "AGENCY" && isPaidPlan(ctx.account?.plan ?? "TRIAL");
   return {

@@ -14,14 +14,10 @@ const { auth } = NextAuth(authConfig);
 
 const AUTH_PAGES = ["/login", "/signup", "/forgot-password", "/reset-password", "/verify-email"];
 
-const PROTECTED_PREFIXES = [
-  "/dashboard",
-  "/dmc",
-  "/admin",
-  "/onboarding",
-  "/marketplace",
-  "/change-password",
-];
+// "/marketplace" is intentionally excluded — it's public (PRD: "everyone can
+// browse"); identity/quote-requests are gated by plan, not by login. See
+// marketplaceAccess() in application/marketplace/gate.ts.
+const PROTECTED_PREFIXES = ["/dashboard", "/dmc", "/admin", "/onboarding", "/change-password"];
 
 function homeFor(session: {
   accountType: string | null;

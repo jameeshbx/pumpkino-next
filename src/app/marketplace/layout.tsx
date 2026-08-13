@@ -1,19 +1,19 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { requireAuth } from "@/application/auth/session";
-import { isPlatformStaff } from "@/application/auth/session";
+import { getAuthContext, isPlatformStaff } from "@/application/auth/session";
 import { ThemeToggle } from "@/shared/components/theme-toggle";
 import { Button } from "@/shared/components/ui/button";
 import { PumpkinoWordmark } from "@/shared/components/logo";
 
 /**
- * Marketplace is a shared surface (agency, DMC, ops can all browse), so it
- * carries a slim header with a "back to my dashboard" link instead of a
- * full sidebar.
+ * Marketplace is public — anyone can browse (PRD: "everyone can browse",
+ * identity/quote-requests gated behind a paid agency plan, not behind
+ * login). Signed-in users get a "back to my dashboard" link; anonymous
+ * visitors get log in / sign up instead.
  */
 export default async function MarketplaceLayout({ children }: { children: React.ReactNode }) {
-  const ctx = await requireAuth();
-  const home = isPlatformStaff(ctx) ? "/admin" : ctx.accountType === "DMC" ? "/dmc" : "/dashboard";
+  const ctx = await getAuthContext();
+  const home = ctx ? (isPlatformStaff(ctx) ? "/admin" : ctx.accountType === "DMC" ? "/dmc" : "/dashboard") : null;
 
   return (
     <div className="min-h-dvh">
@@ -27,11 +27,22 @@ export default async function MarketplaceLayout({ children }: { children: React.
           </div>
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            <Button asChild variant="outline" size="sm">
-              <Link href={home}>
-                <ArrowLeft className="mr-1 h-4 w-4" /> My dashboard
-              </Link>
-            </Button>
+            {home ? (
+              <Button asChild variant="outline" size="sm">
+                <Link href={home}>
+                  <ArrowLeft className="mr-1 h-4 w-4" /> My dashboard
+                </Link>
+              </Button>
+            ) : (
+              <>
+                <Button asChild variant="ghost" size="sm">
+                  <Link href="/login">Log in</Link>
+                </Button>
+                <Button asChild size="sm" variant="secondary">
+                  <Link href="/signup?role=agency">Start free trial</Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </header>
