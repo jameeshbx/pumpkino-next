@@ -45,7 +45,7 @@ export default async function MarketingLayout({ children }: { children: React.Re
                 <Button asChild variant="ghost" size="sm">
                   <Link href="/login">Log in</Link>
                 </Button>
-                <Button asChild size="sm">
+                <Button asChild size="sm" variant="secondary">
                   <Link href="/signup">Start free trial</Link>
                 </Button>
               </>

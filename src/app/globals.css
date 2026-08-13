@@ -5,57 +5,59 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(0.985 0.005 90);
-  --foreground: oklch(0.24 0.02 150);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.24 0.02 150);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.24 0.02 150);
-  /* Pumpkin orange */
-  --primary: oklch(0.66 0.18 45);
-  --primary-foreground: oklch(0.99 0.005 90);
-  /* Deep green (prototype sidebar #12392A) */
-  --secondary: oklch(0.33 0.06 160);
-  --secondary-foreground: oklch(0.98 0.01 90);
-  --muted: oklch(0.955 0.01 90);
-  --muted-foreground: oklch(0.5 0.02 130);
-  --accent: oklch(0.95 0.03 60);
-  --accent-foreground: oklch(0.3 0.05 45);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.91 0.012 90);
-  --input: oklch(0.91 0.012 90);
-  --ring: oklch(0.66 0.18 45);
-  --success: oklch(0.6 0.13 155);
-  --warning: oklch(0.72 0.15 75);
-  --sidebar: oklch(0.27 0.045 160);
-  --sidebar-foreground: oklch(0.9 0.02 120);
+  /* Palette below is lifted directly from the prototype's own tokens
+     (pumpkino-Agent-dashboard-final-v2.html :root, and pumpkino-home.html
+     inline styles) — not invented. Primary = forest green (brand/action
+     color across the app), secondary = gold (marketing-CTA accent). */
+  --background: #fbfaf7;
+  --foreground: #16221d;
+  --card: #ffffff;
+  --card-foreground: #16221d;
+  --popover: #ffffff;
+  --popover-foreground: #16221d;
+  --primary: #123d2b;
+  --primary-foreground: #f5f6f4;
+  --secondary: #e7b343;
+  --secondary-foreground: #123d2b;
+  --muted: #f4f2ec;
+  --muted-foreground: #5e625f;
+  --accent: #fcf0dc;
+  --accent-foreground: #8a5a17;
+  --destructive: #d9534f;
+  --destructive-foreground: #ffffff;
+  --border: #e9e5dd;
+  --input: #e9e5dd;
+  --ring: #123d2b;
+  --success: #2f8f5b;
+  --warning: #e39a22;
+  --sidebar: #123d2b;
+  --sidebar-foreground: #f5f6f4;
 }
 
 .dark {
-  --background: oklch(0.19 0.015 155);
-  --foreground: oklch(0.93 0.01 100);
-  --card: oklch(0.23 0.02 155);
-  --card-foreground: oklch(0.93 0.01 100);
-  --popover: oklch(0.23 0.02 155);
-  --popover-foreground: oklch(0.93 0.01 100);
-  --primary: oklch(0.7 0.17 48);
-  --primary-foreground: oklch(0.16 0.02 45);
-  --secondary: oklch(0.35 0.05 160);
-  --secondary-foreground: oklch(0.95 0.01 100);
-  --muted: oklch(0.27 0.02 155);
-  --muted-foreground: oklch(0.68 0.02 120);
-  --accent: oklch(0.3 0.03 60);
-  --accent-foreground: oklch(0.9 0.03 60);
-  --destructive: oklch(0.65 0.2 25);
-  --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.32 0.02 155);
-  --input: oklch(0.32 0.02 155);
-  --ring: oklch(0.7 0.17 48);
-  --success: oklch(0.68 0.12 155);
-  --warning: oklch(0.75 0.14 75);
-  --sidebar: oklch(0.16 0.02 160);
-  --sidebar-foreground: oklch(0.85 0.02 120);
+  --background: #0f2018;
+  --foreground: #f0efe9;
+  --card: #16281f;
+  --card-foreground: #f0efe9;
+  --popover: #16281f;
+  --popover-foreground: #f0efe9;
+  --primary: #e7b343;
+  --primary-foreground: #123d2b;
+  --secondary: #2f4d3c;
+  --secondary-foreground: #f5f6f4;
+  --muted: #1c3226;
+  --muted-foreground: #a9b0a8;
+  --accent: #2c2413;
+  --accent-foreground: #e7b343;
+  --destructive: #d9534f;
+  --destructive-foreground: #ffffff;
+  --border: #24392e;
+  --input: #24392e;
+  --ring: #e7b343;
+  --success: #4caf7d;
+  --warning: #e7b343;
+  --sidebar: #0a2018;
+  --sidebar-foreground: #f0efe9;
 }
 
 @theme inline {
