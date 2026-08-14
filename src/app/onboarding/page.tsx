@@ -1,7 +1,18 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ArrowRight, BadgeCheck, CircleDollarSign, Mail, Store } from "lucide-react";
+import {
+  ArrowRight,
+  BadgeCheck,
+  CalendarClock,
+  CircleDollarSign,
+  FileText,
+  Handshake,
+  Mail,
+  MessageSquareText,
+  Store,
+} from "lucide-react";
 import { requireAuth } from "@/application/auth/session";
+import { signOutAction } from "@/features/authentication/actions";
 import { isPaidPlan } from "@/domain/billing/plans";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
@@ -72,8 +83,50 @@ export default async function OnboardingPage() {
 
   const completed = steps.filter((s) => s.done).length;
 
+  const activityCards = [
+    {
+      icon: MessageSquareText,
+      title: "Quote requests",
+      description: isAgency
+        ? "Requests you send to DMCs will show up here."
+        : "Incoming quote requests from agencies will show up here.",
+      href: isAgency ? "/dashboard/quote-requests" : "/dmc/requests",
+      cta: "Open quote requests",
+    },
+    {
+      icon: CalendarClock,
+      title: "Bookings",
+      description: "Confirmed trips and their travel dates will show up here.",
+      href: isAgency ? "/dashboard/upcoming" : "/dmc/upcoming",
+      cta: "Open bookings",
+    },
+    {
+      icon: Handshake,
+      title: isAgency ? "Connected DMCs" : "Connected agencies",
+      description: isAgency
+        ? "DMCs you've sent quote requests to will show up here."
+        : "Agencies you've worked with will show up here.",
+      href: isAgency ? "/marketplace" : "/dmc",
+      cta: isAgency ? "Browse the marketplace" : "Open dashboard",
+    },
+    {
+      icon: FileText,
+      title: "Invoices",
+      description: "Your billing history will show up here once you're on a paid plan.",
+      href: isAgency ? "/dashboard/subscription" : "/dmc",
+      cta: "Open billing",
+    },
+  ];
+
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6">
+      <div className="mb-2 flex justify-end">
+        <form action={signOutAction}>
+          <Button type="submit" variant="ghost" size="sm" className="text-muted-foreground">
+            Log out
+          </Button>
+        </form>
+      </div>
       <div className="mb-8 text-center">
         <PumpkinoMark className="mx-auto h-12 w-12" />
         <h1 className="mt-3 text-2xl font-bold tracking-tight">
@@ -112,6 +165,27 @@ export default async function OnboardingPage() {
             </CardContent>
           </Card>
         ))}
+      </div>
+
+      <div className="mt-10">
+        <h2 className="mb-3 text-sm font-semibold text-muted-foreground">Your activity</h2>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {activityCards.map((card) => (
+            <Link key={card.title} href={card.href} className="block">
+              <Card className="h-full transition-colors hover:border-primary/30">
+                <CardContent className="flex items-start gap-3 p-4">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <card.icon className="h-4.5 w-4.5" aria-hidden />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium">{card.title}</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">{card.description}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
       </div>
 
       <div className="mt-8 text-center">

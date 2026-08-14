@@ -15,31 +15,35 @@ export default async function ResetPasswordPage({
 
   if (!token) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-xl">Invalid link</CardTitle>
-          <CardDescription>
-            This password reset link is missing its token. Request a fresh one.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button asChild className="w-full">
-            <Link href="/forgot-password">Request a new link</Link>
-          </Button>
-        </CardContent>
-      </Card>
+      <div className="mx-auto w-full max-w-md">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl">Invalid link</CardTitle>
+            <CardDescription>
+              This password reset link is missing its token. Request a fresh one.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild className="w-full">
+              <Link href="/forgot-password">Request a new link</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-xl">Set a new password</CardTitle>
-        <CardDescription>Choose a strong password you haven&apos;t used before.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ResetPasswordForm token={token} />
-      </CardContent>
-    </Card>
+    <div className="mx-auto w-full max-w-md">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl">Set a new password</CardTitle>
+          <CardDescription>Choose a strong password you haven&apos;t used before.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ResetPasswordForm token={token} />
+        </CardContent>
+      </Card>
+    </div>
   );
 }

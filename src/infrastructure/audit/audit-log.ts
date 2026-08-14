@@ -17,6 +17,7 @@ export const AUDIT_ACTIONS = {
   PASSWORD_RESET_REQUESTED: "auth.password_reset_requested",
   PASSWORD_RESET_COMPLETED: "auth.password_reset_completed",
   EMAIL_VERIFIED: "auth.email_verified",
+  EMAIL_VERIFICATION_RESENT: "auth.email_verification_resent",
   USER_CREATED: "users.created",
   USER_UPDATED: "users.updated",
   USER_ROLE_CHANGED: "users.role_changed",

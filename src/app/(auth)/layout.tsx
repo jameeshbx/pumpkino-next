@@ -12,7 +12,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <ThemeToggle />
       </header>
       <main className="flex flex-1 items-center justify-center px-4 py-10">
-        <div className="w-full max-w-md">{children}</div>
+        <div className="w-full max-w-5xl">{children}</div>
       </main>
       <footer className="pb-6 text-center text-xs text-muted-foreground">
         <Link href="/terms" className="hover:text-foreground">

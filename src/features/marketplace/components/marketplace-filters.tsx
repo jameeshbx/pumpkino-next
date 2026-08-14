@@ -14,12 +14,13 @@ import {
 const ALL = "all";
 
 interface MarketplaceFiltersProps {
-  countries: string[];
+  destinations: string[];
   services: string[];
 }
 
-/** GET-based filters so results stay server-rendered, shareable and cacheable. */
-export function MarketplaceFilters({ countries, services }: MarketplaceFiltersProps) {
+/** GET-based filters so results stay server-rendered, shareable and cacheable.
+ * Matches pumpkino-marketplace.html's toolbar: search + destination + service + sort. */
+export function MarketplaceFilters({ destinations, services }: MarketplaceFiltersProps) {
   const router = useRouter();
   const params = useSearchParams();
 
@@ -31,8 +32,8 @@ export function MarketplaceFilters({ countries, services }: MarketplaceFiltersPr
   }
 
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-      <div className="relative flex-1">
+    <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+      <div className="relative flex-1 sm:min-w-[200px]">
         <Search
           className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
           aria-hidden
@@ -40,27 +41,27 @@ export function MarketplaceFilters({ countries, services }: MarketplaceFiltersPr
         <Input
           type="search"
           aria-label="Search DMCs"
-          placeholder="Search destinations, cities, services…"
+          placeholder="Search by DMC name or destination…"
           className="pl-9"
           defaultValue={params.get("q") ?? ""}
           onChange={(e) => setParam("q", e.target.value)}
         />
       </div>
-      <Select value={params.get("country") ?? ALL} onValueChange={(v) => setParam("country", v)}>
-        <SelectTrigger className="sm:w-44" aria-label="Filter by country">
+      <Select value={params.get("destination") ?? ALL} onValueChange={(v) => setParam("destination", v)}>
+        <SelectTrigger className="sm:w-44" aria-label="Filter by destination">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value={ALL}>All countries</SelectItem>
-          {countries.map((c) => (
-            <SelectItem key={c} value={c}>
-              {c}
+          <SelectItem value={ALL}>All destinations</SelectItem>
+          {destinations.map((d) => (
+            <SelectItem key={d} value={d}>
+              {d}
             </SelectItem>
           ))}
         </SelectContent>
       </Select>
       <Select value={params.get("service") ?? ALL} onValueChange={(v) => setParam("service", v)}>
-        <SelectTrigger className="sm:w-48" aria-label="Filter by service">
+        <SelectTrigger className="sm:w-44" aria-label="Filter by service">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -72,14 +73,14 @@ export function MarketplaceFilters({ countries, services }: MarketplaceFiltersPr
           ))}
         </SelectContent>
       </Select>
-      <Select value={params.get("sort") ?? "bookings"} onValueChange={(v) => setParam("sort", v)}>
+      <Select value={params.get("sort") ?? "rating"} onValueChange={(v) => setParam("sort", v)}>
         <SelectTrigger className="sm:w-44" aria-label="Sort results">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="bookings">Most bookings</SelectItem>
-          <SelectItem value="response">Fastest response</SelectItem>
-          <SelectItem value="name">Name (A–Z)</SelectItem>
+          <SelectItem value="rating">Sort: Highest rated</SelectItem>
+          <SelectItem value="bookings">Sort: Most bookings</SelectItem>
+          <SelectItem value="response">Sort: Fastest response</SelectItem>
         </SelectContent>
       </Select>
     </div>

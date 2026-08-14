@@ -8,7 +8,7 @@ import { AUDIT_ACTIONS, recordAudit } from "@/infrastructure/audit/audit-log";
 import { signup } from "@/application/auth/signup";
 import { requestPasswordReset, resetPassword } from "@/application/auth/password-reset";
 import { changePassword } from "@/application/auth/change-password";
-import { verifyEmail } from "@/application/auth/verify-email";
+import { resendEmailVerification, verifyEmail } from "@/application/auth/verify-email";
 import { getAuthContext } from "@/application/auth/session";
 import {
   changePasswordSchema,
@@ -99,6 +99,23 @@ export async function forgotPasswordAction(
   } catch (error) {
     return toActionError(error, (e) =>
       logger.error("forgot_password_action_failed", { error: String(e) }),
+    );
+  }
+}
+
+export async function resendEmailVerificationAction(
+  input: ForgotPasswordInput, // same shape: { email }
+): Promise<ActionResult<undefined>> {
+  try {
+    const parsed = forgotPasswordSchema.parse(input);
+    const ip = await clientIp();
+    await consumeRateLimit(RATE_LIMITS.passwordReset, ip);
+    await consumeRateLimit(RATE_LIMITS.passwordReset, `${ip}:${parsed.email}`);
+    await resendEmailVerification(parsed.email);
+    return actionOk(undefined); // always success — no enumeration
+  } catch (error) {
+    return toActionError(error, (e) =>
+      logger.error("resend_email_verification_action_failed", { error: String(e) }),
     );
   }
 }
